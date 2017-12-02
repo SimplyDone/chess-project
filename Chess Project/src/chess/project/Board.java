@@ -6,9 +6,13 @@ package chess.project;
  */
 public class Board {
     
+    
     public Board(){
         
-        String test = "";
+        //TODO think of how we aare going to represent the various 
+        //elements (pieces, board, possible moves, rules, the player,
+        //the ai, ai logic, graphics, 
+        
         
     }
 
