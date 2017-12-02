@@ -8,6 +8,8 @@ public class Board {
     
     public Board(){
         
+        String test = "";
+        
     }
 
 }
