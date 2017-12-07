@@ -6,9 +6,11 @@ package chess.project;
  */
 public class Board {
     
+    private int aThing = 32;
+    
     
     public Board(){
-        
+                
         //TODO think of how we aare going to represent the various 
         //elements (pieces, board, possible moves, rules, the player,
         //the ai, ai logic, graphics, 
