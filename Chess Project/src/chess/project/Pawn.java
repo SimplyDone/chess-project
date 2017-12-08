@@ -22,5 +22,9 @@ public class Pawn extends Piece {
         
         return validMoves;
     }
+    
+    public String toString(){
+        return "P";
+    }
 
 }
