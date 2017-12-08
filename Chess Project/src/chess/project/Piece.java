@@ -10,9 +10,8 @@ import java.util.List;
 public abstract class Piece {
     
     private final boolean colour;
-    private int xPos;
-    private int yPos;
-    
+    private Position pos;
+       
     
     public Piece(boolean col){
         colour = col;
