@@ -1,3 +1,4 @@
+
 package chess.project;
 
 /**
@@ -5,7 +6,7 @@ package chess.project;
  * @author Alex Zurad
  */
 public class Position {
-    
+
     public int X;
     public int Y;
     
@@ -18,5 +19,5 @@ public class Position {
         X = x;
         Y = y;
     }
-    
+
 }

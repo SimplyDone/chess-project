@@ -1,0 +1,4 @@
+https://en.wikipedia.org/wiki/Rules_of_chess
+	- Rules of chess
+	- used for En passant
+	
