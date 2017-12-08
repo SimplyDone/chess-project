@@ -14,7 +14,6 @@ public class ChessProject {
         
         GameHandler g = new GameHandler();
         
-        
     }
 
 }
