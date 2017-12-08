@@ -13,12 +13,10 @@ public abstract class Piece {
     private Position pos;
        
     
-    public Piece(boolean col){
+    public Piece(boolean col, Position pos){
         colour = col;
          
     }
-    
-    protected abstract void setInitalPosition();
     
     protected abstract List getValidMoves(Board board);
        
