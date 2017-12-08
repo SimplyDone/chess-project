@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class Piece {
     
 
-    private final boolean colour;
+    private final boolean colour; // 0-black, 1-white
     private Position pos;
        
     public Piece(boolean col, Position pos){
@@ -19,5 +19,5 @@ public abstract class Piece {
     }
     
     protected abstract List getValidMoves(Board board);
-      
+    
 }
