@@ -12,7 +12,8 @@ public class ChessProject {
      */
     public static void main(String[] args) {
         
-        System.out.println("Testing");
+        Board b = new Board();
+        b.displayBoard();
         
     }
 
