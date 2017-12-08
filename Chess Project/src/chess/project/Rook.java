@@ -23,4 +23,9 @@ public class Rook extends Piece{
         return validMoves;
     }
     
+    @Override
+    public String toString(){
+        return "R";
+    }
+    
 }
