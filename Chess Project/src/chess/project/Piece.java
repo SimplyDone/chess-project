@@ -1,18 +1,23 @@
 
 package chess.project;
 
-/** 
+import java.util.List;
+
+/** Represents a single piece.
  *
  * @author Alex Zurad
  */
 public abstract class Piece {
     
-    private boolean colour;
-    private int xPos;
-    
-    
-    public Piece(){
-        
+
+    private final boolean colour;
+    private Position pos;
+       
+    public Piece(boolean col, Position pos){
+        colour = col;
+         
     }
     
+    protected abstract List getValidMoves(Board board);
+      
 }
