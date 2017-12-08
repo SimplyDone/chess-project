@@ -2,7 +2,7 @@ package chess.project;
 
 /** Represents a chessboard.
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class Board {
     
