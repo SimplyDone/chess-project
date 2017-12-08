@@ -23,4 +23,9 @@ public class Bishop extends Piece{
         return validMoves;
     }
     
+    @Override
+    public String toString(){
+        return "B";
+    }
+    
 }
