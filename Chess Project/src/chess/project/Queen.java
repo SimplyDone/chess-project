@@ -24,4 +24,9 @@ public class Queen extends Piece{
         return validMoves;
     }
     
+    @Override
+    public String toString(){
+        return "Q";
+    }
+    
 }
