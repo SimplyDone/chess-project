@@ -23,4 +23,9 @@ public class Knight extends Piece{
         return validMoves;
     }
     
+    @Override
+    public String toString(){
+        return "H";
+    }
+    
 }
