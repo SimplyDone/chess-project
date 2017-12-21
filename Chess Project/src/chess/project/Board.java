@@ -72,8 +72,10 @@ public final class Board {
 
     }
 
-    public void displayBoard() {
+    public void printBoard() {
 
+        System.out.println();
+        
         for (int i = 0; i < 8; i++) {
             System.out.print("|");
             for (int j = 0; j < 8; j++) {

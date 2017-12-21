@@ -16,11 +16,9 @@ public class GameHandler {
 
     public GameHandler() {
 
-        whiteMove = true;
-        board = new Board();
-        board.displayBoard();
-
         initializeGame();
+        
+        board.printBoard();
 
     }
 
@@ -29,32 +27,50 @@ public class GameHandler {
      *
      */
     private void initializeGame() {
-        int numPlayers = getNumPlayers();
+        
+        whiteMove = true;
+        board = new Board();
+        
+        int numHumans = getNumPlayers();
+        int aiDifficulty = getAIDifficulty();
     }
 
     private int getNumPlayers() {
-        Scanner sc = new Scanner(System.in);
-        int numPlayers = -1;
-        boolean validInput = false;
 
-        while (!validInput) {
-            System.out.println("Enter the number of players (0-2) : ");
+        int numHumans = -1;
+
+        while (numHumans == -1) {
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Enter the number of human players (0-2): ");
             try {
-                numPlayers = Integer.parseInt(sc.next("[0-2]"));
-                
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid choice");
-                numPlayers = -1;
-            }
-            
-            if(numPlayers != -1){
-                validInput = true;
-            }
+                numHumans = Integer.parseInt(sc.next("[0-2]"));
 
+            } catch (InputMismatchException e) {
+                System.out.println("[Invalid choice]");
+                numHumans = -1;
+            }
         }
 
-        return numPlayers;
-
+        return numHumans;
     }
+    
+    private int getAIDifficulty(){
+        
+        int aiDifficulty = -1;
 
+        while (aiDifficulty == -1) {
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Enter the difficulty for the AI (1-5): ");
+            try {
+                aiDifficulty = Integer.parseInt(sc.next("[1-5]"));
+
+            } catch (InputMismatchException e) {
+                System.out.println("[Invalid choice]");
+                aiDifficulty = -1;
+            }
+        }
+
+        return aiDifficulty;
+    }
+       
 }
