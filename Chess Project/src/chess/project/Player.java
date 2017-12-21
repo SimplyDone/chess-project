@@ -4,6 +4,9 @@ package chess.project;
  *
  * @author Alex Zurad
  */
-public class Player {
+public abstract class Player {
+    
+    private boolean colour; //false-black true-white
+    
     
 }

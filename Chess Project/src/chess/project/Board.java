@@ -1,5 +1,13 @@
 package chess.project;
 
+import chess.project.pieces.Bishop;
+import chess.project.pieces.Pawn;
+import chess.project.pieces.King;
+import chess.project.pieces.Rook;
+import chess.project.pieces.Knight;
+import chess.project.pieces.Queen;
+import chess.project.pieces.Piece;
+
 /**
  * Represents a chessboard.
  *
