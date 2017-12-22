@@ -1,6 +1,8 @@
 
 package chess.project;
 
+import chess.project.graphics.ChessboardGraphic;
+
 /**
  *
  * @author Alex
@@ -13,6 +15,7 @@ public class ChessProject {
     public static void main(String[] args) {
         
         GameHandler g = new GameHandler();
+        ChessboardGraphic.drawChessboard();
         
     }
 
