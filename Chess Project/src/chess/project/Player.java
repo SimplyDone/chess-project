@@ -7,5 +7,7 @@ package chess.project;
 public abstract class Player {
     
     private boolean colour; //false-black true-white
+    
+    public abstract Move getMove();
    
 }
