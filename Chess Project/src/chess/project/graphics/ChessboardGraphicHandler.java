@@ -24,8 +24,11 @@ public class ChessboardGraphicHandler extends JFrame {
             for (int j = 0; j < 8; j++) {
 
                 squares[i][j] = new JButton();
+                squares[i][j].setRolloverEnabled(false);
                 if ((i + j) % 2 != 0) {
                     squares[i][j].setBackground(Color.black);
+                } else {
+                    squares[i][j].setBackground(Color.white);
                 }
                 contents.add(squares[i][j]);
                 //add action listenser to squares
@@ -37,6 +40,7 @@ public class ChessboardGraphicHandler extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
 }
