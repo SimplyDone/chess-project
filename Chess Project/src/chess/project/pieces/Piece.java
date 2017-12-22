@@ -13,10 +13,16 @@ public abstract class Piece {
     
 
     private final boolean colour; // false-black, true-white
-    private Position pos;
+    private Position position;
        
     public Piece(boolean col, Position pos){
-        colour = col;  
+        colour = col;
+        this.position = pos;
+    }
+    
+    public void move(Position p){
+        position = p;
+   
     }
     
     protected abstract List getValidMoves(Board board);

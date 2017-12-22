@@ -14,7 +14,13 @@ public class Position {
 
 
     public Position(int X, int Y){
-        this.X = X;
+        
+        if(X > 7 || Y > 7){
+            throw new UnsupportedOperationException("X and Y must be between 0 and 7 X=" + X + " Y=" + Y);
+        }
+        
+        
+        this.X = 7 - X;
         this.Y = Y;
     }
     

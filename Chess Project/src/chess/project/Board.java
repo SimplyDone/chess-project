@@ -106,11 +106,20 @@ public final class Board {
 
         }
         return checkmate;
-    }// if bool checkmate is being implemented elsewhere return void
+    }
+    
+    public void doMove(Move move){
+        
+        Position oldPos = move.getOldPosition();
+        Position newPos = move.getNewPosition();
+        
+        Piece p = board[oldPos.getX()][oldPos.getY()] ;
+        p.move(newPos);
+        
+        board[oldPos.getX()][oldPos.getY()] = null;
+        board[newPos.getX()][newPos.getY()] = p;
+        
+    }
+    
 
-        //check_move(){
-        //}
-        //do_move(){
-    //perform the move
-    //}
 }

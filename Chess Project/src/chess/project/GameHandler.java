@@ -19,6 +19,10 @@ public class GameHandler {
         initializeGame();
         
         board.printBoard();
+        
+        board.doMove(new Move(new Position(0,0), new Position(2,0)));
+        
+        board.printBoard();
 
     }
 
@@ -33,6 +37,8 @@ public class GameHandler {
         
         int numHumans = getNumPlayers();
         int aiDifficulty = getAIDifficulty();
+        
+        
     }
 
     private int getNumPlayers() {
