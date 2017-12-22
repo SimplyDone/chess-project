@@ -1,4 +1,6 @@
-package chess.project;
+package chess.project.players;
+
+import chess.project.Move;
 
 /** This class represents a player in chess. It can be AI controlled or human.
  *
