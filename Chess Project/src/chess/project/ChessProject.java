@@ -1,7 +1,7 @@
 
 package chess.project;
 
-import chess.project.graphics.ChessboardGraphic;
+import chess.project.graphics.ChessboardGraphicHandler;
 
 /**
  *
@@ -15,7 +15,7 @@ public class ChessProject {
     public static void main(String[] args) {
         
         GameHandler g = new GameHandler();
-        ChessboardGraphic.drawChessboard();
+        ChessboardGraphicHandler cgh = new ChessboardGraphicHandler();
         
     }
 
