@@ -12,7 +12,8 @@ public class Position {
     private int X;
     private int Y;
 
-
+    
+    //TODO make it work with X and Y swapped
     public Position(int X, int Y){
         
         if(X > 7 || Y > 7){
@@ -20,7 +21,7 @@ public class Position {
         }
         
         
-        this.X = 7 - X;
+        this.X = X;
         this.Y = Y;
     }
     

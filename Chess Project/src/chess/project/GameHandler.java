@@ -1,5 +1,7 @@
 package chess.project;
 
+import chess.project.graphics.ChessboardGraphicHandler;
+import chess.project.players.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -11,18 +13,16 @@ import java.util.Scanner;
  */
 public class GameHandler {
 
+    private Player white;
+    private Player black;
+    
     private Board board;
     private boolean whiteMove;
 
     public GameHandler() {
 
         initializeGame();
-        
-        board.printBoard();
-        
-        board.doMove(new Move(new Position(0,0), new Position(2,0)));
-        
-        board.printBoard();
+        playGame();
 
     }
 
@@ -38,9 +38,31 @@ public class GameHandler {
         int numHumans = getNumPlayers();
         int aiDifficulty = getAIDifficulty();
         
+        white = new HumanPlayer(true, board);
+        black = new HumanPlayer(false, board);
+            
+    }
+    
+    private void playGame(){
         
+        ChessboardGraphicHandler cgh = new ChessboardGraphicHandler(board);
+        
+        while(!board.isCheckmate()){
+            
+            board.printBoard();
+            
+            if(whiteMove){
+                board.doMove(white.getMove());
+            } else {
+                board.doMove(black.getMove());
+            }
+
+            cgh.updateBoard(board);
+            whiteMove ^= true;
+        }
     }
 
+    // can combine the two methods
     private int getNumPlayers() {
 
         int numHumans = -1;
@@ -78,5 +100,5 @@ public class GameHandler {
 
         return aiDifficulty;
     }
-       
+           
 }

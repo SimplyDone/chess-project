@@ -1,12 +1,8 @@
 package chess.project;
 
-import chess.project.pieces.Bishop;
-import chess.project.pieces.Pawn;
-import chess.project.pieces.King;
-import chess.project.pieces.Rook;
-import chess.project.pieces.Knight;
-import chess.project.pieces.Queen;
-import chess.project.pieces.Piece;
+import chess.project.pieces.*;
+
+import java.util.List;
 
 /**
  * Represents a chessboard.
@@ -15,7 +11,7 @@ import chess.project.pieces.Piece;
  */
 public final class Board {
 
-    private final Piece board[][];
+    public final Piece board[][];
     private boolean isWhiteChecked = false;
     private boolean isBlackChecked = false;
     private boolean checkmate = false;
@@ -67,7 +63,7 @@ public final class Board {
         board[7][4] = new King(true, new Position(7, 4));
 
         for (int i = 0; i < 8; i++) {
-            board[6][i] = new Pawn(true, new Position(7, i));
+            board[6][i] = new Pawn(true, new Position(6, i));
         }
 
     }
@@ -75,7 +71,7 @@ public final class Board {
     public void printBoard() {
 
         System.out.println();
-        
+
         for (int i = 0; i < 8; i++) {
             System.out.print("|");
             for (int j = 0; j < 8; j++) {
@@ -89,37 +85,57 @@ public final class Board {
             System.out.println();
         }
     }
-    
 
-        //get_board() {
-    //    return board;
-    //}
-    public boolean getCheckmate() {
+    public boolean isCheckmate() {
         if (checkmate) {
             if (isWhiteChecked) {
-                System.out.println("black wins");
+                System.out.println("Black wins");
             } else if (isBlackChecked) {
-                System.out.println("white wins");
+                System.out.println("White wins");
             } else {
-                throw new IllegalStateException("Checkmate is true"); 
+                throw new IllegalStateException("Checkmate is true when it should not be.");
             }
 
         }
         return checkmate;
     }
-    
-    public void doMove(Move move){
+
+    public boolean checkMove(Move move) {
         
+        return true;
+
+//        Position oldPos = move.getOldPosition();
+//        Position newPos = move.getNewPosition();
+//
+//        Piece p = board[oldPos.getX()][oldPos.getY()];
+//        if (p != null) {
+//
+//            List<Move> possibleMoves = p.getValidMoves(this);
+//            if (possibleMoves.contains(move)) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//
+//        } else {
+//            return false;
+//        }
+
+    }
+
+    public void doMove(Move move) {
+
         Position oldPos = move.getOldPosition();
         Position newPos = move.getNewPosition();
-        
-        Piece p = board[oldPos.getX()][oldPos.getY()] ;
-        p.move(newPos);
-        
-        board[oldPos.getX()][oldPos.getY()] = null;
-        board[newPos.getX()][newPos.getY()] = p;
-        
+
+        Piece p = board[oldPos.getY()][oldPos.getX()];
+        if (p != null) {
+
+            p.move(newPos);
+            board[oldPos.getY()][oldPos.getX()] = null;
+            board[newPos.getY()][newPos.getX()] = p;
+        }
+
     }
-    
 
 }

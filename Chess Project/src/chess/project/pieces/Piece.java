@@ -25,14 +25,18 @@ public abstract class Piece {
    
     }
     
-    protected abstract List getValidMoves(Board board);
+    public abstract List getValidMoves(Board board);
     
     /** Returns the colour of the piece;
      * 
      * @return the colour of the piece
      */
-    public String getColour(){
+    public String getColourString(){
         return colour ? "white" : "black";
+    }
+    
+    public boolean isWhite(){
+        return colour;
     }
     
 }

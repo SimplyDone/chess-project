@@ -16,7 +16,7 @@ public class Knight extends Piece{
     }
 
     @Override
-    protected List getValidMoves(Board board) {
+    public List getValidMoves(Board board) {
         List<Position> validMoves = new LinkedList<>();
 
         //TODO add actual code
@@ -27,7 +27,7 @@ public class Knight extends Piece{
     
     @Override
     public String toString(){
-        return "H";
+        return "k";
     }
     
 }

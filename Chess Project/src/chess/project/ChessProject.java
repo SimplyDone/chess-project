@@ -15,7 +15,6 @@ public class ChessProject {
     public static void main(String[] args) {
         
         GameHandler g = new GameHandler();
-        ChessboardGraphicHandler cgh = new ChessboardGraphicHandler();
         
     }
 
