@@ -24,6 +24,7 @@ public class HumanPlayer extends Player {
             Move move = readMove();
 
             if (super.board.checkMove(move)) {
+                System.out.println("[VALID MOVE]");
                 return move;
             }
         }

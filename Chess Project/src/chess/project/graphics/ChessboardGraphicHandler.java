@@ -23,8 +23,8 @@ public class ChessboardGraphicHandler extends JFrame {
         this.contents = getContentPane();
         this.contents.setLayout(new GridLayout(8, 8));
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
 
                 squares[i][j] = new TileButton();
 

@@ -57,7 +57,7 @@ public class GameHandler {
                 board.doMove(black.getMove());
             }
 
-            cgh.updateBoard(board);
+            cgh.updateBoard();
             whiteMove ^= true;
         }
     }

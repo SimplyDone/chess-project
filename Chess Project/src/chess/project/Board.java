@@ -34,36 +34,36 @@ public final class Board {
 
         //black
         board[0][0] = new Rook(false, new Position(0, 0));
-        board[0][7] = new Rook(false, new Position(0, 7));
+        board[7][0] = new Rook(false, new Position(7, 0));
 
-        board[0][1] = new Knight(false, new Position(0, 1));
-        board[0][6] = new Knight(false, new Position(0, 6));
+        board[1][0] = new Knight(false, new Position(1, 0));
+        board[6][0] = new Knight(false, new Position(6, 0));
 
-        board[0][2] = new Bishop(false, new Position(0, 2));
-        board[0][5] = new Bishop(false, new Position(0, 5));
+        board[2][0] = new Bishop(false, new Position(2, 0));
+        board[5][0] = new Bishop(false, new Position(5, 0));
 
-        board[0][3] = new Queen(false, new Position(0, 3));
-        board[0][4] = new King(false, new Position(0, 4));
+        board[3][0] = new Queen(false, new Position(3, 0));
+        board[4][0] = new King(false, new Position(4, 0));
 
         for (int i = 0; i < 8; i++) {
-            board[1][i] = new Pawn(false, new Position(1, i));
+            board[i][1] = new Pawn(false, new Position(i, 1));
         }
 
         //white
-        board[7][0] = new Rook(true, new Position(7, 0));
+        board[0][7] = new Rook(true, new Position(0, 7));
         board[7][7] = new Rook(true, new Position(7, 7));
 
-        board[7][1] = new Knight(true, new Position(7, 1));
-        board[7][6] = new Knight(true, new Position(7, 6));
+        board[1][7] = new Knight(true, new Position(1, 7));
+        board[6][7] = new Knight(true, new Position(6, 7));
 
-        board[7][2] = new Bishop(true, new Position(7, 2));
-        board[7][5] = new Bishop(true, new Position(7, 5));
+        board[2][7] = new Bishop(true, new Position(2, 7));
+        board[5][7] = new Bishop(true, new Position(5, 7));
 
-        board[7][3] = new Queen(true, new Position(7, 3));
-        board[7][4] = new King(true, new Position(7, 4));
+        board[3][7] = new Queen(true, new Position(3, 7));
+        board[4][7] = new King(true, new Position(4, 7));
 
         for (int i = 0; i < 8; i++) {
-            board[6][i] = new Pawn(true, new Position(6, i));
+            board[i][6] = new Pawn(true, new Position(i, 6));
         }
 
     }
@@ -76,8 +76,8 @@ public final class Board {
             System.out.print("|");
             for (int j = 0; j < 8; j++) {
 
-                if (board[i][j] != null) {
-                    System.out.print(board[i][j] + "|");
+                if (board[j][i] != null) {
+                    System.out.print(board[j][i] + "|");
                 } else {
                     System.out.print("X|");
                 }
@@ -101,25 +101,25 @@ public final class Board {
     }
 
     public boolean checkMove(Move move) {
-        
-        return true;
 
-//        Position oldPos = move.getOldPosition();
-//        Position newPos = move.getNewPosition();
-//
-//        Piece p = board[oldPos.getX()][oldPos.getY()];
-//        if (p != null) {
-//
-//            List<Move> possibleMoves = p.getValidMoves(this);
-//            if (possibleMoves.contains(move)) {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//
-//        } else {
-//            return false;
-//        }
+        Position oldPos = move.getOldPosition();
+        
+        System.out.println(move.getOldPosition() + " " + move.getNewPosition());
+
+        Piece p = board[oldPos.getX()][oldPos.getY()];
+        System.out.println(p);
+        if (p != null) {
+
+            List<Move> possibleMoves = p.getValidMoves(this);
+            for(Move m : possibleMoves){
+                System.out.println(m.getOldPosition() + " " + m.getNewPosition());
+            }
+            
+            return possibleMoves.contains(move);
+
+        } else {
+            return false;
+        }
 
     }
 
@@ -128,12 +128,12 @@ public final class Board {
         Position oldPos = move.getOldPosition();
         Position newPos = move.getNewPosition();
 
-        Piece p = board[oldPos.getY()][oldPos.getX()];
+        Piece p = board[oldPos.getX()][oldPos.getY()];
         if (p != null) {
 
             p.move(newPos);
-            board[oldPos.getY()][oldPos.getX()] = null;
-            board[newPos.getY()][newPos.getX()] = p;
+            board[oldPos.getX()][oldPos.getY()] = null;
+            board[newPos.getX()][newPos.getY()] = p;
         }
 
     }

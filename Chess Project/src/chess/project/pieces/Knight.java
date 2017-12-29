@@ -1,6 +1,7 @@
 package chess.project.pieces;
 
 import chess.project.Board;
+import chess.project.Move;
 import chess.project.Position;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,10 +18,22 @@ public class Knight extends Piece{
 
     @Override
     public List getValidMoves(Board board) {
-        List<Position> validMoves = new LinkedList<>();
-
-        //TODO add actual code
+        List<Move> validMoves = new LinkedList<>();
         
+        int rowDelta;
+        int colDelta;
+        
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                
+                rowDelta = Math.abs(position.getX() - i);
+                colDelta = Math.abs(position.getY() - j);
+                
+                if((rowDelta == 1 && colDelta == 2) || (rowDelta == 2 && colDelta == 1)){
+                    validMoves.add(new Move(position, new Position(i,j)));
+                }  
+            }
+        }
         
         return validMoves;
     }

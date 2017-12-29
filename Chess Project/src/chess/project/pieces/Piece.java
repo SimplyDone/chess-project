@@ -2,6 +2,7 @@
 package chess.project.pieces;
 
 import chess.project.Board;
+import chess.project.Move;
 import chess.project.Position;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public abstract class Piece {
     
 
     private final boolean colour; // false-black, true-white
-    private Position position;
+    protected Position position;
        
     public Piece(boolean col, Position pos){
         colour = col;
@@ -25,7 +26,7 @@ public abstract class Piece {
    
     }
     
-    public abstract List getValidMoves(Board board);
+    public abstract List<Move> getValidMoves(Board board);
     
     /** Returns the colour of the piece;
      * 

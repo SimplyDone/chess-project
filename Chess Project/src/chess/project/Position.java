@@ -14,7 +14,7 @@ public class Position {
 
     
     //TODO make it work with X and Y swapped
-    public Position(int Y, int X){
+    public Position(int X, int Y){
         
         if(X > 7 || Y > 7){
             throw new UnsupportedOperationException("X and Y must be between 0 and 7 X=" + X + " Y=" + Y);
@@ -42,4 +42,31 @@ public class Position {
     public String toString(){
         return X + " " + Y;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + this.X;
+        hash = 37 * hash + this.Y;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Position other = (Position) obj;
+        if (this.X != other.X) {
+            return false;
+        }
+        if (this.Y != other.Y) {
+            return false;
+        }
+        return true;
+    }
+    
 }
