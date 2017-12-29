@@ -137,5 +137,13 @@ public final class Board {
         }
 
     }
+    
+    public Piece[][] getBoard(){
+        return board;
+    }
+    
+    public void waitForMove(){
+        
+    }
 
 }

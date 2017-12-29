@@ -14,7 +14,7 @@ public class Position {
 
     
     //TODO make it work with X and Y swapped
-    public Position(int X, int Y){
+    public Position(int Y, int X){
         
         if(X > 7 || Y > 7){
             throw new UnsupportedOperationException("X and Y must be between 0 and 7 X=" + X + " Y=" + Y);
@@ -36,5 +36,10 @@ public class Position {
 
     public int getY() {
         return Y;
+    }
+    
+    @Override
+    public String toString(){
+        return X + " " + Y;
     }
 }

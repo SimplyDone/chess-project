@@ -1,7 +1,6 @@
 
 package chess.project;
 
-import chess.project.graphics.ChessboardGraphicHandler;
 
 /**
  *

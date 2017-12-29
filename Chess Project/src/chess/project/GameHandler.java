@@ -52,12 +52,13 @@ public class GameHandler {
             board.printBoard();
             
             if(whiteMove){
+                board.waitForMove();
                 board.doMove(white.getMove());
             } else {
                 board.doMove(black.getMove());
             }
 
-            cgh.updateBoard(board);
+            //cgh.updateBoard(board);
             whiteMove ^= true;
         }
     }
