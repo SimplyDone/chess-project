@@ -13,26 +13,21 @@ public class ChessboardGraphicHandler extends JFrame {
     private static JToggleButton[][] squares = new JToggleButton[8][8];
 
     //current positon
-    public static Position position;
-    private static Board board;
+    private Board board;
    
 
     public ChessboardGraphicHandler(Board board) {
         super("Chess GUI Test");
         
         this.board = board;
-        position = null;
-        contents = getContentPane();
-        contents.setLayout(new GridLayout(8, 8));
+        this.contents = getContentPane();
+        this.contents.setLayout(new GridLayout(8, 8));
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
 
-                squares[i][j] = new TileButton(new Position(i,j));
-                squares[i][j].addActionListener((ActionEvent ae) -> {
-                    
-                    System.out.println();
-                });
+                squares[i][j] = new TileButton();
+
                 //squares[i][j].setRolloverEnabled(false);
                 if ((i + j) % 2 != 0) {
                     squares[i][j].setBackground(Color.black);
@@ -52,7 +47,7 @@ public class ChessboardGraphicHandler extends JFrame {
         updateBoard();
     }
 
-    public static final void updateBoard() {
+    public final void updateBoard() {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -71,10 +66,4 @@ public class ChessboardGraphicHandler extends JFrame {
             }
         }
     }
-    
-    public static void doMove(Move m){
-        board.doMove(m);
-        updateBoard();
-    }
-
 }

@@ -17,30 +17,20 @@ public class TileButton extends JToggleButton {
 
     private Color hoverBackgroundColor = Color.cyan;
     private Color pressedBackgroundColor = Color.BLUE;
-    private Position pos;
 
-    public TileButton(Position p) {
-        this(null, p);
+
+    public TileButton() {
+        this(null);
     }
 
-    public TileButton(String text, Position p) {
+    public TileButton(String text) {
         super(text);
         super.setContentAreaFilled(false);
-        pos = p;
         setRolloverEnabled(false);
         setBorder(new LineBorder(Color.DARK_GRAY));
         setFont(new Font("Arial", Font.PLAIN, 40));
         setFocusPainted(false);
 
-        addActionListener((ActionEvent ae) -> {
-            if(ChessboardGraphicHandler.position == null){
-               ChessboardGraphicHandler.position = p;
-            } else {
-                ChessboardGraphicHandler.doMove(new Move(ChessboardGraphicHandler.position, p));
-                ChessboardGraphicHandler.position = null;
-            }
-            System.out.println(p);
-        });
 
     }
 
@@ -77,8 +67,5 @@ public class TileButton extends JToggleButton {
         this.pressedBackgroundColor = pressedBackgroundColor;
     }
 
-    public Position getPosition() {
-        return pos;
-    }
 
 }
