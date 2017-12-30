@@ -103,24 +103,30 @@ public final class Board {
     public boolean checkMove(Move move) {
 
         Position oldPos = move.getOldPosition();
-        
-        System.out.println(move.getOldPosition() + " " + move.getNewPosition());
 
         Piece p = board[oldPos.getX()][oldPos.getY()];
-        System.out.println(p);
+
         if (p != null) {
 
             List<Move> possibleMoves = p.getValidMoves(this);
-            for(Move m : possibleMoves){
-                System.out.println(m.getOldPosition() + " " + m.getNewPosition());
+
+            if (possibleMoves.contains(move)) {
+                return true;
+            } else {
+                System.out.println("-----------------------------------------");
+                System.out.println("[INVALID MOVE]");
+                System.out.println("Valid moves for " + p.getClass().getSimpleName() + ":");
+                possibleMoves.stream().forEach((m) -> {
+                    System.out.println(m.getOldPosition() + " -> " + m.getNewPosition());
+                });
+                System.out.println("-----------------------------------------");
+                return false;
             }
-            
-            return possibleMoves.contains(move);
 
         } else {
+            System.out.println("No piece selected");
             return false;
         }
-
     }
 
     public void doMove(Move move) {
@@ -135,15 +141,10 @@ public final class Board {
             board[oldPos.getX()][oldPos.getY()] = null;
             board[newPos.getX()][newPos.getY()] = p;
         }
+    }
 
-    }
-    
-    public Piece[][] getBoard(){
+    public Piece[][] getBoard() {
         return board;
-    }
-    
-    public void waitForMove(){
-        
     }
 
 }

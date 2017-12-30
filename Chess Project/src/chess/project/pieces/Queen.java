@@ -19,9 +19,8 @@ public class Queen extends Piece{
     @Override
     public List getValidMoves(Board board) {
         List<Position> validMoves = new LinkedList<>();
-
-        //TODO add actual code
         
+        //TODO add actual code
         
         return validMoves;
     }

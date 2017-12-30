@@ -37,8 +37,13 @@ public class HumanPlayer extends Player {
             Scanner sc = new Scanner(System.in);
             System.out.print("Enter your move " + COLOUR + " (0-7, 0-7, 0-7, 0-7): ");
             try {
-                move = sc.nextLine();
-
+                move = sc.next();
+                
+                if(!move.matches("[0-7][0-7][0-7][0-7]")){
+                    System.out.println("[Invalid choice]");
+                    move = "";
+                }
+                
             } catch (InputMismatchException e) {
                 System.out.println("[Invalid choice]");
                 move = "";

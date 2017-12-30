@@ -40,7 +40,7 @@ public class Position {
     
     @Override
     public String toString(){
-        return X + " " + Y;
+        return "("+ X + "," + Y+")";
     }
 
     @Override
