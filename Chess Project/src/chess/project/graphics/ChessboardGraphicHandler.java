@@ -53,7 +53,7 @@ public class ChessboardGraphicHandler extends JFrame {
             for (int j = 0; j < 8; j++) {
                 if (board.board[i][j] != null) {
                     
-                    if(board.board[i][j].isWhite()){
+                    if(board.getBoard()[i][j].getColour()){
                         squares[i][j].setForeground(Color.RED);
                     } else {
                         squares[i][j].setForeground(Color.GREEN);

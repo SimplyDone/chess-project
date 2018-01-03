@@ -100,13 +100,13 @@ public final class Board {
         return checkmate;
     }
 
-    public boolean checkMove(Move move) {
+    public boolean checkMove(Move move, boolean colour) {
 
         Position oldPos = move.getOldPosition();
 
         Piece p = board[oldPos.getX()][oldPos.getY()];
 
-        if (p != null) {
+        if (p != null && p.getColour() == colour) {
 
             List<Move> possibleMoves = p.getValidMoves(this);
 
@@ -124,7 +124,7 @@ public final class Board {
             }
 
         } else {
-            System.out.println("No piece selected");
+            System.out.println("Invalid selection");
             return false;
         }
     }

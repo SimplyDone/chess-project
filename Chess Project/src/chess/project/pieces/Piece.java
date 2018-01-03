@@ -12,7 +12,6 @@ import java.util.List;
  */
 public abstract class Piece {
     
-
     private final boolean colour; // false-black, true-white
     protected Position position;
        
@@ -36,7 +35,7 @@ public abstract class Piece {
         return colour ? "white" : "black";
     }
     
-    public boolean isWhite(){
+    public boolean getColour(){
         return colour;
     }
     

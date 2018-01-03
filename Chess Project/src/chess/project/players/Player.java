@@ -9,13 +9,13 @@ import chess.project.*;
  */
 public abstract class Player {
 
-    protected final boolean isWhite; //false-black true-white
+    protected final boolean colour; //false-black true-white
     protected final String COLOUR;
     protected final Board board;
 
-    public Player(boolean isWhite, Board board) {
-        this.isWhite = isWhite;
-        this.COLOUR = isWhite ? "white" : "black";
+    public Player(boolean colour, Board board) {
+        this.colour = colour;
+        this.COLOUR = colour ? "white" : "black";
         this.board = board;
     }
 

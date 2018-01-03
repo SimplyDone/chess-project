@@ -23,7 +23,7 @@ public class HumanPlayer extends Player {
         while (true) {
             Move move = readMove();
 
-            if (super.board.checkMove(move)) {
+            if (super.board.checkMove(move, colour)) {
                 System.out.println("[VALID MOVE]");
                 return move;
             }
