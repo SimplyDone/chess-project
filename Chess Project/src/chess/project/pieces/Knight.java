@@ -23,7 +23,7 @@ public class Knight extends Piece{
         int rowDelta;
         int colDelta;
         
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < 8; i++){/* optimize later (haardcode?) */
             for(int j = 0; j < 8; j++){
                 
                 rowDelta = Math.abs(position.getX() - i);

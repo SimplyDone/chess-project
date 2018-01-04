@@ -19,6 +19,9 @@ public class Pawn extends Piece {
     public List getValidMoves(Board board) {
         List<Position> validMoves = new LinkedList<>();
 
+        if(this.getColour() ){//true = white
+            
+        }
         //TODO add actual code
         
         
