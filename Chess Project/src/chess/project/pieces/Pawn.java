@@ -10,9 +10,12 @@ import java.util.List;
  * @author Alex Zurad
  */
 public class Pawn extends Piece {
+    
+    private int enPassantTurn = -1;
 
     public Pawn(boolean col, Position pos) {
         super(col, pos);
+        
     }
     
     @Override
@@ -30,6 +33,10 @@ public class Pawn extends Piece {
     
     public String toString(){
         return "P";
+    }
+    
+    public void setEnPassant(int turn){
+        enPassantTurn = turn;
     }
 
 }

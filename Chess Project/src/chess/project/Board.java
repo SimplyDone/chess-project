@@ -18,9 +18,11 @@ import java.util.List;
 public final class Board implements Serializable {
 
     public final Piece board[][];
-    private static final long serialVersionUID = 420L;
+    private static final long serialVersionUID = 430L;
 
     private boolean whiteTurn;
+    private int turnNumber;
+    
     private boolean isWhiteChecked = false;
     private boolean isBlackChecked = false;
     private boolean checkmate = false;
@@ -28,11 +30,10 @@ public final class Board implements Serializable {
     public Board() {
         
         board = new Piece[8][8];
+        whiteTurn = true;
+        turnNumber = 0;
         initializeBoard();
 
-        //TODO think of how we aare going to represent the various 
-        //elements (pieces, board, possible moves, rules, the player,
-        //the ai, ai logic, graphics, 
     }
 
     /**
@@ -40,8 +41,6 @@ public final class Board implements Serializable {
      *
      */
     public void initializeBoard() {
-
-        whiteTurn = true;
 
         //black
         board[0][0] = new Rook(false, new Position(0, 0));
@@ -148,6 +147,11 @@ public final class Board implements Serializable {
 
         Piece p = board[oldPos.getX()][oldPos.getY()];
         if (p != null) {
+            
+            //en-passant condition
+            if(p instanceof Pawn && Math.abs(oldPos.getY() - newPos.getY()) == 2){
+               ((Pawn) p).setEnPassant(turnNumber);
+            }
 
             p.move(newPos);
             board[oldPos.getX()][oldPos.getY()] = null;
@@ -165,6 +169,7 @@ public final class Board implements Serializable {
      */
     public void nextTurn() {
         whiteTurn ^= true;
+        turnNumber++;
     }
 
     /**
@@ -184,4 +189,9 @@ public final class Board implements Serializable {
         }
 
     }
+    
+    public int getTurnNumber(){
+        return turnNumber;
+    }
+
 }

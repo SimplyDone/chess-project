@@ -124,16 +124,16 @@ public class GameHandler {
                 loadBoard = -1;
             }
         }
-        
+
         return loadBoard == 1;
     }
-    
+
     private Board loadBoardFromFile() {
         try {
-        ObjectInputStream ois = 
-                new ObjectInputStream(new FileInputStream("Chess.save"));
+            ObjectInputStream ois
+                    = new ObjectInputStream(new FileInputStream("Chess.save"));
             return (Board) ois.readObject();
-        } catch (IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println("No save file found starting new game.");
             return new Board();
         }
