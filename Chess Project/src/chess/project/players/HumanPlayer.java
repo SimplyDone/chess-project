@@ -38,11 +38,11 @@ public class HumanPlayer extends Player {
         String move = "";
         while (move.equals("")) {
             Scanner sc = new Scanner(System.in);
-            System.out.print("Enter your move " + COLOUR + " (0-7, 0-7, 0-7, 0-7): ");
+            System.out.print("Enter your move " + COLOUR + " (a-h)(1-8)(a-h)(1-8): ");
             try {
                 move = sc.next();
                 
-                if(!move.matches("[0-7][0-7][0-7][0-7]")){
+                if(!move.matches("[a-hA-h][1-8][a-hA-H][1-8]")){
                     System.out.println("[Invalid choice]");
                     move = "";
                 }
@@ -55,8 +55,8 @@ public class HumanPlayer extends Player {
         
         String[] split = move.split("");
         
-        Position from = new Position(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
-        Position to = new Position(Integer.parseInt(split[2]), Integer.parseInt(split[3]));
+        Position from = new Position(Character.toLowerCase(split[0].charAt(0)) - 97, 8 - Integer.parseInt(split[1]));
+        Position to = new Position(Character.toLowerCase(split[2].charAt(0)) - 97, 8 - Integer.parseInt(split[3]));
 
         return new Move(from, to);
     }
