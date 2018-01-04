@@ -153,9 +153,10 @@ public final class Board implements Serializable {
                     ((Pawn) p).setEnPassant(turnNumber);
                 }
                 
+                
                 if (oldPos.getX() != newPos.getX() &&
                         board[newPos.getX()][newPos.getY()] == null){
-                    board[newPos.getX()][oldPos.getX()] = null;
+                    board[newPos.getX()][oldPos.getY()] = null;
                 }
                
             }
