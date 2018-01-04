@@ -12,11 +12,11 @@ import java.util.List;
  * @author Alex Zurad
  */
 public class Knight extends Piece{
-
+    
     public Knight(boolean col, Position pos) {
         super(col, pos);
     }
-
+    
     @Override
     public List getValidMoves(Board board) {
         List<Move> validMoves = new LinkedList<>();
