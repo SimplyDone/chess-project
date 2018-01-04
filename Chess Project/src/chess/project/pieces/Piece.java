@@ -17,7 +17,7 @@ public abstract class Piece {
        
     public Piece(boolean col, Position pos){
         colour = col;
-        this.position = pos;
+        position = pos;
     }
     
     public void move(Position p){

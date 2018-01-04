@@ -1,6 +1,11 @@
 package chess.project.pieces;
-
+/*
+TODO
+- OPTIMIZE
+- combine the horizontal and vertical search
+*/
 import chess.project.Board;
+import chess.project.Move;
 import chess.project.Position;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,12 +21,56 @@ public class Rook extends Piece{
     }
 
     @Override
-    public List getValidMoves(Board board) {
-        List<Position> validMoves = new LinkedList<>();
+    public List<Move> getValidMoves(Board board) {
+        List<Move> validMoves = new LinkedList<>();
+       
+        int i,j,next;
+        
+        for(int x = 0; x<=1;x++){
+            next = direction(x);
+            i = this.position.getX();
+            j = this.position.getY();
+            i += next;
+            while((i >= 0 && i <= 7)&&(null == board.getBoard()[i][j])){
+                Move m = new Move(position, new Position(i, j));
+                
+                if (true /* add check if move puts you in check */) {
+                    validMoves.add(m);
+                }
 
-        //TODO add actual code
-        
-        
+                i += next;
+            }   
+            if((i >= 0 && i <= 7)&& board.getBoard()[i][j].getColour() != this.getColour()){
+                    Move m = new Move(position, new Position(i,j));
+                    
+                    if(true /* add check if move puts you in check */){
+                        validMoves.add(m);
+                    }
+                }
+        }
+        //////////////////////////same as above fory axis///////////////////////
+        for(int y = 0; y<=1;y++){
+            next = direction(y);
+            i = this.position.getX();
+            j = this.position.getY();
+            j += next;
+            while((j >= 0 && j <= 7)&&(null == board.getBoard()[i][j])){
+                Move m = new Move(position, new Position(i, j));
+
+                if (true /* add check if move puts you in check */) {
+                    validMoves.add(m);
+                }
+
+                j += next;
+            }
+            if((j >= 0 && j <= 7)&& board.getBoard()[i][j].getColour() != this.getColour()){
+                Move m = new Move(position, new Position(i,j));
+
+                if(true /* add check if move puts you in check */){
+                    validMoves.add(m);
+                }
+            }
+        }
         return validMoves;
     }
     
@@ -29,5 +78,10 @@ public class Rook extends Piece{
     public String toString(){
         return "R";
     }
-    
+    private int direction(int d){
+        if(d == 0){
+            return -1;
+        }
+        return d;
+    }
 }
