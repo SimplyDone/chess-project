@@ -2,6 +2,9 @@ package chess.project.players;
 
 import chess.project.Board;
 import chess.project.Move;
+import chess.project.pieces.*;
+import java.util.*;
+
 
 /**
  *
@@ -16,9 +19,24 @@ public class AIPlayer extends Player{
     @Override
     public Move getMove() {
         
+        List<Move> moves = new ArrayList(); 
+        System.out.println(COLOUR);
         
-        return null;
+        for(int i = 0; i< 8; i++){
+            for(int j = 0; j<8; j++){
+                if(board.getBoard()[i][j] != null && board.getBoard()[i][j].getColour() == colour){
+                    moves.addAll(board.getBoard()[i][j].getValidMoves(board));
+                }
+            }
+        }
+        
+        Random rand = new Random();
+        Move m = moves.get(rand.nextInt(moves.size()));
+        System.out.println(m.getOldPosition() + " -> " + m.getNewPosition());
+        
+        return m;
     }
+    
 
 
     

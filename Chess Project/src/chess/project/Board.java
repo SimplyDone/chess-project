@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import java.util.List;
 
-
 /**
  * Represents a chessboard.
  *
@@ -22,13 +21,13 @@ public final class Board implements Serializable {
 
     private boolean whiteTurn;
     private int turnNumber;
-    
+
     private boolean isWhiteChecked = false;
     private boolean isBlackChecked = false;
     private boolean checkmate = false;
 
     public Board() {
-        
+
         board = new Piece[8][8];
         whiteTurn = true;
         turnNumber = 0;
@@ -77,7 +76,6 @@ public final class Board implements Serializable {
         }
 
     }
-    
 
     public void printBoard() {
 
@@ -147,12 +145,20 @@ public final class Board implements Serializable {
 
         Piece p = board[oldPos.getX()][oldPos.getY()];
         if (p != null) {
-            
-            //en-passant condition
-            if(p instanceof Pawn && Math.abs(oldPos.getY() - newPos.getY()) == 2){
-               ((Pawn) p).setEnPassant(turnNumber);
-            }
 
+            //en-passant condition
+            if (p instanceof Pawn) {
+
+                if (Math.abs(oldPos.getY() - newPos.getY()) == 2) {
+                    ((Pawn) p).setEnPassant(turnNumber);
+                }
+                
+                if (oldPos.getX() != newPos.getX() &&
+                        board[newPos.getX()][newPos.getY()] == null){
+                    board[newPos.getX()][oldPos.getX()] = null;
+                }
+               
+            }
             p.move(newPos);
             board[oldPos.getX()][oldPos.getY()] = null;
             board[newPos.getX()][newPos.getY()] = p;
@@ -189,8 +195,8 @@ public final class Board implements Serializable {
         }
 
     }
-    
-    public int getTurnNumber(){
+
+    public int getTurnNumber() {
         return turnNumber;
     }
 
