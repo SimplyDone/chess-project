@@ -1,5 +1,7 @@
-package chess.project;
+package chess.project.pieces;
 
+import chess.project.Board;
+import chess.project.Position;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,13 +16,18 @@ public class Rook extends Piece{
     }
 
     @Override
-    protected List getValidMoves(Board board) {
+    public List getValidMoves(Board board) {
         List<Position> validMoves = new LinkedList<>();
 
         //TODO add actual code
         
         
         return validMoves;
+    }
+    
+    @Override
+    public String toString(){
+        return "R";
     }
     
 }
