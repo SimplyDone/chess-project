@@ -9,6 +9,7 @@ import chess.project.Position;
 import java.util.LinkedList;
 import java.util.List;
 
+
 /** This represents a pawn.
  *
  * @author Alex Zurad
@@ -30,7 +31,7 @@ public class Pawn extends Piece {
         int jNext = 1;      // if black
         if(this.getColour()){  // if white
             jNext = -1;
-        }        
+        }
         int i = this.position.getX();
         int j = this.position.getY();
         
@@ -49,20 +50,31 @@ public class Pawn extends Piece {
             moved++;
         }
         
-// varifying diagonal moves
+// varifying diagonal moves (including EnPassant)
         i = this.position.getX();
         j = this.position.getY();
         for(int iNext = -1;iNext <=1;iNext+=2){
-            if((i+iNext) <= 7 && (i+iNext) >= 0){
+            if((i+iNext) <= 7 && (i+iNext) >= 0){ // vertical component is not checked since pawns will change into another peice i the final row
                 if(null != board.getBoard()[i+iNext][j+jNext] && this.getColour() != board.getBoard()[i+iNext][j+jNext].getColour()){
                     Move m = new Move(position, new Position(i+iNext,j+jNext));
                     if(true /* add check if move puts you in check */){
                         validMoves.add(m);
                     }
                 }
+                if(null != board.getBoard()[i+iNext][j] && this.getColour() != board.getBoard()[i+iNext][j].getColour()){
+                    Piece p = board.getBoard()[i+iNext][j];
+                    
+                    if(p instanceof Pawn){
+                        if((board.getTurnNumber() - ((Pawn) p).getEnPassantTurn()) == 1){
+                            Move m = new Move(position, new Position(i+iNext,j+jNext));
+                            if(true /* add check if move puts you in check */){
+                            validMoves.add(m);
+                            }
+                        }
+                    }
+                }
             }
         }
-        
         
         return validMoves;
     }
@@ -75,4 +87,8 @@ public class Pawn extends Piece {
         enPassantTurn = turn;
     }
 
+    public int getEnPassantTurn() {
+        return enPassantTurn;
+    }
+    
 }
