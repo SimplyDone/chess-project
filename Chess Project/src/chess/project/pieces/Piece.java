@@ -18,7 +18,7 @@ public abstract class Piece implements Serializable{
        
     public Piece(boolean col, Position pos){
         colour = col;
-        this.position = pos;
+        position = pos;
     }
     
     public void move(Position p){
