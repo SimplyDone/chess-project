@@ -6,7 +6,8 @@ import chess.project.Position;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
+/** This class represents a Knight. Its movement consists of a L shaped jump
+ * that can go over pieces of either colour. 
  *
  * @author Alex Zurad
  */

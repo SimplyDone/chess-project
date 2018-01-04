@@ -4,13 +4,14 @@ package chess.project.pieces;
 import chess.project.Board;
 import chess.project.Move;
 import chess.project.Position;
+import java.io.Serializable;
 import java.util.List;
 
 /** Represents a single piece.
  *
  * @author Alex Zurad
  */
-public abstract class Piece {
+public abstract class Piece implements Serializable{
     
     private final boolean colour; // false-black, true-white
     protected Position position;
@@ -37,6 +38,10 @@ public abstract class Piece {
     
     public boolean getColour(){
         return colour;
+    }
+    
+    public Position getPosition(){
+        return position;
     }
     
 }

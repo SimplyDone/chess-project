@@ -1,12 +1,13 @@
 package chess.project;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /** This class represents a move between two positions.
  *
  * @author Alex Zurad
  */
-public class Move {
+public class Move implements Serializable {
     
     private Position oldPos;
     private Position newPos;

@@ -1,23 +1,32 @@
 package chess.project;
 
 import chess.project.pieces.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import java.util.List;
+
 
 /**
  * Represents a chessboard.
  *
  * @author Alex Zurad, Robbie McDonnell
  */
-public final class Board {
+public final class Board implements Serializable {
 
     public final Piece board[][];
+    private static final long serialVersionUID = 420L;
+
+    private boolean whiteTurn;
     private boolean isWhiteChecked = false;
     private boolean isBlackChecked = false;
     private boolean checkmate = false;
 
     public Board() {
-
+        
         board = new Piece[8][8];
         initializeBoard();
 
@@ -31,6 +40,8 @@ public final class Board {
      *
      */
     public void initializeBoard() {
+
+        whiteTurn = true;
 
         //black
         board[0][0] = new Rook(false, new Position(0, 0));
@@ -67,6 +78,7 @@ public final class Board {
         }
 
     }
+    
 
     public void printBoard() {
 
@@ -147,4 +159,29 @@ public final class Board {
         return board;
     }
 
+    /**
+     * Sets the game to the next player
+     *
+     */
+    public void nextTurn() {
+        whiteTurn ^= true;
+    }
+
+    /**
+     * Returns true if it is white's turn false if it is black's turn
+     *
+     * @return current player's turn
+     */
+    public boolean getTurn() {
+        return whiteTurn;
+    }
+
+    public void saveBoard() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Chess.save"))) {
+            oos.writeObject(this);
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
+
+    }
 }

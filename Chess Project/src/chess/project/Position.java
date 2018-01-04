@@ -1,13 +1,15 @@
 
 package chess.project;
 
+import java.io.Serializable;
+
 /** Represents a position of a piece. 
  * X -> (a-h)
  * Y -> (1-8)
  *
  * @author Alex Zurad
  */
-public class Position {
+public class Position implements Serializable{
     
     private int X;
     private int Y;
