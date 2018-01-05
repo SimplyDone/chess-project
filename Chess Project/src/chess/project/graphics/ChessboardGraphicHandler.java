@@ -51,14 +51,14 @@ public class ChessboardGraphicHandler extends JFrame {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (board.board[i][j] != null) {
+                if (board.getBoard()[i][j] != null) {
                     
                     if(board.getBoard()[i][j].getColour()){
                         squares[i][j].setForeground(Color.RED);
                     } else {
                         squares[i][j].setForeground(Color.GREEN);
                     }
-                    squares[i][j].setText(board.board[i][j].toString());
+                    squares[i][j].setText(board.getBoard()[i][j].toString());
                     
                 } else {
                     squares[i][j].setText("");
