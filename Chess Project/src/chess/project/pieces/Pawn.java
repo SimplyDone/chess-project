@@ -28,9 +28,9 @@ public class Pawn extends Piece {
     public void updateValidMoves(Board board) {
         validMoves.clear();
 
-// varifying straight forward moves 
+        // varifying straight forward moves 
         int jNext = 1;      // if black
-        if (this.getColour()) {  // if white
+        if (this.colour == true) {  // if white
             jNext = -1;
         }
         int i = this.position.getX();
@@ -45,31 +45,31 @@ public class Pawn extends Piece {
         int moved = 1;
         while (moved <= dist && (j <= 7 && j >= 0) && null == board.getBoard()[i][j]) {
             Move m = new Move(position, new Position(i, j));
-            if (true /* add check if move puts you in check */) {
+            if (!board.isChecked(m, colour)) {
                 validMoves.add(m);
             }
             j += jNext;
             moved++;
         }
 
-// varifying diagonal moves (including EnPassant)
+        // varifying diagonal moves (including EnPassant)
         i = this.position.getX();
         j = this.position.getY();
         for (int iNext = -1; iNext <= 1; iNext += 2) {
             if ((i + iNext) <= 7 && (i + iNext) >= 0) { // vertical component is not checked since pawns will change into another peice i the final row
-                if (null != board.getBoard()[i + iNext][j + jNext] && this.getColour() != board.getBoard()[i + iNext][j + jNext].getColour()) {
+                if (null != board.getBoard()[i + iNext][j + jNext] && this.colour != board.getBoard()[i + iNext][j + jNext].getColour()) {
                     Move m = new Move(position, new Position(i + iNext, j + jNext));
-                    if (true /* add check if move puts you in check */) {
+                    if (!board.isChecked(m, colour)) {
                         validMoves.add(m);
                     }
                 }
-                if (null != board.getBoard()[i + iNext][j] && this.getColour() != board.getBoard()[i + iNext][j].getColour()) {
+                if (null != board.getBoard()[i + iNext][j] && this.colour != board.getBoard()[i + iNext][j].getColour()) {
                     Piece p = board.getBoard()[i + iNext][j];
 
                     if (p instanceof Pawn) {
                         if ((board.getTurnNumber() - ((Pawn) p).getEnPassantTurn()) == 1) {
                             Move m = new Move(position, new Position(i + iNext, j + jNext));
-                            if (true /* add check if move puts you in check */) {
+                            if (!board.isChecked(m, colour)) {
                                 validMoves.add(m);
                             }
                         }
