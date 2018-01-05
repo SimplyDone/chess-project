@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Represents a chessboard.
@@ -72,7 +74,7 @@ public final class Board implements Serializable {
         board[4][7] = new King(true, new Position(4, 7));
 
         for (int i = 0; i < 8; i++) {
-            board[i][6] = new Pawn(true, new Position(i, 6));
+            board[i][6] = new Pawn(false, new Position(i, 6));
         }
 
     }
@@ -138,7 +140,7 @@ public final class Board implements Serializable {
         }
     }
 
-    public void doMove(Move move) {
+    public void doMove(Move move, boolean isHuman) {
 
         Position oldPos = move.getOldPosition();
         Position newPos = move.getNewPosition();
@@ -152,18 +154,31 @@ public final class Board implements Serializable {
                 if (Math.abs(oldPos.getY() - newPos.getY()) == 2) {
                     ((Pawn) p).setEnPassant(turnNumber);
                 }
-                
-                
-                if (oldPos.getX() != newPos.getX() &&
-                        board[newPos.getX()][newPos.getY()] == null){
+
+                if (oldPos.getX() != newPos.getX()
+                        && board[newPos.getX()][newPos.getY()] == null) {
                     board[newPos.getX()][oldPos.getY()] = null;
                 }
-               
+
+                if (newPos.getY() == 0 || newPos.getY() == 7) {
+
+                    if (isHuman) {
+                        p = getHumanSelection(p);
+                    } else {
+                        p = getHumanSelection(p);
+                    }
+                }
+
             }
-            p.move(newPos);
-            board[oldPos.getX()][oldPos.getY()] = null;
-            board[newPos.getX()][newPos.getY()] = p;
+            completeMove(p, oldPos, newPos);
+
         }
+    }
+
+    private void completeMove(Piece p, Position oldPos, Position newPos) {
+        p.move(newPos);
+        board[oldPos.getX()][oldPos.getY()] = null;
+        board[newPos.getX()][newPos.getY()] = p;
     }
 
     public Piece[][] getBoard() {
@@ -201,4 +216,43 @@ public final class Board implements Serializable {
         return turnNumber;
     }
 
+    public Piece getHumanSelection(Piece p) {
+
+        String selection = "";
+        while (selection.equals("")) {
+            Scanner sc = new Scanner(System.in);
+            System.out.print("What piece would you like (R,k,B,Q): ");
+            try {
+                selection = sc.next();
+
+                if (!selection.matches("[[Rr][kK][Bb][Qq]]")) {
+                    System.out.println("[Invalid choice]");
+                    selection = "";
+                }
+
+            } catch (InputMismatchException e) {
+                System.out.println("[Invalid choice]");
+                selection = "";
+            }
+        }
+
+        Piece n = null;
+
+        switch (selection.toLowerCase()) {
+            case "r":
+                n = new Rook(p.getColour(), p.getPosition());
+                break;
+            case "k":
+                n = new Knight(p.getColour(), p.getPosition());
+                break;
+            case "b":
+                n = new Bishop(p.getColour(), p.getPosition());
+                break;
+            case "q":
+                n = new Queen(p.getColour(), p.getPosition());
+                break;
+        }
+        return n;
+
+    }
 }

@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-
 /**
  * Handles the main operations of the game. Handles player moves, ai moves,
  * running
@@ -36,17 +35,56 @@ public class GameHandler {
      */
     private void initializeGame() {
 
-        if (getLoadBoard()) {
+        boolean loadBoard;
+        int numHumans;
+
+        loadBoard = TextInput.getBoolChoice(
+                "Would you like to load a previous save? (1-Yes 2-No): ");
+
+        if (loadBoard) {
             board = loadBoardFromFile();
         } else {
             board = new Board();
         }
 
-        int numHumans = getNumPlayers();
-        int aiDifficulty = getAIDifficulty();
+        numHumans = TextInput.getIntChoice(
+                "Enter the number of human players (0-2): ",
+                "[0-2]");
 
-        white = new HumanPlayer(true, board);
-        black = new HumanPlayer(false, board);
+        switch (numHumans) {
+            case 0:
+                int aiDifficultyW = TextInput.getIntChoice(
+                        "Enter the difficulty for the white AI (1-5): ",
+                        "[1-5]");
+                int aiDifficultyB = TextInput.getIntChoice(
+                        "Enter the difficulty for the black AI (1-5): ",
+                        "[1-5]");
+
+                white = new AIPlayer(true, board, aiDifficultyW);
+                black = new AIPlayer(false, board, aiDifficultyB);
+                break;
+
+            case 1:
+                boolean colourChoice = TextInput.getBoolChoice(
+                        "What colour would you like? (1-White 2-Black): ");
+                int aiDifficulty = TextInput.getIntChoice(
+                        "Enter the difficulty for the AI (1-5): ",
+                        "[1-5]");
+
+                if (colourChoice) {
+                    white = new HumanPlayer(true, board);
+                    black = new AIPlayer(false, board, aiDifficulty);
+                } else {
+                    white = new AIPlayer(true, board, aiDifficulty);
+                    black = new HumanPlayer(false, board);
+                }
+                break;
+            case 2:
+                white = new HumanPlayer(true, board);
+                black = new HumanPlayer(false, board);
+                break;
+
+        }
 
     }
 
@@ -59,74 +97,15 @@ public class GameHandler {
             board.printBoard();
 
             if (board.getTurn()) {
-                board.doMove(white.getMove());
+                board.doMove(white.getMove(), white instanceof HumanPlayer);
             } else {
-                board.doMove(black.getMove());
+                board.doMove(black.getMove(), black instanceof AIPlayer);
             }
 
             cgh.updateBoard();
             board.nextTurn();
             board.saveBoard();
         }
-    }
-
-    // can combine the two methods
-    private int getNumPlayers() {
-
-        int numHumans = -1;
-
-        while (numHumans == -1) {
-            Scanner sc = new Scanner(System.in);
-            System.out.print("Enter the number of human players (0-2): ");
-            try {
-                numHumans = Integer.parseInt(sc.next("[0-2]"));
-
-            } catch (InputMismatchException e) {
-                System.out.println("[Invalid choice]");
-                numHumans = -1;
-            }
-        }
-
-        return numHumans;
-    }
-
-    private int getAIDifficulty() {
-
-        int aiDifficulty = -1;
-
-        while (aiDifficulty == -1) {
-            Scanner sc = new Scanner(System.in);
-            System.out.print("Enter the difficulty for the AI (1-5): ");
-            try {
-                aiDifficulty = Integer.parseInt(sc.next("[1-5]"));
-
-            } catch (InputMismatchException e) {
-                System.out.println("[Invalid choice]");
-                aiDifficulty = -1;
-            }
-        }
-
-        return aiDifficulty;
-    }
-    // end of potential combine       
-
-    private boolean getLoadBoard() {
-
-        int loadBoard = -1;
-
-        while (loadBoard == -1) {
-            Scanner sc = new Scanner(System.in);
-            System.out.print("Would you like to load a previous save? (1-yes 2-no): ");
-            try {
-                loadBoard = Integer.parseInt(sc.next("[1-2]"));
-
-            } catch (InputMismatchException e) {
-                System.out.println("[Invalid choice]");
-                loadBoard = -1;
-            }
-        }
-
-        return loadBoard == 1;
     }
 
     private Board loadBoardFromFile() {
