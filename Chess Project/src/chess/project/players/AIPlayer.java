@@ -12,6 +12,7 @@ import java.util.*;
  */
 public class AIPlayer extends Player{
     
+    private Piece[][] testBoard;
     private final int difficulty;
     private final List<Move> allValidMoves;
 
@@ -41,7 +42,17 @@ public class AIPlayer extends Player{
         return m;
     }
     
-
+    private void buildMoveTree(int depth){
+        
+        
+        
+    }
+    
+    public void evaluateBoard(Piece[][] board){
+        int score = 0;
+        
+        
+    }
 
     
 }

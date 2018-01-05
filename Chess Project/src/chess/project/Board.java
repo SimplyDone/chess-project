@@ -22,7 +22,6 @@ import java.util.Scanner;
 public final class Board implements Serializable {
 
     private final Piece board[][];
-    private Piece tempBoard[][];
 
     private static final long serialVersionUID = 430L;
 
@@ -281,7 +280,9 @@ public final class Board implements Serializable {
 
     }
 
-    private void doTempMove(Move m) {
+    private Piece[][] getBoardCopy() {
+        
+        Piece[][] tempBoard = null;
 
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -290,21 +291,15 @@ public final class Board implements Serializable {
             oos.flush();
             oos.close();
             bos.close();
+            
             byte[] byteData = bos.toByteArray();
-
             ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
             tempBoard = (Piece[][]) new ObjectInputStream(bais).readObject();
         } catch (IOException | ClassNotFoundException e) {
-            return;
+            System.err.printf("CRITIAL ERROR");
+            System.exit(1);
         }
-
-        Position oldPos = m.getOldPosition();
-        Position newPos = m.getNewPosition();
-        Piece p = tempBoard[oldPos.getX()][oldPos.getY()];
-
-        p.move(newPos);
-        tempBoard[oldPos.getX()][oldPos.getY()] = null;
-        tempBoard[newPos.getX()][newPos.getY()] = p;
-
+        
+        return tempBoard;
     }
 }

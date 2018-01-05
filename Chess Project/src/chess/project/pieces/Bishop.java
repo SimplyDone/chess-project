@@ -18,18 +18,15 @@ public class Bishop extends Piece {
         super(col, pos);
     }
 
+    
     @Override
     public void updateValidMoves(Board board) {
         validMoves.clear();
 
         int i, j;
-        int iNext, jNext;
 
-        for (int x = 0; x <= 1; x++) {
-            iNext = direction(x);
-
-            for (int y = 0; y <= 1; y++) {
-                jNext = direction(y);
+        for (int iNext = -1; iNext <= 1; iNext+=2) {
+            for (int jNext = -1; jNext <= 1; jNext+=2) {
 
                 i = this.position.getX();
                 j = this.position.getY();
@@ -63,12 +60,5 @@ public class Bishop extends Piece {
     @Override
     public String toString() {
         return "B";
-    }
-
-    private int direction(int d) {
-        if (d == 0) {
-            return -1;
-        }
-        return d;
     }
 }

@@ -87,8 +87,8 @@ public class King extends Piece {
     public boolean canCastle() {
         return canCastle;
     }
-    
-    public void flagCastle(){
+
+    public void flagCastle() {
         canCastle = false;
     }
 
