@@ -74,6 +74,11 @@ public class Rook extends Piece {
         return canCastle;
     }
     
+    public void flagCastle() {
+        canCastle = false;
+    }
+
+    
     @Override
     public String toString() {
         return "R";
