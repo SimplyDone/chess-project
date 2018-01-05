@@ -25,8 +25,8 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Move> getValidMoves(Board board) {
-        List<Move> validMoves = new LinkedList<>();
+    public void updateValidMoves(Board board) {
+        validMoves.clear();
 
 // varifying straight forward moves 
         int jNext = 1;      // if black
@@ -78,7 +78,6 @@ public class Pawn extends Piece {
             }
         }
 
-        return validMoves;
     }
 
     public String toString() {

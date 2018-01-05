@@ -42,7 +42,7 @@ public class HumanPlayer extends Player {
             try {
                 move = sc.next();
                 
-                if(!move.matches("[a-hA-h][1-8][a-hA-H][1-8]")){
+                if(!move.matches("[[a-hA-h][1-8][a-hA-H][1-8]][[h][e][l][p]]")){
                     System.out.println("[Invalid choice]");
                     move = "";
                 }

@@ -7,8 +7,6 @@ package chess.project.pieces;
 import chess.project.Board;
 import chess.project.Move;
 import chess.project.Position;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  *
@@ -21,8 +19,8 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public List<Move> getValidMoves(Board board) {
-        List<Move> validMoves = new LinkedList<>();
+    public void updateValidMoves(Board board) {
+        validMoves.clear();
 
         int i, j;
         int iNext, jNext;
@@ -60,7 +58,6 @@ public class Bishop extends Piece {
             }
         }
 
-        return validMoves;
     }
 
     @Override

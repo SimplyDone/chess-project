@@ -5,11 +5,7 @@ package chess.project.pieces;
  - combine the horizontal and vertical search
  */
 
-import chess.project.Board;
-import chess.project.Move;
-import chess.project.Position;
-import java.util.LinkedList;
-import java.util.List;
+import chess.project.*;
 
 /**
  *
@@ -24,8 +20,8 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Move> getValidMoves(Board board) {
-        List<Move> validMoves = new LinkedList<>();
+    public void updateValidMoves(Board board) {
+        validMoves.clear();
 
         int i, j;
 
@@ -72,7 +68,6 @@ public class Rook extends Piece {
                 }
             }
         }
-        return validMoves;
     }
 
     public boolean canCastle() {

@@ -82,6 +82,15 @@ public final class Board implements Serializable {
             board[i][6] = new Pawn(true, new Position(i, 6));
         }
 
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+
+                if (board[i][j] != null) {
+                    board[i][j].updateValidMoves(this);
+                }
+            }
+        }
+
     }
 
     public void printBoard() {
@@ -124,7 +133,7 @@ public final class Board implements Serializable {
 
         if (p != null && p.getColour() == colour) {
 
-            List<Move> possibleMoves = p.getValidMoves(this);
+            List<Move> possibleMoves = p.getValidMoves();
 
             if (possibleMoves.contains(move)) {
                 return true;
@@ -176,16 +185,14 @@ public final class Board implements Serializable {
                     }
                 }
             } else if (p instanceof Rook) {
-                
 
-             
             } else if (p instanceof King) {
-                
+
                 //castling condition
-                if(newPos.getX() - oldPos.getX() == 2){
+                if (newPos.getX() - oldPos.getX() == 2) {
                     Rook r = (Rook) board[7][oldPos.getY()];
                     r.move(new Position(5, oldPos.getY()));
-                } else if (newPos.getX() - oldPos.getX() == -2){
+                } else if (newPos.getX() - oldPos.getX() == -2) {
                     Rook r = (Rook) board[7][oldPos.getY()];
                     r.move(new Position(3, oldPos.getY()));
                 }
@@ -214,6 +221,14 @@ public final class Board implements Serializable {
     public void nextTurn() {
         whiteTurn ^= true;
         turnNumber++;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+
+                if (board[i][j] != null) {
+                    board[i][j].updateValidMoves(this);
+                }
+            }
+        }
     }
 
     /**

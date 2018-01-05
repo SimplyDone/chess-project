@@ -13,28 +13,29 @@ import java.util.*;
 public class AIPlayer extends Player{
     
     private final int difficulty;
+    private final List<Move> allValidMoves;
 
     public AIPlayer(boolean isWhite, Board board, int difficulty) {
         super(isWhite, board);
         this.difficulty = difficulty;
+        this.allValidMoves = new LinkedList<>();
     }
 
     @Override
     public Move getMove() {
         
-        List<Move> moves = new ArrayList(); 
         System.out.println(COLOUR);
         
         for(int i = 0; i< 8; i++){
             for(int j = 0; j<8; j++){
                 if(board.getBoard()[i][j] != null && board.getBoard()[i][j].getColour() == colour){
-                    moves.addAll(board.getBoard()[i][j].getValidMoves(board));
+                    allValidMoves.addAll(board.getBoard()[i][j].getValidMoves());
                 }
             }
         }
         
         Random rand = new Random();
-        Move m = moves.get(rand.nextInt(moves.size()));
+        Move m = allValidMoves.get(rand.nextInt(allValidMoves.size()));
         System.out.println(m.getOldPosition() + " -> " + m.getNewPosition());
         
         return m;
