@@ -11,9 +11,12 @@ import java.util.*;
  * @author Alex Zurad
  */
 public class AIPlayer extends Player{
+    
+    private final int difficulty;
 
-    public AIPlayer(boolean isWhite, Board board) {
+    public AIPlayer(boolean isWhite, Board board, int difficulty) {
         super(isWhite, board);
+        this.difficulty = difficulty;
     }
 
     @Override
