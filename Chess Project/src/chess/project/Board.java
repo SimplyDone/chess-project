@@ -1,8 +1,11 @@
 package chess.project;
 
 import chess.project.pieces.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +21,9 @@ import java.util.Scanner;
  */
 public final class Board implements Serializable {
 
-    public final Piece board[][];
+    private final Piece board[][];
+    private Piece tempBoard[][];
+
     private static final long serialVersionUID = 430L;
 
     private boolean whiteTurn;
@@ -74,7 +79,7 @@ public final class Board implements Serializable {
         board[4][7] = new King(true, new Position(4, 7));
 
         for (int i = 0; i < 8; i++) {
-            board[i][6] = new Pawn(false, new Position(i, 6));
+            board[i][6] = new Pawn(true, new Position(i, 6));
         }
 
     }
@@ -148,18 +153,20 @@ public final class Board implements Serializable {
         Piece p = board[oldPos.getX()][oldPos.getY()];
         if (p != null) {
 
-            //en-passant condition
             if (p instanceof Pawn) {
 
+                //en-passant condition 1
                 if (Math.abs(oldPos.getY() - newPos.getY()) == 2) {
                     ((Pawn) p).setEnPassant(turnNumber);
                 }
 
+                //en-passant condition 2
                 if (oldPos.getX() != newPos.getX()
                         && board[newPos.getX()][newPos.getY()] == null) {
                     board[newPos.getX()][oldPos.getY()] = null;
                 }
 
+                //promotion condition
                 if (newPos.getY() == 0 || newPos.getY() == 7) {
 
                     if (isHuman) {
@@ -168,8 +175,23 @@ public final class Board implements Serializable {
                         p = getHumanSelection(p);
                     }
                 }
+            } else if (p instanceof Rook) {
+                
+
+             
+            } else if (p instanceof King) {
+                
+                //castling condition
+                if(newPos.getX() - oldPos.getX() == 2){
+                    Rook r = (Rook) board[7][oldPos.getY()];
+                    r.move(new Position(5, oldPos.getY()));
+                } else if (newPos.getX() - oldPos.getX() == -2){
+                    Rook r = (Rook) board[7][oldPos.getY()];
+                    r.move(new Position(3, oldPos.getY()));
+                }
 
             }
+
             completeMove(p, oldPos, newPos);
 
         }
@@ -216,27 +238,13 @@ public final class Board implements Serializable {
         return turnNumber;
     }
 
-    public Piece getHumanSelection(Piece p) {
+    private Piece getHumanSelection(Piece p) {
 
-        String selection = "";
-        while (selection.equals("")) {
-            Scanner sc = new Scanner(System.in);
-            System.out.print("What piece would you like (R,k,B,Q): ");
-            try {
-                selection = sc.next();
+        String selection = TextInput.getStringChoice(
+                "What piece would you like (R,k,B,Q): ",
+                "[[Rr][kK][Bb][Qq]]");
 
-                if (!selection.matches("[[Rr][kK][Bb][Qq]]")) {
-                    System.out.println("[Invalid choice]");
-                    selection = "";
-                }
-
-            } catch (InputMismatchException e) {
-                System.out.println("[Invalid choice]");
-                selection = "";
-            }
-        }
-
-        Piece n = null;
+        Piece n;
 
         switch (selection.toLowerCase()) {
             case "r":
@@ -251,8 +259,37 @@ public final class Board implements Serializable {
             case "q":
                 n = new Queen(p.getColour(), p.getPosition());
                 break;
+            default:
+                throw new IllegalStateException(selection + " was a valid choice for a piece");
         }
         return n;
+
+    }
+
+    private void doTempMove(Move m) {
+
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(board);
+            oos.flush();
+            oos.close();
+            bos.close();
+            byte[] byteData = bos.toByteArray();
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+            tempBoard = (Piece[][]) new ObjectInputStream(bais).readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return;
+        }
+
+        Position oldPos = m.getOldPosition();
+        Position newPos = m.getNewPosition();
+        Piece p = tempBoard[oldPos.getX()][oldPos.getY()];
+
+        p.move(newPos);
+        tempBoard[oldPos.getX()][oldPos.getY()] = null;
+        tempBoard[newPos.getX()][newPos.getY()] = p;
 
     }
 }
