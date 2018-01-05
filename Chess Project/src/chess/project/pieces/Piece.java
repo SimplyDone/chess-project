@@ -1,6 +1,10 @@
 
 package chess.project.pieces;
-
+/*
+TODO
+- 
+- 
+*/
 import chess.project.Board;
 import chess.project.Move;
 import chess.project.Position;
