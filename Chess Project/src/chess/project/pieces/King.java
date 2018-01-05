@@ -97,4 +97,9 @@ public class King extends Piece {
         return "K";
     }
 
+
+    public boolean isChecked(Board tempBoard) {
+        return true;
+    }
+
 }

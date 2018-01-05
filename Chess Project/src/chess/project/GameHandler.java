@@ -101,6 +101,11 @@ public class GameHandler {
             } else {
                 board.doMove(black.getMove(), black instanceof AIPlayer);
             }
+            
+            try {
+            Thread.sleep(2000);
+            } catch (InterruptedException e) { }
+
 
             cgh.updateBoard();
             board.nextTurn();

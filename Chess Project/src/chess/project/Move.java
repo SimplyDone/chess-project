@@ -24,6 +24,11 @@ public class Move implements Serializable {
     public Position getNewPosition() {
         return newPos;
     }
+    
+    @Override
+    public String toString(){
+        return oldPos + " -> " + newPos;
+    }
 
     @Override
     public int hashCode() {

@@ -37,7 +37,7 @@ public class Bishop extends Piece {
                 while ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && (null == board.getBoard()[i][j])) {
                     Move m = new Move(position, new Position(i, j));
 
-                    if (true /* add check if move puts you in check */) {
+                    if (!board.isChecked(m, this.colour)) {
                         validMoves.add(m);
                     }
 
@@ -45,10 +45,10 @@ public class Bishop extends Piece {
                     j += jNext;
                 }
 
-                if ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
+                if ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != this.colour) {
                     Move m = new Move(position, new Position(i, j));
 
-                    if (true /* add check if move puts you in check */) {
+                    if (!board.isChecked(m, colour)) {
                         validMoves.add(m);
                     }
                 }
