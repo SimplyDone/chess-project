@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class Rook extends Piece {
 
+    private boolean canCastle = true;
+    
     public Rook(boolean col, Position pos) {
         super(col, pos);
     }
@@ -73,8 +75,13 @@ public class Rook extends Piece {
         return validMoves;
     }
 
+    public boolean canCastle() {
+        return canCastle;
+    }
+    
     @Override
     public String toString() {
         return "R";
     }
+    
 }
