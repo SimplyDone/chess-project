@@ -22,7 +22,6 @@ import java.util.Scanner;
 public final class Board implements Serializable {
 
     private final Piece board[][];
-    private Piece tempBoard[][];
 
     private static final long serialVersionUID = 430L;
 
@@ -82,6 +81,15 @@ public final class Board implements Serializable {
             board[i][6] = new Pawn(true, new Position(i, 6));
         }
 
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+
+                if (board[i][j] != null) {
+                    board[i][j].updateValidMoves(this);
+                }
+            }
+        }
+
     }
 
     public void printBoard() {
@@ -124,7 +132,7 @@ public final class Board implements Serializable {
 
         if (p != null && p.getColour() == colour) {
 
-            List<Move> possibleMoves = p.getValidMoves(this);
+            List<Move> possibleMoves = p.getValidMoves();
 
             if (possibleMoves.contains(move)) {
                 return true;
@@ -176,16 +184,14 @@ public final class Board implements Serializable {
                     }
                 }
             } else if (p instanceof Rook) {
-                
 
-             
             } else if (p instanceof King) {
-                
+
                 //castling condition
-                if(newPos.getX() - oldPos.getX() == 2){
+                if (newPos.getX() - oldPos.getX() == 2) {
                     Rook r = (Rook) board[7][oldPos.getY()];
                     r.move(new Position(5, oldPos.getY()));
-                } else if (newPos.getX() - oldPos.getX() == -2){
+                } else if (newPos.getX() - oldPos.getX() == -2) {
                     Rook r = (Rook) board[7][oldPos.getY()];
                     r.move(new Position(3, oldPos.getY()));
                 }
@@ -214,6 +220,14 @@ public final class Board implements Serializable {
     public void nextTurn() {
         whiteTurn ^= true;
         turnNumber++;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+
+                if (board[i][j] != null) {
+                    board[i][j].updateValidMoves(this);
+                }
+            }
+        }
     }
 
     /**
@@ -266,7 +280,9 @@ public final class Board implements Serializable {
 
     }
 
-    private void doTempMove(Move m) {
+    private Piece[][] getBoardCopy() {
+        
+        Piece[][] tempBoard = null;
 
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -275,21 +291,15 @@ public final class Board implements Serializable {
             oos.flush();
             oos.close();
             bos.close();
+            
             byte[] byteData = bos.toByteArray();
-
             ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
             tempBoard = (Piece[][]) new ObjectInputStream(bais).readObject();
         } catch (IOException | ClassNotFoundException e) {
-            return;
+            System.err.printf("CRITIAL ERROR");
+            System.exit(1);
         }
-
-        Position oldPos = m.getOldPosition();
-        Position newPos = m.getNewPosition();
-        Piece p = tempBoard[oldPos.getX()][oldPos.getY()];
-
-        p.move(newPos);
-        tempBoard[oldPos.getX()][oldPos.getY()] = null;
-        tempBoard[newPos.getX()][newPos.getY()] = p;
-
+        
+        return tempBoard;
     }
 }

@@ -5,11 +5,8 @@ package chess.project.pieces;
  - update alongside bishop and rook after optimizing each class
  */
 
-import chess.project.Board;
-import chess.project.Move;
-import chess.project.Position;
-import java.util.LinkedList;
-import java.util.List;
+import chess.project.*;
+
 
 /**
  *
@@ -22,8 +19,8 @@ public class Queen extends Piece {
     }
 
     @Override
-    public List<Move> getValidMoves(Board board) {
-        List<Move> validMoves = new LinkedList<>();
+    public void updateValidMoves(Board board) {
+        validMoves.clear();
 
 /////////////////////////////////BISHOP/////////////////////////////////////////
         int i, j;
@@ -103,7 +100,6 @@ public class Queen extends Piece {
                 }
             }
         }
-        return validMoves;
     }
 
     @Override

@@ -12,7 +12,6 @@ public class Position implements Serializable {
     private int X;
     private int Y;
 
-    //TODO make it work with X and Y swapped
     public Position(int X, int Y) {
 
         if (X > 7 || Y > 7) {
@@ -22,6 +21,7 @@ public class Position implements Serializable {
         this.X = X;
         this.Y = Y;
     }
+    
 
     public void setPosition(int X, int Y) {
         this.X = X;

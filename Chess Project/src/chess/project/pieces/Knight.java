@@ -3,8 +3,6 @@ package chess.project.pieces;
 import chess.project.Board;
 import chess.project.Move;
 import chess.project.Position;
-import java.util.LinkedList;
-import java.util.List;
 
 /** This class represents a Knight. Its movement consists of a L shaped jump
  * that can go over pieces of either colour. 
@@ -18,8 +16,8 @@ public class Knight extends Piece{
     }
     
     @Override
-    public List getValidMoves(Board board) {
-        List<Move> validMoves = new LinkedList<>();
+    public void updateValidMoves(Board board) {
+        validMoves.clear();
         
         int rowDelta;
         int colDelta;
@@ -45,8 +43,6 @@ public class Knight extends Piece{
                 }  
             }
         }
-        
-        return validMoves;
     }
     
     @Override
