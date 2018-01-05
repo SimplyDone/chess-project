@@ -183,18 +183,20 @@ public final class Board implements Serializable {
                     }
                 }
             } else if (p instanceof Rook) {
+                System.out.println(((Rook) p).canCastle());
+                ((Rook) p).flagCastle();
 
             } else if (p instanceof King) {
-
+                ((King) p).flagCastle();
                 //castling condition
-                if (newPos.getX() - oldPos.getX() == 2) {
-                    Rook r = (Rook) board[7][oldPos.getY()];
-                    r.move(new Position(5, oldPos.getY()));
-                } else if (newPos.getX() - oldPos.getX() == -2) {
-                    Rook r = (Rook) board[7][oldPos.getY()];
-                    r.move(new Position(3, oldPos.getY()));
+                System.out.println("DIFF " + (newPos.getX() - oldPos.getX()));
+                if (newPos.getX() - oldPos.getX() == 2) { // right side
+                    Piece r = board[7][oldPos.getY()];
+                    completeMove(r, r.getPosition(), new Position(5, oldPos.getY()));
+                } else if (newPos.getX() - oldPos.getX() == -2) { // left side
+                    Piece r = board[0][oldPos.getY()];
+                    completeMove(r, r.getPosition(), new Position(3, oldPos.getY()));
                 }
-
             }
 
             completeMove(p, oldPos, newPos);
@@ -279,6 +281,7 @@ public final class Board implements Serializable {
 
     }
 
+
     @Override
     public Board clone() {
         
@@ -291,7 +294,7 @@ public final class Board implements Serializable {
             oos.flush();
             oos.close();
             bos.close();
-            
+
             byte[] byteData = bos.toByteArray();
             ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
             tempBoard = (Board) new ObjectInputStream(bais).readObject();
@@ -299,7 +302,7 @@ public final class Board implements Serializable {
             System.err.printf("CRITIAL ERROR");
             System.exit(1);
         }
-        
+
         return tempBoard;
     }
     
