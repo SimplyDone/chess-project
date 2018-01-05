@@ -127,7 +127,6 @@ public final class Board implements Serializable {
     public boolean checkMove(Move move, boolean colour) {
 
         Position oldPos = move.getOldPosition();
-
         Piece p = board[oldPos.getX()][oldPos.getY()];
 
         if (p != null && p.getColour() == colour) {
@@ -141,7 +140,7 @@ public final class Board implements Serializable {
                 System.out.println("[INVALID MOVE]");
                 System.out.println("Valid moves for " + p.getClass().getSimpleName() + ":");
                 possibleMoves.stream().forEach((m) -> {
-                    System.out.println(m.getOldPosition() + " -> " + m.getNewPosition());
+                    System.out.println(m);
                 });
                 System.out.println("-----------------------------------------");
                 return false;
@@ -282,26 +281,45 @@ public final class Board implements Serializable {
 
     }
 
-    private Piece[][] getBoardCopy() {
 
-        Piece[][] tempBoard = null;
+    @Override
+    public Board clone() {
+        
+        Board tempBoard = null;
 
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(board);
+            oos.writeObject(this);
             oos.flush();
             oos.close();
             bos.close();
 
             byte[] byteData = bos.toByteArray();
             ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
-            tempBoard = (Piece[][]) new ObjectInputStream(bais).readObject();
+            tempBoard = (Board) new ObjectInputStream(bais).readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.printf("CRITIAL ERROR");
             System.exit(1);
         }
 
         return tempBoard;
+    }
+    
+    public boolean isChecked(Move m, boolean colour){
+        
+        Board tempBoard = this.clone();
+        tempBoard.doMove(m, false);
+        
+        for(int i = 0; i<8; i++){
+            for(int j = 0; j < 8; j++){
+                
+                Piece p = tempBoard.getBoard()[i][j];
+                if(p != null && p.getColour() == colour && p instanceof King){
+                    return ((King) p).isChecked(tempBoard);
+                }
+            }
+        }
+        return true;  
     }
 }

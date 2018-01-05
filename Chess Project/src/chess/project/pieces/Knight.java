@@ -31,10 +31,10 @@ public class Knight extends Piece{
                 if((rowDelta == 1 && colDelta == 2) || (rowDelta == 2 && colDelta == 1)){
                     
                     Piece p = board.getBoard()[i][j];
-                    if(p == null || p.getColour() != this.getColour() ){
+                    if(p == null || p.getColour() != this.colour ){
                         
                         Move m = new Move(position, new Position(i,j));
-                        if(true /** add check if move puts you in check */){
+                        if(!board.isChecked(m, colour)){
                             validMoves.add(m);
                         }
                     }

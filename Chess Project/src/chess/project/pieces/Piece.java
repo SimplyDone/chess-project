@@ -17,7 +17,7 @@ import java.io.Serializable;
  */
 public abstract class Piece implements Serializable {
 
-    private final boolean colour; // false-black, true-white
+    protected final boolean colour; // false-black, true-white
     protected Position position;
     protected List<Move> validMoves;
 

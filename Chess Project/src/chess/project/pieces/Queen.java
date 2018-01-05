@@ -38,7 +38,7 @@ public class Queen extends Piece {
                 while ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && (null == board.getBoard()[i][j])) {
                     Move m = new Move(position, new Position(i, j));
 
-                    if (true /* add check if move puts you in check */) {
+                    if (!board.isChecked(m, colour)) {
                         validMoves.add(m);
                     }
 
@@ -49,7 +49,7 @@ public class Queen extends Piece {
                 if ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
                     Move m = new Move(position, new Position(i, j));
 
-                    if (true /* add check if move puts you in check */) {
+                    if (!board.isChecked(m, colour)) {
                         validMoves.add(m);
                     }
                 }
@@ -64,7 +64,7 @@ public class Queen extends Piece {
             while ((i >= 0 && i <= 7) && (null == board.getBoard()[i][j])) {
                 Move m = new Move(position, new Position(i, j));
 
-                if (true /* add check if move puts you in check */) {
+                if (!board.isChecked(m, colour)) {
                     validMoves.add(m);
                 }
 
@@ -73,7 +73,7 @@ public class Queen extends Piece {
             if ((i >= 0 && i <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
                 Move m = new Move(position, new Position(i, j));
 
-                if (true /* add check if move puts you in check */) {
+                if (!board.isChecked(m, colour)) {
                     validMoves.add(m);
                 }
             }
@@ -86,7 +86,7 @@ public class Queen extends Piece {
             while ((j >= 0 && j <= 7) && (null == board.getBoard()[i][j])) {
                 Move m = new Move(position, new Position(i, j));
 
-                if (true /* add check if move puts you in check */) {
+                if (!board.isChecked(m, colour)) {
                     validMoves.add(m);
                 }
 
@@ -95,7 +95,7 @@ public class Queen extends Piece {
             if ((j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
                 Move m = new Move(position, new Position(i, j));
 
-                if (true /* add check if move puts you in check */) {
+                if (!board.isChecked(m, colour)) {
                     validMoves.add(m);
                 }
             }

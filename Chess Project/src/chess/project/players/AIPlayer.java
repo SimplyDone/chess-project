@@ -2,6 +2,7 @@ package chess.project.players;
 
 import chess.project.Board;
 import chess.project.Move;
+import chess.project.MoveNode;
 import chess.project.pieces.*;
 import java.util.*;
 
@@ -11,41 +12,66 @@ import java.util.*;
  */
 public class AIPlayer extends Player {
 
-    private Piece[][] testBoard;
+    private Board testBoard;
     private final int difficulty;
     private final List<Move> allValidMoves;
+    private final List<Move> allEnemyMoves;
 
     public AIPlayer(boolean isWhite, Board board, int difficulty) {
         super(isWhite, board);
         this.difficulty = difficulty;
         this.allValidMoves = new LinkedList<>();
+        this.allEnemyMoves = new LinkedList<>();
     }
 
     @Override
     public Move getMove() {
 
+        allValidMoves.clear();
+        allEnemyMoves.clear();
+
         System.out.println(COLOUR);
+
+        testBoard = board.clone();
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (board.getBoard()[i][j] != null && board.getBoard()[i][j].getColour() == colour) {
-                    allValidMoves.addAll(board.getBoard()[i][j].getValidMoves());
+                if (testBoard.getBoard()[i][j] != null) {
+                    if (testBoard.getBoard()[i][j].getColour() == colour) {
+                        allValidMoves.addAll(board.getBoard()[i][j].getValidMoves());
+                    } else {
+                        allEnemyMoves.addAll(board.getBoard()[i][j].getValidMoves());
+                    }
                 }
             }
         }
 
-        Random rand = new Random();
-        Move m = allValidMoves.get(rand.nextInt(allValidMoves.size()));
-        System.out.println(m.getOldPosition() + " -> " + m.getNewPosition());
+        Move bestMove = null;
+        double currentScore = -10000;
+        double bestScore = -10000;
 
-        return m;
+        for (Move m : allValidMoves) {
+
+            if (bestMove == null) {
+                bestMove = m;
+            } else {
+                testBoard.doMove(m, false);
+                currentScore = evaluateBoard(testBoard.getBoard());
+                if (bestScore < currentScore) {
+                    bestMove = m;
+                    bestScore = currentScore;
+
+                }
+            }
+            testBoard = board.clone();
+        }
+
+        System.out.println(bestMove + " " + bestScore);
+        return bestMove;
+
     }
 
-    private void buildMoveTree(int depth) {
-
-    }
-
-    public void evaluateBoard(Piece[][] board) {
+    public double evaluateBoard(Piece[][] board) {
         int score = 0;
 
         int modifier = 1;
@@ -72,12 +98,16 @@ public class AIPlayer extends Player {
                         score += 3 * modifier;
                     } else if (p instanceof Pawn) {
                         score += 1 * modifier;
+
+                        // score -= 0.5 * doubled, blocked, isolated
                     }
 
                 }
             }
         }
-
+        score += 0.1 * allValidMoves.size();
+        score -= 0.1 * allEnemyMoves.size();
+        return score;
     }
 
 }

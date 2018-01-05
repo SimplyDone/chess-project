@@ -32,7 +32,7 @@ public class Rook extends Piece {
             while ((i >= 0 && i <= 7) && (null == board.getBoard()[i][j])) {
                 Move m = new Move(position, new Position(i, j));
 
-                if (true /* add check if move puts you in check */) {
+                if (!board.isChecked(m, colour)) {
                     validMoves.add(m);
                 }
 
@@ -41,7 +41,7 @@ public class Rook extends Piece {
             if ((i >= 0 && i <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
                 Move m = new Move(position, new Position(i, j));
 
-                if (true /* add check if move puts you in check */) {
+                if (!board.isChecked(m, colour)) {
                     validMoves.add(m);
                 }
             }
@@ -54,20 +54,21 @@ public class Rook extends Piece {
             while ((j >= 0 && j <= 7) && (null == board.getBoard()[i][j])) {
                 Move m = new Move(position, new Position(i, j));
 
-                if (true /* add check if move puts you in check */) {
+                if (!board.isChecked(m, colour)) {
                     validMoves.add(m);
                 }
 
                 j += next;
             }
             if ((j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
+                
                 Move m = new Move(position, new Position(i, j));
-
-                if (true /* add check if move puts you in check */) {
+                if (!board.checkMove(m, colour)) {
                     validMoves.add(m);
                 }
             }
         }
+        
     }
 
     public boolean canCastle() {
