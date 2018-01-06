@@ -1,5 +1,7 @@
 package chess.project;
 
+
+import chess.project.movement.*;
 import chess.project.pieces.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,11 +10,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
 
 import java.util.List;
-import java.util.Scanner;
+
 
 /**
  * Represents a chessboard.
@@ -25,7 +25,7 @@ public final class Board implements Serializable {
 
     private static final long serialVersionUID = 430L;
 
-    private boolean whiteTurn;
+    private boolean isWhiteTurn;
     private int turnNumber;
 
     private boolean isWhiteChecked = false;
@@ -35,7 +35,7 @@ public final class Board implements Serializable {
     public Board() {
 
         board = new Piece[8][8];
-        whiteTurn = true;
+        isWhiteTurn = true;
         turnNumber = 0;
         initializeBoard();
 
@@ -48,37 +48,37 @@ public final class Board implements Serializable {
     public void initializeBoard() {
 
         //black
-        board[0][0] = new Rook(false, new Position(0, 0));
-        board[7][0] = new Rook(false, new Position(7, 0));
+        board[0][0] = new Rook(ChessColour.BLACK, new Position(0, 0));
+        board[7][0] = new Rook(ChessColour.BLACK, new Position(7, 0));
 
-        board[1][0] = new Knight(false, new Position(1, 0));
-        board[6][0] = new Knight(false, new Position(6, 0));
+        board[1][0] = new Knight(ChessColour.BLACK, new Position(1, 0));
+        board[6][0] = new Knight(ChessColour.BLACK, new Position(6, 0));
 
-        board[2][0] = new Bishop(false, new Position(2, 0));
-        board[5][0] = new Bishop(false, new Position(5, 0));
+        board[2][0] = new Bishop(ChessColour.BLACK, new Position(2, 0));
+        board[5][0] = new Bishop(ChessColour.BLACK, new Position(5, 0));
 
-        board[3][0] = new Queen(false, new Position(3, 0));
-        board[4][0] = new King(false, new Position(4, 0));
+        board[3][0] = new Queen(ChessColour.BLACK, new Position(3, 0));
+        board[4][0] = new King(ChessColour.BLACK, new Position(4, 0));
 
         for (int i = 0; i < 8; i++) {
-            board[i][1] = new Pawn(false, new Position(i, 1));
+            board[i][1] = new Pawn(ChessColour.BLACK, new Position(i, 1));
         }
 
         //white
-        board[0][7] = new Rook(true, new Position(0, 7));
-        board[7][7] = new Rook(true, new Position(7, 7));
+        board[0][7] = new Rook(ChessColour.WHITE, new Position(0, 7));
+        board[7][7] = new Rook(ChessColour.WHITE, new Position(7, 7));
 
-        board[1][7] = new Knight(true, new Position(1, 7));
-        board[6][7] = new Knight(true, new Position(6, 7));
+        board[1][7] = new Knight(ChessColour.WHITE, new Position(1, 7));
+        board[6][7] = new Knight(ChessColour.WHITE, new Position(6, 7));
 
-        board[2][7] = new Bishop(true, new Position(2, 7));
-        board[5][7] = new Bishop(true, new Position(5, 7));
+        board[2][7] = new Bishop(ChessColour.WHITE, new Position(2, 7));
+        board[5][7] = new Bishop(ChessColour.WHITE, new Position(5, 7));
 
-        board[3][7] = new Queen(true, new Position(3, 7));
-        board[4][7] = new King(true, new Position(4, 7));
+        board[3][7] = new Queen(ChessColour.WHITE, new Position(3, 7));
+        board[4][7] = new King(ChessColour.WHITE, new Position(4, 7));
 
         for (int i = 0; i < 8; i++) {
-            board[i][6] = new Pawn(true, new Position(i, 6));
+            board[i][6] = new Pawn(ChessColour.WHITE, new Position(i, 6));
         }
 
         for (int i = 0; i < 8; i++) {
@@ -124,7 +124,7 @@ public final class Board implements Serializable {
         return checkmate;
     }
 
-    public boolean checkMove(Move move, boolean colour) {
+    public boolean checkMove(Move move, ChessColour colour) {
 
         Position oldPos = move.getOldPosition();
         Piece p = board[oldPos.getX()][oldPos.getY()];
@@ -162,34 +162,33 @@ public final class Board implements Serializable {
 
             if (p instanceof Pawn) {
 
-                //en-passant condition 1
+                //en-passant condition - pawn moved two spaces
                 if (Math.abs(oldPos.getY() - newPos.getY()) == 2) {
                     ((Pawn) p).setEnPassant(turnNumber);
                 }
 
-                //en-passant condition 2
+                //en-passant condition - pawn moved diagonally over a pawn
                 if (oldPos.getX() != newPos.getX()
                         && board[newPos.getX()][newPos.getY()] == null) {
                     board[newPos.getX()][oldPos.getY()] = null;
                 }
 
-                //promotion condition
+                //promotion condition for human player
                 if (newPos.getY() == 0 || newPos.getY() == 7) {
-
-                    if (isHuman) {
-                        p = getHumanSelection(p);
-                    } else {
-                        p = getHumanSelection(p);
-                    }
+                    p = getHumanSelection(p);
+                
+                //promotion conditions for ai 
+                } else if (newPos.getY() == -1 || newPos.getY() == 8){
+                    
                 }
+                
             } else if (p instanceof Rook) {
-                System.out.println(((Rook) p).canCastle());
                 ((Rook) p).flagCastle();
 
             } else if (p instanceof King) {
                 ((King) p).flagCastle();
+                
                 //castling condition
-                System.out.println("DIFF " + (newPos.getX() - oldPos.getX()));
                 if (newPos.getX() - oldPos.getX() == 2) { // right side
                     Piece r = board[7][oldPos.getY()];
                     completeMove(r, r.getPosition(), new Position(5, oldPos.getY()));
@@ -215,11 +214,11 @@ public final class Board implements Serializable {
     }
 
     /**
-     * Sets the game to the next player
-     *
+     * Passes the game to the next player, updates the turn number,
+     * and recalculates the valid moves for all pieces.
      */
     public void nextTurn() {
-        whiteTurn ^= true;
+        isWhiteTurn ^= true;
         turnNumber++;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -237,7 +236,7 @@ public final class Board implements Serializable {
      * @return current player's turn
      */
     public boolean getTurn() {
-        return whiteTurn;
+        return isWhiteTurn;
     }
 
     public void saveBoard() {
@@ -306,7 +305,7 @@ public final class Board implements Serializable {
         return tempBoard;
     }
     
-    public boolean isChecked(Move m, boolean colour){
+    public boolean isChecked(Move m, ChessColour colour){
         
         Board tempBoard = this.clone();
         tempBoard.doMove(m, false);

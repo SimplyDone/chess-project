@@ -1,5 +1,6 @@
 package chess.project;
 
+import chess.project.movement.Move;
 import java.util.List;
 
 /**

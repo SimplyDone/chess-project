@@ -5,6 +5,7 @@ package chess.project.pieces;
  - combine the horizontal and vertical search
  */
 
+import chess.project.movement.*;
 import chess.project.*;
 
 /**
@@ -13,9 +14,9 @@ import chess.project.*;
  */
 public class Rook extends Piece {
 
-    private boolean canCastle = true;
+    private boolean castlable = true;
     
-    public Rook(boolean col, Position pos) {
+    public Rook(ChessColour col, Position pos) {
         super(col, pos);
     }
 
@@ -38,7 +39,7 @@ public class Rook extends Piece {
 
                 i += next;
             }
-            if ((i >= 0 && i <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
+            if ((i >= 0 && i <= 7) && board.getBoard()[i][j].getColour() != colour) {
                 Move m = new Move(position, new Position(i, j));
 
                 if (!board.isChecked(m, colour)) {
@@ -60,7 +61,7 @@ public class Rook extends Piece {
 
                 j += next;
             }
-            if ((j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
+            if ((j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != colour) {
                 
                 Move m = new Move(position, new Position(i, j));
                 if (!board.checkMove(m, colour)) {
@@ -71,15 +72,21 @@ public class Rook extends Piece {
         
     }
 
-    public boolean canCastle() {
-        return canCastle;
+    /** This method returns True if the Rook can be used for castling.
+     * 
+     * @return True if this Rook is valid for castling.
+     */
+    public boolean isCastlable() {
+        return castlable;
     }
     
+    /** This method flags the rook as unable to be used for castling.
+     * 
+     */
     public void flagCastle() {
-        canCastle = false;
+        castlable = false;
     }
-
-    
+ 
     @Override
     public String toString() {
         return "R";

@@ -1,11 +1,8 @@
 package chess.project.players;
 
-import chess.project.Board;
-import chess.project.Move;
-import chess.project.Position;
-import chess.project.TextInput;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import chess.project.*;
+import chess.project.movement.*;
+
 
 /**
  *
@@ -13,14 +10,10 @@ import java.util.Scanner;
  */
 public class HumanPlayer extends Player {
 
-    public HumanPlayer(boolean isWhite, Board board) {
-        super(isWhite, board);
+    public HumanPlayer(ChessColour colour, Board board) {
+        super(colour, board);
     }
 
-    /**
-     * 
-     * @return 
-     */
     @Override
     public Move getMove() {
 
@@ -32,13 +25,12 @@ public class HumanPlayer extends Player {
                 return move;
             }
         }
-
     }
 
     private Move readMove() {
         
         String move = TextInput.getStringChoice(
-                "Enter your move " + COLOUR + " (a-h)(1-8)(a-h)(1-8): ",
+                "Enter your move " + colour + " (a-h)(1-8)(a-h)(1-8): ",
                 "[a-hA-h][1-8][a-hA-H][1-8]");
         
         String[] split = move.split("");

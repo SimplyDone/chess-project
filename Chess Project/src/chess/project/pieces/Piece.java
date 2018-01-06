@@ -1,10 +1,7 @@
 package chess.project.pieces;
-/*
- TODO
- - 
- - 
- */
 
+import chess.project.movement.Position;
+import chess.project.movement.Move;
 import chess.project.*;
 
 import java.util.*;
@@ -17,11 +14,12 @@ import java.io.Serializable;
  */
 public abstract class Piece implements Serializable {
 
-    protected final boolean colour; // false-black, true-white
+    protected final ChessColour colour;
+    protected final List<Move> validMoves;
+    
     protected Position position;
-    protected List<Move> validMoves;
 
-    public Piece(boolean col, Position pos) {
+    public Piece(ChessColour col, Position pos) {
         colour = col;
         position = pos;
         validMoves = new LinkedList<>();
@@ -37,16 +35,8 @@ public abstract class Piece implements Serializable {
 
     public abstract void updateValidMoves(Board board);
 
-    /**
-     * Returns the colour of the piece;
-     *
-     * @return the colour of the piece
-     */
-    public String getColourString() {
-        return colour ? "white" : "black";
-    }
 
-    public boolean getColour() {
+    public ChessColour getColour() {
         return colour;
     }
 
