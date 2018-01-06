@@ -152,7 +152,7 @@ public final class Board implements Serializable {
         }
     }
 
-    public void doMove(Move move, boolean isHuman) {
+    public void doMove(Move move) {
 
         Position oldPos = move.getOldPosition();
         Position newPos = move.getNewPosition();
@@ -172,6 +172,8 @@ public final class Board implements Serializable {
                         && board[newPos.getX()][newPos.getY()] == null) {
                     board[newPos.getX()][oldPos.getY()] = null;
                 }
+                
+                //TODO fix promotion bug
 
                 //promotion condition for human player
                 if (newPos.getY() == 0 || newPos.getY() == 7) {
@@ -305,10 +307,11 @@ public final class Board implements Serializable {
         return tempBoard;
     }
     
+
     public boolean isChecked(Move m, ChessColour colour){
         
         Board tempBoard = this.clone();
-        tempBoard.doMove(m, false);
+        tempBoard.doMove(m);
         
         for(int i = 0; i<8; i++){
             for(int j = 0; j < 8; j++){

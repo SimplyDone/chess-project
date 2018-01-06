@@ -92,9 +92,9 @@ public class GameHandler {
             board.printBoard();
 
             if (board.getTurn()) {
-                board.doMove(white.getMove(), white instanceof HumanPlayer);
+                board.doMove(white.getMove());
             } else {
-                board.doMove(black.getMove(), black instanceof HumanPlayer);
+                board.doMove(black.getMove());
             }
 
 
