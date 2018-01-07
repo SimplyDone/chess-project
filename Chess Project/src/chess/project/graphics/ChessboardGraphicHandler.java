@@ -1,6 +1,7 @@
 package chess.project.graphics;
 
 import chess.project.*;
+import chess.project.movement.Position;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,8 +10,8 @@ import javax.swing.*;
 
 public class ChessboardGraphicHandler extends JFrame {
 
-    private Container contents;
-    private static JToggleButton[][] squares = new JToggleButton[8][8];
+    private final Container boardContents;
+    private final static JToggleButton[][] squares = new JToggleButton[8][8];
 
     //current positon
     private Board board;
@@ -20,13 +21,13 @@ public class ChessboardGraphicHandler extends JFrame {
         super("Chess GUI Test");
         
         this.board = board;
-        this.contents = getContentPane();
-        this.contents.setLayout(new GridLayout(8, 8));
+        this.boardContents = getContentPane();
+        this.boardContents.setLayout(new GridLayout(8, 8));
 
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
 
-                squares[i][j] = new TileButton();
+                squares[i][j] = new TileButton(new Position(i,j));
 
                 //squares[i][j].setRolloverEnabled(false);
                 if ((i + j) % 2 != 0) {
@@ -34,7 +35,8 @@ public class ChessboardGraphicHandler extends JFrame {
                 } else {
                     squares[i][j].setBackground(Color.white);
                 }
-                contents.add(squares[i][j]);
+                                
+                boardContents.add(squares[i][j]);
                 //add action listenser to squares    
             }
         }
