@@ -1,4 +1,4 @@
-package chess.project;
+package chess.project.movement;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -9,8 +9,8 @@ import java.util.Objects;
  */
 public class Move implements Serializable {
     
-    private Position oldPos;
-    private Position newPos;
+    private final Position oldPos;
+    private final Position newPos;
     
     public Move(Position oldPos, Position newPos){
         this.oldPos = oldPos;

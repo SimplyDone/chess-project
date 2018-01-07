@@ -6,6 +6,8 @@ package chess.project.pieces;
  before selecting their next move (for castling)
  */
 
+import chess.project.movement.Position;
+import chess.project.movement.Move;
 import chess.project.*;
 
 /**
@@ -14,9 +16,9 @@ import chess.project.*;
  */
 public class King extends Piece {
 
-    private boolean canCastle = true;
+    private boolean castlable = true;
 
-    public King(boolean col, Position pos) {
+    public King(ChessColour col, Position pos) {
         super(col, pos);
     }
 
@@ -32,11 +34,10 @@ public class King extends Piece {
 
                 if (((i + iNext) >= 0 && (i + iNext) <= 7) && ((j + jNext) >= 0 && (j + jNext) <= 7)) {
 
-                    Move m = new Move(position, new Position(i + iNext, j + jNext));
-
                     if (null == board.getBoard()[i + iNext][j + jNext] || this.getColour() != board.getBoard()[i + iNext][j + jNext].getColour()) {
 
-                        if (true /* add check if move puts you in check */) {
+                        Move m = new Move(position, new Position(i + iNext, j + jNext));
+                        if (!board.isChecked(m, colour)) {
                             validMoves.add(m);
                         }
                     }
@@ -44,16 +45,12 @@ public class King extends Piece {
             }
         }
         /////// CASTLE ////////////////////
-        
-        System.out.println("canCastle = "+canCastle);
-        
-        if (this.canCastle() && true /* add a check if the player is currently in check */) {
-            System.out.println("thisCanCastle");
-            
+
+        if (this.isCastlable() && true /* add a check if the player is currently in check */) {
+
             //                LEFT SIDE
             boolean castle = true;
-            if (board.getBoard()[0][j] instanceof Rook && ((Rook) board.getBoard()[0][j]).canCastle()) {
-                System.out.println("found left rook");
+            if (board.getBoard()[0][j] instanceof Rook && ((Rook) board.getBoard()[0][j]).isCastlable()) {
                 if (board.getBoard()[1][j] != null) {
                     castle = false;
                 } else {
@@ -65,7 +62,6 @@ public class King extends Piece {
                 }
 
                 if (castle) {
-                    System.out.println("LEFT "+castle);
                     Move m = new Move(position, new Position(2, j));
                     validMoves.add(m);
                 }
@@ -73,27 +69,25 @@ public class King extends Piece {
 
             //                RIGHT SIDE
             castle = true;
-            if (board.getBoard()[7][j] instanceof Rook && ((Rook) board.getBoard()[7][j]).canCastle()) {
-                System.out.println("found Right rook");
+            if (board.getBoard()[7][j] instanceof Rook && ((Rook) board.getBoard()[7][j]).isCastlable()) {
 
-                    for (int p = 5; p <= 6; p++) {
-                        if (board.getBoard()[p][j] != null /*|| true /* add check if move puts you in check */) {
-                            castle = false;
-                        }
+                for (int p = 5; p <= 6; p++) {
+                    if (board.getBoard()[p][j] != null /*|| true /* add check if move puts you in check */) {
+                        castle = false;
                     }
                 }
-            
-                if (castle) {
-                    System.out.println("RIGHT "+castle);
-                    Move m = new Move(position, new Position(6, j));
-                    validMoves.add(m);
-                }
-                
+            }
+
+            if (castle) {
+                Move m = new Move(position, new Position(6, j));
+                validMoves.add(m);
+            }
+
         }
     }
-    
-    public boolean isChecked(Board b){
-        
+
+    public boolean isChecked(Board b) {
+
 /////////////////////////////////Diagonal///////////////////////////////////////
         int i, j;
 
@@ -106,7 +100,7 @@ public class King extends Piece {
 
                 i += iNext;
                 j += jNext;
-                
+
                 while ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && b.getBoard()[i][j] == null) {
                     i += iNext;
                     j += jNext;
@@ -114,16 +108,18 @@ public class King extends Piece {
 
                 if ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && b.getBoard()[i][j].getColour() != this.getColour()) {
                     if (b.getBoard()[i][j] instanceof Bishop || b.getBoard()[i][j] instanceof Queen) {
-                        return false;
-                    }else if(kingInstance(b, i, j)) {
-                        return false;
-                    }else if(b.getBoard()[i][j] instanceof Pawn){
-                        if(this.getColour()){
-                            if((this.position.getY()-j) == 1)
-                                    return false;
-                        }else{
-                            if((this.position.getY()-j) == -1)
-                                    return false;
+                        return true;
+                    } else if (kingInstance(b, i, j)) {
+                        return true;
+                    } else if (b.getBoard()[i][j] instanceof Pawn) {
+                        if (colour == ChessColour.WHITE) {
+                            if ((this.position.getY() - j) == 1) {
+                                return true;
+                            }
+                        } else {
+                            if ((this.position.getY() - j) == -1) {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -140,9 +136,9 @@ public class King extends Piece {
             }
             if ((i >= 0 && i <= 7) && b.getBoard()[i][j].getColour() != this.getColour()) {
                 if (b.getBoard()[i][j] instanceof Rook || b.getBoard()[i][j] instanceof Queen) {
-                        return false;
-                }else if(kingInstance(b, i, j)) {
-                    return false;
+                    return true;
+                } else if (kingInstance(b, i, j)) {
+                    return true;
                 }
             }
         }
@@ -156,71 +152,58 @@ public class King extends Piece {
             }
             if ((j >= 0 && j <= 7) && b.getBoard()[i][j].getColour() != this.getColour()) {
                 if (b.getBoard()[i][j] instanceof Rook || b.getBoard()[i][j] instanceof Queen) {
-                        return false;
-                }else if(kingInstance(b, i, j)) {
-                    return false;
+                    return true;
+                } else if (kingInstance(b, i, j)) {
+                    return true;
                 }
             }
         }
-        
+
 ///////////////////////////////// KNIGHTS///////////////////////////////////////
-        validMoves.clear();
-        
         int rowDelta;
         int colDelta;
-        
-        for(i = 0; i < 8; i++){/* optimize later (haardcode?) */
-            for(j = 0; j < 8; j++){
-                
+
+        for (i = 0; i < 8; i++) {/* optimize later (haardcode?) */
+
+            for (j = 0; j < 8; j++) {
+
                 rowDelta = Math.abs(position.getX() - i);
                 colDelta = Math.abs(position.getY() - j);
-                
-                if((rowDelta == 1 && colDelta == 2) || (rowDelta == 2 && colDelta == 1)){
-                    
+
+                if ((rowDelta == 1 && colDelta == 2) || (rowDelta == 2 && colDelta == 1)) {
+
                     Piece p = b.getBoard()[i][j];
-                    if(p != null && p.getColour() != this.getColour() ){
-                        if (b.getBoard()[i][j] instanceof Knight){
-                            return false;
+                    if (p != null && p.getColour() != this.getColour()) {
+                        if (b.getBoard()[i][j] instanceof Knight) {
+                            return true;
                         }
                     }
                 }
             }
         }
-        
-        
-        
-        
-        
-        
-        
-        
+
         return false;
     }
-    private boolean kingInstance(Board b, int i, int j){
-        if(b.getBoard()[i][j] instanceof King) {
-            if(Math.abs(this.position.getX() - i) == 1){
+
+    private boolean kingInstance(Board b, int i, int j) {
+        if (b.getBoard()[i][j] instanceof King) {
+            if (Math.abs(this.position.getX() - i) == 1) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean canCastle() {
-        return canCastle;
+    public boolean isCastlable() {
+        return castlable;
     }
 
     public void flagCastle() {
-        canCastle = false;
+        castlable = false;
     }
 
     @Override
     public String toString() {
         return "K";
     }
-
-
-    public boolean isChecked(Board tempBoard) {
-        return true;
-    }
-
 }

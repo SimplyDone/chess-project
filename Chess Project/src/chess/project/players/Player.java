@@ -1,5 +1,6 @@
 package chess.project.players;
 
+import chess.project.movement.Move;
 import chess.project.*;
 
 /**
@@ -9,13 +10,12 @@ import chess.project.*;
  */
 public abstract class Player {
 
-    protected final boolean colour; //false-black true-white
-    protected final String COLOUR;
+    protected final ChessColour colour; //false-black true-white
+
     protected final Board board;
 
-    public Player(boolean colour, Board board) {
+    public Player(ChessColour colour, Board board) {
         this.colour = colour;
-        this.COLOUR = colour ? "white" : "black";
         this.board = board;
     }
 

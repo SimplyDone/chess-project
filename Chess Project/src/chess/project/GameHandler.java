@@ -2,11 +2,7 @@ package chess.project;
 
 import chess.project.graphics.ChessboardGraphicHandler;
 import chess.project.players.*;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.io.*;
 
 /**
  * Handles the main operations of the game. Handles player moves, ai moves,
@@ -20,7 +16,6 @@ public class GameHandler {
     private Player black;
 
     private Board board;
-    private boolean whiteMove;
 
     public GameHandler() {
 
@@ -60,8 +55,8 @@ public class GameHandler {
                         "Enter the difficulty for the black AI (1-5): ",
                         "[1-5]");
 
-                white = new AIPlayer(true, board, aiDifficultyW);
-                black = new AIPlayer(false, board, aiDifficultyB);
+                white = new AIPlayer(ChessColour.WHITE, board, aiDifficultyW);
+                black = new AIPlayer(ChessColour.BLACK, board, aiDifficultyB);
                 break;
 
             case 1:
@@ -72,16 +67,16 @@ public class GameHandler {
                         "[1-5]");
 
                 if (colourChoice) {
-                    white = new HumanPlayer(true, board);
-                    black = new AIPlayer(false, board, aiDifficulty);
+                    white = new HumanPlayer(ChessColour.WHITE, board);
+                    black = new AIPlayer(ChessColour.BLACK, board, aiDifficulty);
                 } else {
-                    white = new AIPlayer(true, board, aiDifficulty);
-                    black = new HumanPlayer(false, board);
+                    white = new AIPlayer(ChessColour.WHITE, board, aiDifficulty);
+                    black = new HumanPlayer(ChessColour.BLACK, board);
                 }
                 break;
             case 2:
-                white = new HumanPlayer(true, board);
-                black = new HumanPlayer(false, board);
+                white = new HumanPlayer(ChessColour.WHITE, board);
+                black = new HumanPlayer(ChessColour.BLACK, board);
                 break;
 
         }
@@ -97,14 +92,10 @@ public class GameHandler {
             board.printBoard();
 
             if (board.getTurn()) {
-                board.doMove(white.getMove(), white instanceof HumanPlayer);
+                board.doMove(white.getMove());
             } else {
-                board.doMove(black.getMove(), black instanceof AIPlayer);
+                board.doMove(black.getMove());
             }
-            
-            try {
-            Thread.sleep(2000);
-            } catch (InterruptedException e) { }
 
 
             cgh.updateBoard();

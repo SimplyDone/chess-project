@@ -1,20 +1,15 @@
 package chess.project.pieces;
-/*
- TODO
- - add a check statment for an event where a move puts a peice in check 
- */
 
-import chess.project.Board;
-import chess.project.Move;
-import chess.project.Position;
+import chess.project.*;
+import chess.project.movement.*;
 
 /**
  *
- * @author Alex Zurad
+ * @author Alex Zurad, 
  */
 public class Bishop extends Piece {
 
-    public Bishop(boolean col, Position pos) {
+    public Bishop(ChessColour col, Position pos) {
         super(col, pos);
     }
 

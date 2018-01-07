@@ -1,4 +1,4 @@
-package chess.project;
+package chess.project.movement;
 
 import java.io.Serializable;
 
@@ -13,10 +13,6 @@ public class Position implements Serializable {
     private int Y;
 
     public Position(int X, int Y) {
-
-        if (X > 7 || Y > 7) {
-            throw new UnsupportedOperationException("X and Y must be between 0 and 7 X=" + X + " Y=" + Y);
-        }
 
         this.X = X;
         this.Y = Y;
@@ -38,7 +34,8 @@ public class Position implements Serializable {
 
     @Override
     public String toString() {
-        return "(" + (Character.toString((char)(X + 97))) + "," + ( Math.abs(Y-8) ) + ")";
+        return "(" + (Character.toString((char)(X + 97)))
+                + "," + ( Math.abs(Y - 8) ) + ")";
     }
 
     @Override

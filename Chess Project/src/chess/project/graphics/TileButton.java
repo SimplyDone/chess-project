@@ -1,7 +1,7 @@
 package chess.project.graphics;
 
-import chess.project.Move;
-import chess.project.Position;
+import chess.project.movement.Move;
+import chess.project.movement.Position;
 import chess.project.pieces.Piece;
 import java.awt.*;
 import java.awt.event.ActionEvent;

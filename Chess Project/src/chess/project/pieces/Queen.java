@@ -5,8 +5,8 @@ package chess.project.pieces;
  - update alongside bishop and rook after optimizing each class
  */
 
+import chess.project.movement.*;
 import chess.project.*;
-
 
 /**
  *
@@ -14,7 +14,7 @@ import chess.project.*;
  */
 public class Queen extends Piece {
 
-    public Queen(boolean col, Position pos) {
+    public Queen(ChessColour col, Position pos) {
         super(col, pos);
     }
 
@@ -46,7 +46,7 @@ public class Queen extends Piece {
                     j += jNext;
                 }
 
-                if ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
+                if ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != colour) {
                     Move m = new Move(position, new Position(i, j));
 
                     if (!board.isChecked(m, colour)) {
@@ -70,7 +70,7 @@ public class Queen extends Piece {
 
                 i += next;
             }
-            if ((i >= 0 && i <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
+            if ((i >= 0 && i <= 7) && board.getBoard()[i][j].getColour() != colour) {
                 Move m = new Move(position, new Position(i, j));
 
                 if (!board.isChecked(m, colour)) {
@@ -92,7 +92,7 @@ public class Queen extends Piece {
 
                 j += next;
             }
-            if ((j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != this.getColour()) {
+            if ((j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != colour) {
                 Move m = new Move(position, new Position(i, j));
 
                 if (!board.isChecked(m, colour)) {
