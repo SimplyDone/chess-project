@@ -10,18 +10,28 @@ import javax.swing.*;
 
 public class ChessboardGraphicHandler extends JFrame {
 
+    private final Container allContents;
+    private static JTextArea infoContents;
     private final Container boardContents;
     private final static JToggleButton[][] squares = new JToggleButton[8][8];
 
-    //current positon
     private final Board board;
 
     public ChessboardGraphicHandler(Board board) {
         super("Chess GUI Test");
 
         this.board = board;
-        this.boardContents = getContentPane();
-        this.boardContents.setLayout(new GridLayout(8, 8));
+        
+        allContents = getContentPane();
+        allContents.setLayout(new BorderLayout());
+        
+        boardContents = new JPanel();
+        boardContents.setLayout(new GridLayout(8, 8));
+        boardContents.setPreferredSize(new Dimension(512,512));
+        
+        infoContents = new JTextArea("A wild thing has appeared!");
+        infoContents.setPreferredSize(new Dimension(256, 512));
+        infoContents.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
@@ -40,8 +50,13 @@ public class ChessboardGraphicHandler extends JFrame {
                 //add action listenser to squares    
             }
         }
+        
+        allContents.add(boardContents, BorderLayout.CENTER);
+        allContents.add(infoContents, BorderLayout.LINE_END);
 
-        setSize(512, 512);
+        
+        this.pack();
+        //setSize(512, 600);
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -67,5 +82,9 @@ public class ChessboardGraphicHandler extends JFrame {
                 }
             }
         }
+    }
+    
+    public static void updateText(String msg){
+        infoContents.setText(msg);
     }
 }
