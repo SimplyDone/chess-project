@@ -102,6 +102,7 @@ public class GameHandler {
             } catch (Exception e){
                 
             }
+
             cgh.updateBoard();
             board.nextTurn();
             board.saveBoard();

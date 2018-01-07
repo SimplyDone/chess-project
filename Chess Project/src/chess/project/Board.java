@@ -334,6 +334,6 @@ public final class Board implements Serializable {
         tempBoard.doMove(m);
 
         return colour == ChessColour.WHITE
-                ? whiteKing.isChecked(this) : blackKing.isChecked(this);
+                ? tempBoard.whiteKing.isChecked(tempBoard) : tempBoard.blackKing.isChecked(tempBoard);
     }
 }
