@@ -18,12 +18,11 @@ public class TileButton extends JToggleButton {
     private Color hoverBackgroundColor = Color.cyan;
     private Color pressedBackgroundColor = Color.BLUE;
 
-
-    public TileButton() {
-        this(null);
+    public TileButton(Position p) {
+        this(null, p);
     }
 
-    public TileButton(String text) {
+    public TileButton(String text, Position p) {
         super(text);
         super.setContentAreaFilled(false);
         setRolloverEnabled(false);
@@ -31,6 +30,9 @@ public class TileButton extends JToggleButton {
         setFont(new Font("Arial", Font.PLAIN, 40));
         setFocusPainted(false);
 
+        addActionListener((ActionEvent ae) -> {
+            System.out.println(p);
+        });
 
     }
 
@@ -66,6 +68,5 @@ public class TileButton extends JToggleButton {
     public void setPressedBackgroundColor(Color pressedBackgroundColor) {
         this.pressedBackgroundColor = pressedBackgroundColor;
     }
-
 
 }
