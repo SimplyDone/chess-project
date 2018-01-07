@@ -12,7 +12,6 @@ import java.io.Serializable;
 
 import java.util.List;
 
-
 /**
  * Represents a chessboard.
  *
@@ -127,6 +126,27 @@ public final class Board implements Serializable {
         return checkmate;
     }
 
+    public void checkPosition(Position pos) {
+        Piece p = board[pos.getX()][pos.getY()];
+
+        if (p != null) {
+
+            List<Move> possibleMoves = p.getValidMoves();
+
+
+                System.out.println("-----------------------------------------");
+                System.out.println("Valid moves for " + p.getClass().getSimpleName() + ":");
+                possibleMoves.stream().forEach((m) -> {
+                    System.out.println(m);
+                });
+                System.out.println("-----------------------------------------");
+
+        } else {
+            System.out.println("Invalid selection");
+
+        }
+    }
+
     public boolean checkMove(Move move, ChessColour colour) {
 
         Position oldPos = move.getOldPosition();
@@ -175,24 +195,23 @@ public final class Board implements Serializable {
                         && board[newPos.getX()][newPos.getY()] == null) {
                     board[newPos.getX()][oldPos.getY()] = null;
                 }
-                
-                //TODO fix promotion bug
 
+                //TODO fix promotion bug
                 //promotion condition for human player
                 if (newPos.getY() == 0 || newPos.getY() == 7) {
                     p = getHumanSelection(p);
-                
-                //promotion conditions for ai 
-                } else if (newPos.getY() == -1 || newPos.getY() == 8){
-                    
+
+                    //promotion conditions for ai 
+                } else if (newPos.getY() == -1 || newPos.getY() == 8) {
+
                 }
-                
+
             } else if (p instanceof Rook) {
                 ((Rook) p).flagCastle();
 
             } else if (p instanceof King) {
                 ((King) p).flagCastle();
-                
+
                 //castling condition
                 if (newPos.getX() - oldPos.getX() == 2) { // right side
                     Piece r = board[7][oldPos.getY()];
@@ -219,8 +238,8 @@ public final class Board implements Serializable {
     }
 
     /**
-     * Passes the game to the next player, updates the turn number,
-     * and recalculates the valid moves for all pieces.
+     * Passes the game to the next player, updates the turn number, and
+     * recalculates the valid moves for all pieces.
      */
     public void nextTurn() {
         isWhiteTurn ^= true;
@@ -285,10 +304,9 @@ public final class Board implements Serializable {
 
     }
 
-
     @Override
     public Board clone() {
-        
+
         Board tempBoard = null;
 
         try {
@@ -309,13 +327,12 @@ public final class Board implements Serializable {
 
         return tempBoard;
     }
-    
 
-    public boolean isChecked(Move m, ChessColour colour){
-        
+    public boolean isChecked(Move m, ChessColour colour) {
+
         Board tempBoard = this.clone();
         tempBoard.doMove(m);
-        
+
         return colour == ChessColour.WHITE
                 ? whiteKing.isChecked(this) : blackKing.isChecked(this);
     }

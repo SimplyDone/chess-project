@@ -1,5 +1,6 @@
 package chess.project.graphics;
 
+import chess.project.Board;
 import chess.project.movement.Move;
 import chess.project.movement.Position;
 import chess.project.pieces.Piece;
@@ -18,11 +19,11 @@ public class TileButton extends JToggleButton {
     private Color hoverBackgroundColor = Color.cyan;
     private Color pressedBackgroundColor = Color.BLUE;
 
-    public TileButton(Position p) {
-        this(null, p);
+    public TileButton(Position p, Board b) {
+        this(null, p, b);
     }
 
-    public TileButton(String text, Position p) {
+    public TileButton(String text, Position p, Board b) {
         super(text);
         super.setContentAreaFilled(false);
         setRolloverEnabled(false);
@@ -31,7 +32,7 @@ public class TileButton extends JToggleButton {
         setFocusPainted(false);
 
         addActionListener((ActionEvent ae) -> {
-            System.out.println(p);
+            b.checkPosition(p);
         });
 
     }
