@@ -60,6 +60,9 @@ public class AIPlayer extends Player {
                     bestMove = m;
                     bestScore = currentScore;
 
+                } else if (bestScore == currentScore && Math.random() < 0.5) {
+                    bestMove = m;
+                    bestScore = currentScore;
                 }
             }
             testBoard = board.clone();
@@ -69,15 +72,15 @@ public class AIPlayer extends Player {
         return bestMove;
 
     }
-    
-    private Move miniMax(int depth, Board b, boolean isMaxPlayer){
-        
-        if (depth ==  0){
+
+    private Move miniMax(int depth, Board b, boolean isMaxPlayer) {
+
+        if (depth == 0) {
             // do something
         }
-        
-        if(isMaxPlayer){
-            
+
+        if (isMaxPlayer) {
+
         }
         return null;
     }
