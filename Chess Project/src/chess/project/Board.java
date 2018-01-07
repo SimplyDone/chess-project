@@ -1,6 +1,5 @@
 package chess.project;
 
-
 import chess.project.movement.*;
 import chess.project.pieces.*;
 import java.io.ByteArrayInputStream;
@@ -22,6 +21,8 @@ import java.util.List;
 public final class Board implements Serializable {
 
     private final Piece board[][];
+    private King whiteKing;
+    private King blackKing;
 
     private static final long serialVersionUID = 430L;
 
@@ -59,6 +60,7 @@ public final class Board implements Serializable {
 
         board[3][0] = new Queen(ChessColour.BLACK, new Position(3, 0));
         board[4][0] = new King(ChessColour.BLACK, new Position(4, 0));
+        blackKing = (King) board[4][0];
 
         for (int i = 0; i < 8; i++) {
             board[i][1] = new Pawn(ChessColour.BLACK, new Position(i, 1));
@@ -76,6 +78,7 @@ public final class Board implements Serializable {
 
         board[3][7] = new Queen(ChessColour.WHITE, new Position(3, 7));
         board[4][7] = new King(ChessColour.WHITE, new Position(4, 7));
+        whiteKing = (King) board[4][7];
 
         for (int i = 0; i < 8; i++) {
             board[i][6] = new Pawn(ChessColour.WHITE, new Position(i, 6));
@@ -313,15 +316,7 @@ public final class Board implements Serializable {
         Board tempBoard = this.clone();
         tempBoard.doMove(m);
         
-        for(int i = 0; i<8; i++){
-            for(int j = 0; j < 8; j++){
-                
-                Piece p = tempBoard.getBoard()[i][j];
-                if(p != null && p.getColour() == colour && p instanceof King){
-                    return ((King) p).isChecked(tempBoard);
-                }
-            }
-        }
-        return true;  
+        return colour == ChessColour.WHITE
+                ? whiteKing.isChecked(this) : blackKing.isChecked(this);
     }
 }
