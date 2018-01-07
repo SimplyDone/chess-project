@@ -97,7 +97,11 @@ public class GameHandler {
                 board.doMove(black.getMove());
             }
 
-
+            try{
+            Thread.sleep(500);
+            } catch (Exception e){
+                
+            }
             cgh.updateBoard();
             board.nextTurn();
             board.saveBoard();
