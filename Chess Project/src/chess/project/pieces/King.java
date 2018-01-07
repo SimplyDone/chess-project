@@ -187,7 +187,7 @@ public class King extends Piece {
 
     private boolean kingInstance(Board b, int i, int j) {
         if (b.getBoard()[i][j] instanceof King) {
-            if (Math.abs(this.position.getX() - i) == 1) {
+            if ((Math.abs(this.position.getX() - i) == 1) || (Math.abs(this.position.getY() - j) == 1)) {
                 return true;
             }
         }
