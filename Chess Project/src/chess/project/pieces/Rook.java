@@ -39,6 +39,7 @@ public class Rook extends Piece {
 
                 i += next;
             }
+            
             if ((i >= 0 && i <= 7) && board.getBoard()[i][j].getColour() != colour) {
                 Move m = new Move(position, new Position(i, j));
 
@@ -64,7 +65,7 @@ public class Rook extends Piece {
             if ((j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != colour) {
                 
                 Move m = new Move(position, new Position(i, j));
-                if (!board.checkMove(m, colour)) {
+                if (!board.isChecked(m, colour)) {
                     validMoves.add(m);
                 }
             }
