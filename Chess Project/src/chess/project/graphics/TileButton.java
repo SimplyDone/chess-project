@@ -32,7 +32,8 @@ public class TileButton extends JToggleButton {
         setFocusPainted(false);
 
         addActionListener((ActionEvent ae) -> {
-            b.checkPosition(p);
+            ChessboardGraphicHandler.updateText(b.checkPosition(p));
+            
         });
 
     }

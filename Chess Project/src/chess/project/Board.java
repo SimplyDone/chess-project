@@ -126,25 +126,30 @@ public final class Board implements Serializable {
         return checkmate;
     }
 
-    public void checkPosition(Position pos) {
+    public String checkPosition(Position pos) {
         Piece p = board[pos.getX()][pos.getY()];
+        String msg = "";
 
         if (p != null) {
 
             List<Move> possibleMoves = p.getValidMoves();
 
+            msg += "Valid moves for " + p.getClass().getSimpleName() + ":\n";
 
-                System.out.println("-----------------------------------------");
-                System.out.println("Valid moves for " + p.getClass().getSimpleName() + ":");
-                possibleMoves.stream().forEach((m) -> {
-                    System.out.println(m);
-                });
-                System.out.println("-----------------------------------------");
+            int format = 0;
+            for (Move m : possibleMoves) {
+                if (format % 2 == 0) {
+                    msg += "\n";
+                }
+                msg += m + "    ";
+                format++;
+            }
 
         } else {
-            System.out.println("Invalid selection");
+            return "Invalid selection";
 
         }
+        return msg;
     }
 
     public boolean checkMove(Move move, ChessColour colour) {
@@ -278,29 +283,31 @@ public final class Board implements Serializable {
 
     private Piece getHumanSelection(Piece p) {
 
-        String selection = TextInput.getStringChoice(
-                "What piece would you like (R,k,B,Q): ",
-                "[[Rr][kK][Bb][Qq]]");
-
-        Piece n;
-
-        switch (selection.toLowerCase()) {
-            case "r":
-                n = new Rook(p.getColour(), p.getPosition());
-                break;
-            case "k":
-                n = new Knight(p.getColour(), p.getPosition());
-                break;
-            case "b":
-                n = new Bishop(p.getColour(), p.getPosition());
-                break;
-            case "q":
-                n = new Queen(p.getColour(), p.getPosition());
-                break;
-            default:
-                throw new IllegalStateException(selection + " was a valid choice for a piece");
-        }
-        return n;
+//        String selection = TextInput.getStringChoice(
+//                "What piece would you like (R,k,B,Q): ",
+//                "[[Rr][kK][Bb][Qq]]");
+//
+//        Piece n;
+//
+//        switch (selection.toLowerCase()) {
+//            case "r":
+//                n = new Rook(p.getColour(), p.getPosition());
+//                break;
+//            case "k":
+//                n = new Knight(p.getColour(), p.getPosition());
+//                break;
+//            case "b":
+//                n = new Bishop(p.getColour(), p.getPosition());
+//                break;
+//            case "q":
+//                n = new Queen(p.getColour(), p.getPosition());
+//                break;
+//            default:
+//                throw new IllegalStateException(selection + " was a valid choice for a piece");
+//        }
+//        return n;
+        
+        return new Queen(p.getColour(), p.getPosition());
 
     }
 
