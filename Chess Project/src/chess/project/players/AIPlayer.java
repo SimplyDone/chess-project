@@ -54,7 +54,7 @@ public class AIPlayer extends Player {
             if (bestMove == null) {
                 bestMove = m;
             } else {
-                testBoard.doMove(m, false);
+                testBoard.doMove(m);
                 currentScore = evaluateBoard(testBoard.getBoard());
                 if (bestScore < currentScore) {
                     bestMove = m;
@@ -68,6 +68,18 @@ public class AIPlayer extends Player {
         System.out.println(bestMove + " " + bestScore);
         return bestMove;
 
+    }
+    
+    private Move miniMax(int depth, Board b, boolean isMaxPlayer){
+        
+        if (depth ==  0){
+            // do something
+        }
+        
+        if(isMaxPlayer){
+            
+        }
+        return null;
     }
 
     public double evaluateBoard(Piece[][] board) {
