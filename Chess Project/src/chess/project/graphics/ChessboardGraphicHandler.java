@@ -14,12 +14,11 @@ public class ChessboardGraphicHandler extends JFrame {
     private final static JToggleButton[][] squares = new JToggleButton[8][8];
 
     //current positon
-    private Board board;
-   
+    private final Board board;
 
     public ChessboardGraphicHandler(Board board) {
         super("Chess GUI Test");
-        
+
         this.board = board;
         this.boardContents = getContentPane();
         this.boardContents.setLayout(new GridLayout(8, 8));
@@ -27,7 +26,7 @@ public class ChessboardGraphicHandler extends JFrame {
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
 
-                squares[i][j] = new TileButton(new Position(i,j));
+                squares[i][j] = new TileButton(new Position(i, j), board);
 
                 //squares[i][j].setRolloverEnabled(false);
                 if ((i + j) % 2 != 0) {
@@ -35,7 +34,8 @@ public class ChessboardGraphicHandler extends JFrame {
                 } else {
                     squares[i][j].setBackground(Color.white);
                 }
-                                
+
+
                 boardContents.add(squares[i][j]);
                 //add action listenser to squares    
             }
@@ -54,14 +54,14 @@ public class ChessboardGraphicHandler extends JFrame {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board.getBoard()[i][j] != null) {
-                    
-                    if(board.getBoard()[i][j].getColour() == ChessColour.WHITE){
+
+                    if (board.getBoard()[i][j].getColour() == ChessColour.WHITE) {
                         squares[i][j].setForeground(Color.RED);
                     } else {
                         squares[i][j].setForeground(Color.GREEN);
                     }
                     squares[i][j].setText(board.getBoard()[i][j].toString());
-                    
+
                 } else {
                     squares[i][j].setText("");
                 }
