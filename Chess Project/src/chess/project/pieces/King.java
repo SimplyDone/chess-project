@@ -196,8 +196,8 @@ public class King extends Piece {
         return castlable;
     }
 
-    public void flagCastle() {
-        castlable = false;
+    public void setCastle(boolean b) {
+        castlable = b;
     }
 
     @Override

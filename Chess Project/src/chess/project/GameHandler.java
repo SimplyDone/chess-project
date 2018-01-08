@@ -91,7 +91,7 @@ public class GameHandler {
 
             board.printBoard();
 
-            if (board.getTurn()) {
+            if (board.getTurn() == ChessColour.WHITE) {
                 board.doMove(white.getMove());
             } else {
                 board.doMove(black.getMove());

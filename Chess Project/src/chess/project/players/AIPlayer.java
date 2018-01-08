@@ -22,95 +22,72 @@ public class AIPlayer extends Player {
     public Move getMove() {
 
         System.out.println(colour);
-        int[] v = miniMax(difficulty, board, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        int[] v = miniMax(difficulty, board.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         Move m = new Move(new Position(v[1], v[2]), new Position(v[3], v[4]));
         System.out.println(m + " " + v[0]);
         return m;
 
     }
 
-    private int[] miniMax(int depth, Board b, boolean isMaxPlayer, int alpha, int beta) {
+    private int[] miniMax(int depth, Board b, int alpha, int beta, boolean isMaxPlayer) {
 
-        Board tempBoard;
-        ChessColour c;
-        
-        //might need to be changed
-        if (isMaxPlayer) {
-            c = colour;
+        ChessColour c = b.getTurn();
+        int score;
+        Move bestMove = new Move(new Position(-5, -5), new Position(-5, -5));
+
+        List<Move>[] validMoves = getValidMoves(b.getBoard(), c);
+        List<Move> myMoves;
+
+        if (c == colour) {
+            myMoves = validMoves[0];
         } else {
-            if (colour == ChessColour.WHITE) {
-                c = ChessColour.BLACK;
-            } else {
-                c = ChessColour.WHITE;
-            }
+            myMoves = validMoves[1];
         }
 
-        List<Move>[] validMoves = getValidMoves(b.getBoard(), c); //generate move list here
+        if (myMoves.isEmpty() || depth == 0) {
+            score = evaluateBoard(b, validMoves);
+            return new int[]{score, -10, -10, -10, -10};
+        } else {
 
-        int bestScore = isMaxPlayer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-        int currScore;
-        Move bestMove = null;
+            Collections.shuffle(myMoves);
+            Board tempBoard;
 
-        //exit
-        if (validMoves[0].isEmpty() || depth == 0) {
-            return new int[]{bestScore, -1, -1, -1, -1};
-        }
-        
-        if (isMaxPlayer) {
-            for (Move m : validMoves[0]) {
-                tempBoard = b.clone();
+            for (Move m : myMoves) {
+                tempBoard = b.clone();//reset board 
 
                 tempBoard.doMove(m);
-                currScore = miniMax(depth - 1, tempBoard, !isMaxPlayer, alpha, beta)[0];
-
-                if ((currScore > bestScore) || (currScore == bestScore && Math.random() < 0.05)) {
-                    bestScore = currScore;
-                    bestMove = m;
+                tempBoard.nextTurn();
+                if (isMaxPlayer) {
+                    score = miniMax(depth - 1, tempBoard, alpha, beta, !isMaxPlayer)[0];
+                    if (score > alpha) {
+                        alpha = score;
+                        bestMove = m;
+                    }
+                } else { //not max player
+                    score = miniMax(depth - 1, tempBoard, alpha, beta, !isMaxPlayer)[0];
+                    if (score < beta) {
+                        beta = score;
+                        bestMove = m;
+                    }
                 }
-                
-                alpha = Math.max(alpha, bestScore);
-                
-                if(beta <= alpha){
+
+                if (alpha >= beta) {
                     break;
                 }
-
+                //b.undo();
             }
-        } else {
-            for (Move m : validMoves[0]) {
-                tempBoard = b.clone();
-
-                tempBoard.doMove(m);
-                currScore = miniMax(depth - 1, tempBoard, !isMaxPlayer, alpha, beta)[0];
-
-                if ((currScore < bestScore) || (currScore == bestScore && Math.random() < 0.05)) {
-                    bestScore = currScore;
-                    bestMove = m;
-                }
-                
-                beta = Math.min(beta, bestScore);
-                
-                if(beta <= alpha){
-                    break;
-                }
-
-            }
-
         }
-        if (bestMove != null) {
 
-            Position oldPos = bestMove.getOldPosition();
-            Position newPos = bestMove.getNewPosition();
+        Position o = bestMove.getOldPosition();
+        Position n = bestMove.getNewPosition();
 
-            return new int[]{bestScore, oldPos.getX(), oldPos.getY(), newPos.getX(), newPos.getY()};
-        } else {
-            return new int[]{bestScore, 0, 0, 0, 0};
-        }
+        return new int[]{isMaxPlayer ? alpha : beta, o.getX(), o.getY(), n.getX(), n.getY()};
     }
 
     private List<Move>[] getValidMoves(Piece[][] tempBoard, ChessColour c) {
 
         List<Move> validMoves = new LinkedList<>();
-        List<Move> enemyMoves = new LinkedList<>();
+        List<Move> badGuyMoves = new LinkedList<>();
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -118,12 +95,12 @@ public class AIPlayer extends Player {
                     if (tempBoard[i][j].getColour() == c) {
                         validMoves.addAll(tempBoard[i][j].getValidMoves());
                     } else {
-                        enemyMoves.addAll(tempBoard[i][j].getValidMoves());
+                        badGuyMoves.addAll(tempBoard[i][j].getValidMoves());
                     }
                 }
             }
         }
-        return new List[]{validMoves, enemyMoves};
+        return new List[]{validMoves, badGuyMoves};
     }
 
     public int evaluateBoard(Board b, List<Move>[] validMoves) {
@@ -161,17 +138,8 @@ public class AIPlayer extends Player {
             }
         }
 
-        score += 1 * validMoves[0].size();
-        score -= 1 * validMoves[1].size();
-
-//        if (validMoves[0].isEmpty()) {
-//            score = Integer.MIN_VALUE;
-//        }
-//
-//        if (validMoves[1].isEmpty()) {
-//            score = Integer.MAX_VALUE;
-//        }
-
+        score += 10 * validMoves[0].size();
+        score -= 10 * validMoves[1].size();
         return score;
     }
 

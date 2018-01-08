@@ -84,8 +84,8 @@ public class Rook extends Piece {
     /** This method flags the rook as unable to be used for castling.
      * 
      */
-    public void flagCastle() {
-        castlable = false;
+    public void setCastle(boolean b) {
+        castlable = b;
     }
  
     @Override
