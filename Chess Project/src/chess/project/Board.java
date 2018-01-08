@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Represents a chessboard.
@@ -18,6 +19,10 @@ import java.util.List;
  * @author Alex Zurad, Robbie McDonnell
  */
 public final class Board implements Serializable {
+
+    private Stack<Boolean> undoFlagStack;
+    private Stack<Piece> undoPieceStack;
+    private Stack<Move> undoMoveStack;
 
     private final Piece board[][];
     private King whiteKing;
@@ -37,6 +42,9 @@ public final class Board implements Serializable {
         board = new Piece[8][8];
         isWhiteTurn = true;
         turnNumber = 0;
+        undoFlagStack = new Stack();
+        undoPieceStack = new Stack();
+        undoMoveStack = new Stack();
         initializeBoard();
 
     }
@@ -53,10 +61,8 @@ public final class Board implements Serializable {
 
         board[1][0] = new Knight(ChessColour.BLACK, new Position(1, 0));
         board[6][0] = new Knight(ChessColour.BLACK, new Position(6, 0));
-
         board[2][0] = new Bishop(ChessColour.BLACK, new Position(2, 0));
         board[5][0] = new Bishop(ChessColour.BLACK, new Position(5, 0));
-
         board[3][0] = new Queen(ChessColour.BLACK, new Position(3, 0));
         board[4][0] = new King(ChessColour.BLACK, new Position(4, 0));
         blackKing = (King) board[4][0];
@@ -64,17 +70,14 @@ public final class Board implements Serializable {
         for (int i = 0; i < 8; i++) {
             board[i][1] = new Pawn(ChessColour.BLACK, new Position(i, 1));
         }
-
         //white
         board[0][7] = new Rook(ChessColour.WHITE, new Position(0, 7));
         board[7][7] = new Rook(ChessColour.WHITE, new Position(7, 7));
 
         board[1][7] = new Knight(ChessColour.WHITE, new Position(1, 7));
         board[6][7] = new Knight(ChessColour.WHITE, new Position(6, 7));
-
         board[2][7] = new Bishop(ChessColour.WHITE, new Position(2, 7));
         board[5][7] = new Bishop(ChessColour.WHITE, new Position(5, 7));
-
         board[3][7] = new Queen(ChessColour.WHITE, new Position(3, 7));
         board[4][7] = new King(ChessColour.WHITE, new Position(4, 7));
         whiteKing = (King) board[4][7];
@@ -82,7 +85,6 @@ public final class Board implements Serializable {
         for (int i = 0; i < 8; i++) {
             board[i][6] = new Pawn(ChessColour.WHITE, new Position(i, 6));
         }
-
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
 
@@ -105,7 +107,7 @@ public final class Board implements Serializable {
                 if (board[j][i] != null) {
                     System.out.print(board[j][i] + "|");
                 } else {
-                    System.out.print("X|");
+                    System.out.print("0|");
                 }
             }
             System.out.println();
@@ -182,6 +184,9 @@ public final class Board implements Serializable {
 
     public void doMove(Move move) {
 
+        //System.out.println("testing for " + getTurn() + " " + move);
+
+        undoMoveStack.add(move);
         Position oldPos = move.getOldPosition();
         Position newPos = move.getNewPosition();
 
@@ -212,27 +217,44 @@ public final class Board implements Serializable {
                 }
 
             } else if (p instanceof Rook) {
-                ((Rook) p).flagCastle();
+                ((Rook) p).setCastle(false);
+                undoFlagStack.add(true);
 
             } else if (p instanceof King) {
-                ((King) p).flagCastle();
+                ((King) p).setCastle(false);
+                undoFlagStack.add(true);
 
                 //castling condition
                 if (newPos.getX() - oldPos.getX() == 2) { // right side
-                    Piece r = board[7][oldPos.getY()];
+                    Rook r = (Rook) board[7][oldPos.getY()];
+                    //System.out.println(r);
+                    
+                    undoPieceStack.add(null);
                     completeMove(r, r.getPosition(), new Position(5, oldPos.getY()));
                 } else if (newPos.getX() - oldPos.getX() == -2) { // left side
-                    Piece r = board[0][oldPos.getY()];
+                    Rook r = (Rook) board[0][oldPos.getY()];
+
+//                    System.out.println();
+//                    for (int i = 0; i < 8; i++) {
+//                        for (int j = 0; j < 8; j++) {
+//                            System.out.print(board[j][i] + " ");
+//                        }
+//                        System.out.println();
+//                    }
+//
+                    undoPieceStack.add(null);
                     completeMove(r, r.getPosition(), new Position(3, oldPos.getY()));
                 }
             }
-
+            
+            undoPieceStack.add(board[newPos.getX()][newPos.getY()]);
             completeMove(p, oldPos, newPos);
 
         }
     }
 
     private void completeMove(Piece p, Position oldPos, Position newPos) {
+        
         p.move(newPos);
         board[oldPos.getX()][oldPos.getY()] = null;
         board[newPos.getX()][newPos.getY()] = p;
@@ -260,12 +282,12 @@ public final class Board implements Serializable {
     }
 
     /**
-     * Returns true if it is white's turn false if it is black's turn
+     * Returns the Colour of who's turn it is
      *
      * @return current player's turn
      */
-    public boolean getTurn() {
-        return isWhiteTurn;
+    public ChessColour getTurn() {
+        return isWhiteTurn ? ChessColour.WHITE : ChessColour.BLACK;
     }
 
     public void saveBoard() {
@@ -306,8 +328,52 @@ public final class Board implements Serializable {
 //                throw new IllegalStateException(selection + " was a valid choice for a piece");
 //        }
 //        return n;
-        
         return new Queen(p.getColour(), p.getPosition());
+
+    }
+
+    public void undo() {
+        
+        
+        printBoard();
+
+        Move lastMove = undoMoveStack.pop();
+        Piece lastTaken = undoPieceStack.pop();
+        boolean lastFlag = undoFlagStack.pop();
+
+        Position to = lastMove.getNewPosition();
+        Position from = lastMove.getOldPosition();
+
+        Piece lastMoved = board[to.getX()][to.getY()];
+
+        if (lastMoved instanceof King) {
+
+            if (lastFlag) {
+                ((King) lastMoved).setCastle(true);
+            }
+
+            if (from.getX() - to.getX() == 2) { // right side
+
+                Rook r = (Rook) board[5][from.getY()];
+                completeMove(r, r.getPosition(), new Position(7, from.getY()));
+            } else if (from.getX() - to.getX() == -2) { // left side
+
+                Rook r = (Rook) board[2][from.getY()];
+                completeMove(r, r.getPosition(), new Position(0, from.getY()));
+            }
+
+        } else if (lastMoved instanceof Rook) {
+            if (lastFlag) {
+                ((Rook) lastMoved).setCastle(true);
+            }
+        } else if (lastMoved instanceof Pawn) {
+            
+        }
+
+        completeMove(lastMoved, to, from);
+        board[to.getX()][to.getY()] = lastTaken;
+        
+        printBoard();
 
     }
 
