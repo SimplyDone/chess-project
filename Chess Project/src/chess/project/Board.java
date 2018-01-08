@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Represents a chessboard.
+ * Represents a chessboard
  *
  * @author Alex Zurad, Robbie McDonnell
  */
@@ -37,6 +37,10 @@ public final class Board implements Serializable {
     private boolean isBlackChecked = false;
     private boolean checkmate = false;
 
+    /**creates a standard 8x8 array that contains pieces and nulls to represent
+     * the chess board
+     * this also keeps track of the turn number and which players turn it is
+     */
     public Board() {
 
         board = new Piece[8][8];
@@ -48,10 +52,10 @@ public final class Board implements Serializable {
         initializeBoard();
 
     }
-
+    
     /**
-     * Called when a new board instance is created.
-     *
+     * Called when a new board instance is created
+     * places pieces in a standard chess layout
      */
     public void initializeBoard() {
 
@@ -96,6 +100,9 @@ public final class Board implements Serializable {
 
     }
 
+    /**prints the current board state
+     * 
+     */
     public void printBoard() {
 
         System.out.println();
@@ -114,6 +121,10 @@ public final class Board implements Serializable {
         }
     }
 
+    /**Checks if checkmate is true
+     * 
+     * @return 
+     */
     public boolean isCheckmate() {
         if (checkmate) {
             if (isWhiteChecked) {

@@ -5,15 +5,15 @@ import chess.project.movement.*;
 
 /**
  *
- * @author Alex Zurad, 
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class Bishop extends Piece {
 
     public Bishop(ChessColour col, Position pos) {
         super(col, pos);
     }
-
     
+
     @Override
     public void updateValidMoves(Board board) {
         validMoves.clear();
@@ -49,7 +49,6 @@ public class Bishop extends Piece {
                 }
             }
         }
-
     }
 
     @Override
