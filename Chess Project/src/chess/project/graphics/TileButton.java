@@ -14,7 +14,7 @@ import javax.swing.border.LineBorder;
  *
  * @author Alex Zurad
  */
-public class TileButton extends JToggleButton {
+public class TileButton extends JButton {
 
     private Color hoverBackgroundColor = Color.cyan;
     private Color pressedBackgroundColor = Color.BLUE;

@@ -7,13 +7,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 public class ChessboardGraphicHandler extends JFrame {
 
     private final Container allContents;
     private static JTextArea infoContents;
     private final Container boardContents;
-    private final static JToggleButton[][] squares = new JToggleButton[8][8];
+    private final static JButton[][] squares = new JButton[9][9];
 
     private final Board board;
 
@@ -21,40 +22,58 @@ public class ChessboardGraphicHandler extends JFrame {
         super("Chess GUI Test");
 
         this.board = board;
-        
+
         allContents = getContentPane();
-        allContents.setLayout(new BorderLayout());
-        
+        allContents.setLayout(new BorderLayout(15,15));
+
         boardContents = new JPanel();
-        boardContents.setLayout(new GridLayout(8, 8));
-        boardContents.setPreferredSize(new Dimension(512,512));
-        
+        boardContents.setLayout(new GridLayout(9, 9));
+        boardContents.setPreferredSize(new Dimension(576, 576));
+
         infoContents = new JTextArea("A wild thing has appeared!");
-        infoContents.setPreferredSize(new Dimension(256, 512));
+        infoContents.setPreferredSize(new Dimension(256, 576));
         infoContents.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        
+        for (int j = 0; j < 9; j++) {
+            for (int i = 0; i < 9; i++) {
 
-        for (int j = 0; j < 8; j++) {
-            for (int i = 0; i < 8; i++) {
+                if (i == 0 && j == 8) {
+                    
+                    JTextField letter = new LetterTextField();
+                    boardContents.add(letter);
 
-                squares[i][j] = new TileButton(new Position(i, j), board);
+                } else if (j == 8) {
+                    
+                    JTextField letter = new LetterTextField(Character.toString((char) ((new Position(i-1, j)).getX() + 97)));
+                    boardContents.add(letter);
 
-                //squares[i][j].setRolloverEnabled(false);
-                if ((i + j) % 2 != 0) {
-                    squares[i][j].setBackground(Color.black);
+                } else if (i == 0) {
+
+                     JTextField letter = new LetterTextField(String.valueOf(Math.abs((new Position(i-1, j)).getY() - 8)));
+                     boardContents.add(letter);
+
                 } else {
-                    squares[i][j].setBackground(Color.white);
+
+                    squares[i - 1][j] = new TileButton(new Position(i - 1, j), board);
+
+                    //squares[i][j].setRolloverEnabled(false);
+                    if ((i + j) % 2 != 0) {
+                        squares[i - 1][j].setBackground(Color.black);
+                    } else {
+                        squares[i - 1][j].setBackground(Color.white);
+                    }
+                    
+                    boardContents.add(squares[i- 1][j]);
+
                 }
 
-
-                boardContents.add(squares[i][j]);
-                //add action listenser to squares    
+                
             }
         }
-        
+        allContents.setBackground(Color.white);
         allContents.add(boardContents, BorderLayout.CENTER);
         allContents.add(infoContents, BorderLayout.LINE_END);
 
-        
         this.pack();
         //setSize(512, 600);
         setResizable(false);
@@ -71,9 +90,9 @@ public class ChessboardGraphicHandler extends JFrame {
                 if (board.getBoard()[i][j] != null) {
 
                     if (board.getBoard()[i][j].getColour() == ChessColour.WHITE) {
-                        squares[i][j].setForeground(Color.RED);
-                    } else {
                         squares[i][j].setForeground(Color.GREEN);
+                    } else {
+                        squares[i][j].setForeground(Color.RED);
                     }
                     squares[i][j].setText(board.getBoard()[i][j].toString());
 
@@ -83,8 +102,8 @@ public class ChessboardGraphicHandler extends JFrame {
             }
         }
     }
-    
-    public static void updateText(String msg){
+
+    public static void updateText(String msg) {
         infoContents.setText(msg);
     }
 }
