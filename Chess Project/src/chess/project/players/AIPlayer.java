@@ -63,46 +63,46 @@ public class AIPlayer extends Player {
 
         Board tempBoard;
         ChessColour c;
-        if(isMaxPlayer){
+        if (isMaxPlayer) {
             c = colour;
         } else {
-            if (colour == ChessColour.WHITE){
+            if (colour == ChessColour.WHITE) {
                 c = ChessColour.BLACK;
             } else {
                 c = ChessColour.WHITE;
             }
         }
-        
-        List<Move> validMoves = getValidMoves(b.getBoard(), c); //generate move list here
+
+        List<Move>[] validMoves = getValidMoves(b.getBoard(), c); //generate move list here
 
         int bestScore = isMaxPlayer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         int currScore;
         Move bestMove = null;
 
-        if (validMoves.isEmpty() || depth == 0) {
-            bestScore = evaluateBoard(b);
+        if (validMoves[0].isEmpty() || depth == 0) {
+            bestScore = evaluateBoard(b, validMoves);
         } else {
             if (isMaxPlayer) {
-                for (Move m : validMoves) {
+                for (Move m : validMoves[0]) {
                     tempBoard = b.clone();
 
                     tempBoard.doMove(m);
                     currScore = miniMax(depth - 1, tempBoard, !isMaxPlayer)[0];
 
-                    if ((currScore > bestScore ) || (currScore == bestScore && Math.random() < 0.05)) {
+                    if ((currScore > bestScore) || (currScore == bestScore && Math.random() < 0.05)) {
                         bestScore = currScore;
                         bestMove = m;
                     }
 
                 }
             } else {
-                for (Move m : validMoves) {
+                for (Move m : validMoves[0]) {
                     tempBoard = b.clone();
 
                     tempBoard.doMove(m);
                     currScore = miniMax(depth - 1, tempBoard, !isMaxPlayer)[0];
 
-                    if ((currScore < bestScore ) || (currScore == bestScore && Math.random() < 0.05)) {
+                    if ((currScore < bestScore) || (currScore == bestScore && Math.random() < 0.05)) {
                         bestScore = currScore;
                         bestMove = m;
                     }
@@ -120,26 +120,29 @@ public class AIPlayer extends Player {
             return new int[]{bestScore, oldPos.getX(), oldPos.getY(), newPos.getX(), newPos.getY()};
         } else {
             return new int[]{bestScore, -1, -1, -1, -1};
+        }
     }
-}
 
-private List getValidMoves(Piece[][] tempBoard, ChessColour c) {
+    private List<Move>[] getValidMoves(Piece[][] tempBoard, ChessColour c) {
 
         List<Move> validMoves = new LinkedList<>();
-        
+        List<Move> enemyMoves = new LinkedList<>();
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (tempBoard[i][j] != null) {
                     if (tempBoard[i][j].getColour() == c) {
                         validMoves.addAll(tempBoard[i][j].getValidMoves());
+                    } else {
+                        enemyMoves.addAll(tempBoard[i][j].getValidMoves());
                     }
                 }
             }
         }
-        return validMoves;
+        return new List[] { validMoves, enemyMoves };
     }
 
-    public int evaluateBoard(Board b) {
+    public int evaluateBoard(Board b, List<Move>[] validMoves) {
         int score = 0;
 
         int modifier = 1;
@@ -173,8 +176,8 @@ private List getValidMoves(Piece[][] tempBoard, ChessColour c) {
                 }
             }
         }
-        //score += 1 * allValidMoves.size();
-        //score -= 1 * allEnemyMoves.size();
+        score += 1 * validMoves[0].size();
+        score -= 1 * validMoves[1].size();
         return score;
     }
 
