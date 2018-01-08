@@ -23,29 +23,18 @@ public class Bishop extends Piece {
         for (int iNext = -1; iNext <= 1; iNext+=2) {
             for (int jNext = -1; jNext <= 1; jNext+=2) {
 
-                i = this.position.getX();
-                j = this.position.getY();
+                i = this.position.getX() + iNext;
+                j = this.position.getY() + jNext;
 
-                i += iNext;
-                j += jNext;
+                while (inBounds(i) && inBounds(j) && (null == board.getBoard()[i][j])) {
 
-                while ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && (null == board.getBoard()[i][j])) {
-                    Move m = new Move(position, new Position(i, j));
-
-                    if (!board.isChecked(m, this.colour)) {
-                        validMoves.add(m);
-                    }
-
+                    addMove(board, i, j);
                     i += iNext;
                     j += jNext;
                 }
 
-                if ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != this.colour) {
-                    Move m = new Move(position, new Position(i, j));
-
-                    if (!board.isChecked(m, colour)) {
-                        validMoves.add(m);
-                    }
+                if (inBounds(i) && inBounds(j) && board.getBoard()[i][j].getColour() != colour) {
+                    addMove(board, i, j);
                 }
             }
         }

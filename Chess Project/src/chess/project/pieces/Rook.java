@@ -30,22 +30,14 @@ public class Rook extends Piece {
             i = this.position.getX();
             j = this.position.getY();
             i += next;
-            while ((i >= 0 && i <= 7) && (null == board.getBoard()[i][j])) {
-                Move m = new Move(position, new Position(i, j));
-
-                if (!board.isChecked(m, colour)) {
-                    validMoves.add(m);
-                }
+            while (inBounds(i) && (null == board.getBoard()[i][j])) {
+                addMove(board, i, j);
 
                 i += next;
             }
             
-            if ((i >= 0 && i <= 7) && board.getBoard()[i][j].getColour() != colour) {
-                Move m = new Move(position, new Position(i, j));
-
-                if (!board.isChecked(m, colour)) {
-                    validMoves.add(m);
-                }
+            if (inBounds(i) && board.getBoard()[i][j].getColour() != colour) {
+                addMove(board, i, j);
             }
         }
         //////////////////////////same as above fory axis///////////////////////
@@ -53,21 +45,13 @@ public class Rook extends Piece {
             i = this.position.getX();
             j = this.position.getY();
             j += next;
-            while ((j >= 0 && j <= 7) && (null == board.getBoard()[i][j])) {
-                Move m = new Move(position, new Position(i, j));
-
-                if (!board.isChecked(m, colour)) {
-                    validMoves.add(m);
-                }
+            while (inBounds(j) && null == board.getBoard()[i][j]) {
+                addMove(board, i, j);
 
                 j += next;
             }
-            if ((j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != colour) {
-                
-                Move m = new Move(position, new Position(i, j));
-                if (!board.isChecked(m, colour)) {
-                    validMoves.add(m);
-                }
+            if (inBounds(j) && board.getBoard()[i][j].getColour() != colour) {
+                addMove(board, i, j);
             }
         }
         
