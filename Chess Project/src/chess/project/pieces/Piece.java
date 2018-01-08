@@ -68,5 +68,26 @@ public abstract class Piece implements Serializable {
     public Position getPosition() {
         return position;
     }
+    /**adds a move to the validMoves list if it will not put it's allied King in check
+     * 
+     * @param board an array containing all pieces and information regarding turns
+     * @param x the horizontal position of the moves final location
+     * @param y the vertical position of the moves final location
+     */
+    protected void addMove(Board board, int x, int y){
+        Move m = new Move(position, new Position(x, y));
+        if (!board.isChecked(m, colour)) { 
+            validMoves.add(m);
+        }
+    }
+    
+    /**checks if an arbitrary x or y position is within the bounds of the board
+     * 
+     * @param p the position of the piece
+     * @return true if the piece is within the bounds
+     */
+    protected boolean inBounds(int p){
+        return (0 <= p && p <= 7);
+    }
 
 }

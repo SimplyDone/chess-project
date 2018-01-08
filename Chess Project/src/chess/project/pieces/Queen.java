@@ -29,29 +29,18 @@ public class Queen extends Piece {
 
             for (int jNext = -1; jNext <= 1; jNext += 2) {
 
-                i = this.position.getX();
-                j = this.position.getY();
+                i = this.position.getX() + iNext;
+                j = this.position.getY() + jNext;
 
-                i += iNext;
-                j += jNext;
-
-                while ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && (null == board.getBoard()[i][j])) {
-                    Move m = new Move(position, new Position(i, j));
-
-                    if (!board.isChecked(m, colour)) {
-                        validMoves.add(m);
-                    }
+                while (inBounds(i) && inBounds(j) && (null == board.getBoard()[i][j])) {
+                    addMove(board, i, j);
 
                     i += iNext;
                     j += jNext;
                 }
 
-                if ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != colour) {
-                    Move m = new Move(position, new Position(i, j));
-
-                    if (!board.isChecked(m, colour)) {
-                        validMoves.add(m);
-                    }
+                if (inBounds(i) && inBounds(j) && board.getBoard()[i][j].getColour() != colour) {
+                    addMove(board, i, j);
                 }
             }
         }
@@ -61,21 +50,13 @@ public class Queen extends Piece {
             i = this.position.getX();
             j = this.position.getY();
             i += next;
-            while ((i >= 0 && i <= 7) && (null == board.getBoard()[i][j])) {
-                Move m = new Move(position, new Position(i, j));
-
-                if (!board.isChecked(m, colour)) {
-                    validMoves.add(m);
-                }
+            while (inBounds(i) && (null == board.getBoard()[i][j])) {
+                addMove(board, i, j);
 
                 i += next;
             }
-            if ((i >= 0 && i <= 7) && board.getBoard()[i][j].getColour() != colour) {
-                Move m = new Move(position, new Position(i, j));
-
-                if (!board.isChecked(m, colour)) {
-                    validMoves.add(m);
-                }
+            if (inBounds(i) && board.getBoard()[i][j].getColour() != colour) {
+                addMove(board, i, j);
             }
         }
         //////////////////        same as above for y axis      ////////////////
@@ -83,21 +64,13 @@ public class Queen extends Piece {
             i = this.position.getX();
             j = this.position.getY();
             j += next;
-            while ((j >= 0 && j <= 7) && (null == board.getBoard()[i][j])) {
-                Move m = new Move(position, new Position(i, j));
-
-                if (!board.isChecked(m, colour)) {
-                    validMoves.add(m);
-                }
+            while (inBounds(j) && (null == board.getBoard()[i][j])) {
+                addMove(board, i, j);
 
                 j += next;
             }
-            if ((j >= 0 && j <= 7) && board.getBoard()[i][j].getColour() != colour) {
-                Move m = new Move(position, new Position(i, j));
-
-                if (!board.isChecked(m, colour)) {
-                    validMoves.add(m);
-                }
+            if (inBounds(j) && board.getBoard()[i][j].getColour() != colour) {
+                addMove(board, i, j);
             }
         }
     }

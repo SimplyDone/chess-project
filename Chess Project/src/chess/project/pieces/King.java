@@ -26,14 +26,11 @@ public class King extends Piece {
         for (int iNext = -1; iNext <= 1; iNext++) {
             for (int jNext = -1; jNext <= 1; jNext++) {
 
-                if (((i + iNext) >= 0 && (i + iNext) <= 7) && ((j + jNext) >= 0 && (j + jNext) <= 7)) {
+                if (inBounds(i+iNext) && inBounds(j+jNext)) {
 
-                    if (null == board.getBoard()[i + iNext][j + jNext] || this.getColour() != board.getBoard()[i + iNext][j + jNext].getColour()) {
+                    if (null == board.getBoard()[i + iNext][j + jNext] || colour != board.getBoard()[i + iNext][j + jNext].getColour()) {
 
-                        Move m = new Move(position, new Position(i + iNext, j + jNext));
-                        if (!board.isChecked(m, colour)) {
-                            validMoves.add(m);
-                        }
+                        addMove(board, i+iNext, j+jNext);
                     }
                 }
             }
@@ -99,23 +96,23 @@ public class King extends Piece {
                 i += iNext;
                 j += jNext;
 
-                while ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && b.getBoard()[i][j] == null) {
+                while (inBounds(i) && inBounds(j) && b.getBoard()[i][j] == null) {
                     i += iNext;
                     j += jNext;
                 }
 
-                if ((i >= 0 && i <= 7) && (j >= 0 && j <= 7) && b.getBoard()[i][j].getColour() != this.getColour()) {
+                if (inBounds(i) && inBounds(j) && b.getBoard()[i][j].getColour() != colour) {
                     if (b.getBoard()[i][j] instanceof Bishop || b.getBoard()[i][j] instanceof Queen) {
                         return true;
                     } else if (kingInstance(b, i, j)) {
                         return true;
                     } else if (b.getBoard()[i][j] instanceof Pawn) {
                         if (colour == ChessColour.WHITE) {
-                            if ((this.position.getY() - j) == 1) {
+                            if ((position.getY() - j) == 1) {
                                 return true;
                             }
                         } else {
-                            if ((this.position.getY() - j) == -1) {
+                            if ((position.getY() - j) == -1) {
                                 return true;
                             }
                         }
@@ -129,10 +126,10 @@ public class King extends Piece {
             i = this.position.getX();
             j = this.position.getY();
             i += next;
-            while ((i >= 0 && i <= 7) && (null == b.getBoard()[i][j])) {
+            while (inBounds(i) && null == b.getBoard()[i][j]) {
                 i += next;
             }
-            if ((i >= 0 && i <= 7) && b.getBoard()[i][j].getColour() != this.getColour()) {
+            if (inBounds(i) && b.getBoard()[i][j].getColour() != colour) {
                 if (b.getBoard()[i][j] instanceof Rook || b.getBoard()[i][j] instanceof Queen) {
                     return true;
                 } else if (kingInstance(b, i, j)) {
@@ -142,13 +139,13 @@ public class King extends Piece {
         }
         //////////////////        same as above for y axis      ////////////////
         for (int next = -1; next <= 1; next += 2) {
-            i = this.position.getX();
-            j = this.position.getY();
+            i = position.getX();
+            j = position.getY();
             j += next;
-            while ((j >= 0 && j <= 7) && (null == b.getBoard()[i][j])) {
+            while (inBounds(j) && (null == b.getBoard()[i][j])) {
                 j += next;
             }
-            if ((j >= 0 && j <= 7) && b.getBoard()[i][j].getColour() != this.getColour()) {
+            if (inBounds(j) && b.getBoard()[i][j].getColour() != colour) {
                 if (b.getBoard()[i][j] instanceof Rook || b.getBoard()[i][j] instanceof Queen) {
                     return true;
                 } else if (kingInstance(b, i, j)) {
@@ -171,7 +168,7 @@ public class King extends Piece {
                 if ((rowDelta == 1 && colDelta == 2) || (rowDelta == 2 && colDelta == 1)) {
 
                     Piece p = b.getBoard()[i][j];
-                    if (p != null && p.getColour() != this.getColour()) {
+                    if (p != null && p.getColour() != colour) {
                         if (b.getBoard()[i][j] instanceof Knight) {
                             return true;
                         }
@@ -185,7 +182,7 @@ public class King extends Piece {
 
     private boolean kingInstance(Board b, int i, int j) {
         if (b.getBoard()[i][j] instanceof King) {
-            if ((Math.abs(this.position.getX() - i) == 1) || (Math.abs(this.position.getY() - j) == 1)) {
+            if ((Math.abs(position.getX() - i) == 1) || (Math.abs(position.getY() - j) == 1)) {
                 return true;
             }
         }

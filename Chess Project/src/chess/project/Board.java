@@ -276,6 +276,7 @@ public final class Board implements Serializable {
                     board[newPos.getX()][oldPos.getY()] = null;
                 }
 
+                
                 //TODO fix promotion bug
                 //promotion condition for human player
                 if (newPos.getY() == 0 || newPos.getY() == 7) {
