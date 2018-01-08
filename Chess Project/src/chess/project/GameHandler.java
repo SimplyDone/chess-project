@@ -3,6 +3,8 @@ package chess.project;
 import chess.project.graphics.ChessboardGraphicHandler;
 import chess.project.players.*;
 import java.io.*;
+import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  * Handles the main operations of the game. Handles player moves, ai moves,
@@ -30,16 +32,21 @@ public class GameHandler {
      */
     private void initializeGame() {
 
-        boolean loadBoard;
+        int loadBoard;
         int numHumans;
 
-        loadBoard = TextInput.getBoolChoice(
-                "Would you like to load a previous save? (1-Yes 2-No): ");
+        loadBoard = TextInput.getIntChoice(
+                "Would you like to load the last save? (1-Yes 2-No 3-Load from test file): ",
+                "[1-3]");
 
-        if (loadBoard) {
+        if (loadBoard == 1) {
             board = loadBoardFromFile();
-        } else {
+        } else if (loadBoard == 2) {
             board = new Board();
+        } else {
+            String filename = TextInput.getStringChoice(
+                    "Enter the filename to load from: ", ".*");
+            board = loadBoardFromTextFile(new File(filename));
         }
 
         numHumans = TextInput.getIntChoice(
@@ -99,7 +106,8 @@ public class GameHandler {
 
             try {
                 Thread.sleep(500);
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException e) {
+            }
 
             cgh.updateBoard();
             board.nextTurn();
@@ -116,6 +124,42 @@ public class GameHandler {
             System.out.println("No save file found starting new game.");
             return new Board();
         }
+    }
+
+    private Board loadBoardFromTextFile(File file) {
+
+        Scanner sc;
+        String[][] pieces = new String[8][8];
+        String[] line;
+
+        String value;
+
+        try {
+            sc = new Scanner(file);
+
+            for (int i = 0; i < 8; i++) {
+                value = sc.next();
+                if (value.matches("[pPrRnNbBqQkKX]{8}?")) {
+
+                    line = value.split("\\W");
+                    System.out.println(Arrays.toString(line));
+                    if (line.length == 8) {
+                        pieces[i] = line;
+                        
+                    }
+                } else {
+                    System.out.println("Invalid file format. Starting new game.");
+                    return new Board();
+                }
+
+            }
+
+        } catch (IOException e) {
+            System.out.println("No save file found starting new game.");
+            return new Board();
+        }
+
+        return new Board(pieces);
     }
 
 }

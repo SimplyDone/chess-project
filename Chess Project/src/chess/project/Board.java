@@ -37,27 +37,75 @@ public final class Board implements Serializable {
     private boolean isBlackChecked = false;
     private boolean checkmate = false;
 
-    /**creates a standard 8x8 array that contains pieces and nulls to represent
-     * the chess board
-     * this also keeps track of the turn number and which players turn it is
+    /**
+     * creates a standard 8x8 array that contains pieces and nulls to represent
+     * the chess board this also keeps track of the turn number and which
+     * players turn it is
      */
     public Board() {
 
         board = new Piece[8][8];
-        isWhiteTurn = true;
-        turnNumber = 0;
-        undoFlagStack = new Stack();
-        undoPieceStack = new Stack();
-        undoMoveStack = new Stack();
-        initializeBoard();
+        initializeSettings();
+        initializePieces();
 
     }
-    
+
+    public Board(String[][] pieces) {
+        board = new Piece[8][8];
+
+        // read the pieces
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                System.out.println(pieces[i]);
+                board[i][j] = getPiece(pieces[i][j], new Position(i, j));
+                System.out.println(board[i][j]);
+            }
+        }
+        
+        initializeSettings();
+
+    }
+
+    private Piece getPiece(String p, Position pos) {
+
+        ChessColour c = ChessColour.BLACK;
+
+        switch (p) {
+            case "r":
+                c = ChessColour.WHITE;
+            case "R":
+                return new Rook(c, pos);
+            case "p":
+                c = ChessColour.WHITE;
+            case "P":
+                return new Pawn(c, pos);
+            case "b":
+                c = ChessColour.WHITE;
+            case "B":
+                return new Bishop(c, pos);
+            case "n":
+                c = ChessColour.WHITE;
+            case "N":
+                return new Knight(c, pos);
+            case "k":
+                c = ChessColour.WHITE;
+            case "K":
+                return new King(c, pos);
+            case "q":
+                c = ChessColour.WHITE;
+            case "Q":
+                return new Queen(c, pos);
+            default:
+                return null;
+
+        }
+    }
+
     /**
-     * Called when a new board instance is created
-     * places pieces in a standard chess layout
+     * Called when a new board instance is created places pieces in a standard
+     * chess layout
      */
-    public void initializeBoard() {
+    private void initializePieces() {
 
         //black
         board[0][0] = new Rook(ChessColour.BLACK, new Position(0, 0));
@@ -100,8 +148,19 @@ public final class Board implements Serializable {
 
     }
 
-    /**prints the current board state
-     * 
+    private void initializeSettings() {
+
+        isWhiteTurn = true;
+        turnNumber = 0;
+        undoFlagStack = new Stack();
+        undoPieceStack = new Stack();
+        undoMoveStack = new Stack();
+
+    }
+
+    /**
+     * prints the current board state
+     *
      */
     public void printBoard() {
 
@@ -121,9 +180,10 @@ public final class Board implements Serializable {
         }
     }
 
-    /**Checks if checkmate is true
-     * 
-     * @return 
+    /**
+     * Checks if checkmate is true
+     *
+     * @return
      */
     public boolean isCheckmate() {
         if (checkmate) {
@@ -196,7 +256,6 @@ public final class Board implements Serializable {
     public void doMove(Move move) {
 
         //System.out.println("testing for " + getTurn() + " " + move);
-
         undoMoveStack.add(move);
         Position oldPos = move.getOldPosition();
         Position newPos = move.getNewPosition();
@@ -239,7 +298,7 @@ public final class Board implements Serializable {
                 if (newPos.getX() - oldPos.getX() == 2) { // right side
                     Rook r = (Rook) board[7][oldPos.getY()];
                     //System.out.println(r);
-                    
+
                     undoPieceStack.add(null);
                     completeMove(r, r.getPosition(), new Position(5, oldPos.getY()));
                 } else if (newPos.getX() - oldPos.getX() == -2) { // left side
@@ -257,7 +316,7 @@ public final class Board implements Serializable {
                     completeMove(r, r.getPosition(), new Position(3, oldPos.getY()));
                 }
             }
-            
+
             undoPieceStack.add(board[newPos.getX()][newPos.getY()]);
             completeMove(p, oldPos, newPos);
 
@@ -265,7 +324,7 @@ public final class Board implements Serializable {
     }
 
     private void completeMove(Piece p, Position oldPos, Position newPos) {
-        
+
         p.move(newPos);
         board[oldPos.getX()][oldPos.getY()] = null;
         board[newPos.getX()][newPos.getY()] = p;
@@ -344,8 +403,7 @@ public final class Board implements Serializable {
     }
 
     public void undo() {
-        
-        
+
         printBoard();
 
         Move lastMove = undoMoveStack.pop();
@@ -378,12 +436,12 @@ public final class Board implements Serializable {
                 ((Rook) lastMoved).setCastle(true);
             }
         } else if (lastMoved instanceof Pawn) {
-            
+
         }
 
         completeMove(lastMoved, to, from);
         board[to.getX()][to.getY()] = lastTaken;
-        
+
         printBoard();
 
     }
