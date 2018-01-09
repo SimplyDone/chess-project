@@ -30,12 +30,17 @@ public final class Board implements Serializable {
 
     private static final long serialVersionUID = 430L;
 
+    private boolean isWhiteHuman;
+    private boolean isBlackHuman;
+
     private boolean isWhiteTurn;
     private int turnNumber;
 
     private boolean isWhiteChecked = false;
     private boolean isBlackChecked = false;
-    private boolean checkmate = false;
+
+    private int whiteMoveCount = 0;
+    private int blackMoveCount = 0;
 
     /**
      * creates a standard 8x8 array that contains pieces and nulls to represent
@@ -47,23 +52,37 @@ public final class Board implements Serializable {
         board = new Piece[8][8];
         initializeSettings();
         initializePieces();
-
+        updateValidMoves();
     }
 
     public Board(String[][] pieces) {
         board = new Piece[8][8];
 
+        int wKingCount = 0, bKingCount = 0;
+
         // read the pieces
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                System.out.println(pieces[i]);
-                board[i][j] = getPiece(pieces[i][j], new Position(i, j));
-                System.out.println(board[i][j]);
+                board[j][i] = getPiece(pieces[i][j], new Position(j, i));
+                if (board[j][i] instanceof King) {
+                    if (board[j][i].getColour() == ChessColour.WHITE) {
+                        whiteKing = (King) board[j][i];
+                        wKingCount++;
+                    } else {
+                        blackKing = (King) board[j][i];
+                        bKingCount++;
+                    }
+                }
             }
         }
-        
-        initializeSettings();
 
+        if (bKingCount != 1 || wKingCount != 1) {
+            System.out.println("Invalid number of kings. Default settings used.");
+            initializePieces();
+        }
+
+        initializeSettings();
+        updateValidMoves();
     }
 
     private Piece getPiece(String p, Position pos) {
@@ -137,14 +156,6 @@ public final class Board implements Serializable {
         for (int i = 0; i < 8; i++) {
             board[i][6] = new Pawn(ChessColour.WHITE, new Position(i, 6));
         }
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-
-                if (board[i][j] != null) {
-                    board[i][j].updateValidMoves(this);
-                }
-            }
-        }
 
     }
 
@@ -152,6 +163,10 @@ public final class Board implements Serializable {
 
         isWhiteTurn = true;
         turnNumber = 0;
+        whiteMoveCount = 0;
+        blackMoveCount = 0;
+
+        //undo stacks
         undoFlagStack = new Stack();
         undoPieceStack = new Stack();
         undoMoveStack = new Stack();
@@ -185,18 +200,29 @@ public final class Board implements Serializable {
      *
      * @return
      */
-    public boolean isCheckmate() {
-        if (checkmate) {
-            if (isWhiteChecked) {
-                System.out.println("Black wins");
-            } else if (isBlackChecked) {
-                System.out.println("White wins");
-            } else {
-                throw new IllegalStateException("Checkmate is true when it should not be.");
-            }
+    public boolean[] isGameOver() {
 
+        // boolean output stucture
+        // { isGameOver, isStalemate, isWhiteWinner }
+        if (isWhiteTurn) {
+            if (isWhiteChecked && whiteMoveCount <= 0) {
+                return new boolean[]{true, false, false};
+
+            } else if (whiteMoveCount <= 0) {
+                return new boolean[]{true, true, false};
+            }
+        } else {
+            if (isBlackChecked && blackMoveCount <= 0) {
+                return new boolean[]{true, false, true};
+            } else if (blackMoveCount <= 0) {
+                return new boolean[]{true, true, true};
+            }
         }
-        return checkmate;
+        return new boolean[]{false, false, false};
+    }
+
+    public boolean isChecked(ChessColour c) {
+        return c == ChessColour.WHITE ? whiteKing.isChecked(this) : blackKing.isChecked(this);
     }
 
     public String checkPosition(Position pos) {
@@ -219,7 +245,7 @@ public final class Board implements Serializable {
             }
 
         } else {
-            return "Invalid selection";
+            return "Invalid selection " + pos;
 
         }
         return msg;
@@ -276,7 +302,6 @@ public final class Board implements Serializable {
                     board[newPos.getX()][oldPos.getY()] = null;
                 }
 
-                
                 //TODO fix promotion bug
                 //promotion condition for human player
                 if (newPos.getY() == 0 || newPos.getY() == 7) {
@@ -342,14 +367,29 @@ public final class Board implements Serializable {
     public void nextTurn() {
         isWhiteTurn ^= true;
         turnNumber++;
+        whiteMoveCount = 0;
+        blackMoveCount = 0;
+        updateValidMoves();
+    }
+
+    private void updateValidMoves() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
 
                 if (board[i][j] != null) {
                     board[i][j].updateValidMoves(this);
+                    if (board[i][j].getColour() == ChessColour.WHITE) {
+                        isWhiteChecked = isChecked(ChessColour.WHITE);
+                        whiteMoveCount += board[i][j].getValidMoves().size();
+                    } else {
+                        isBlackChecked = isChecked(ChessColour.BLACK);
+                        blackMoveCount += board[i][j].getValidMoves().size();
+                    }
+
                 }
             }
         }
+
     }
 
     /**
@@ -471,12 +511,13 @@ public final class Board implements Serializable {
         return tempBoard;
     }
 
-    public boolean isChecked(Move m, ChessColour colour) {
+    public boolean checkForCheck(Move m, ChessColour colour) {
 
         Board tempBoard = this.clone();
-        tempBoard.doMove(m);
+        tempBoard.doMove(m /*ai*/);
 
         return colour == ChessColour.WHITE
                 ? tempBoard.whiteKing.isChecked(tempBoard) : tempBoard.blackKing.isChecked(tempBoard);
+
     }
 }

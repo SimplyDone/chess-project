@@ -37,7 +37,7 @@ public class King extends Piece {
         }
         /////// CASTLE ////////////////////
 
-        if (this.isCastlable() && !board.isChecked(new Move(position, position), colour)) {
+        if (this.isCastlable() && !board.checkForCheck(new Move(position, position), colour)) {
 
             //                LEFT SIDE
             boolean castle = true;
@@ -46,7 +46,7 @@ public class King extends Piece {
                     castle = false;
                 } else {
                     for (int k = 2; k <= 3; k++) {
-                        if (board.getBoard()[k][j] != null || board.isChecked(new Move(position, new Position(k, j)), colour)) {
+                        if (board.getBoard()[k][j] != null || board.checkForCheck(new Move(position, new Position(k, j)), colour)) {
                             castle = false;
                         }
                     }
@@ -65,7 +65,7 @@ public class King extends Piece {
 
             if (board.getBoard()[7][j] instanceof Rook && ((Rook) board.getBoard()[7][j]).isCastlable()) {
                 for (int p = 5; p <= 6; p++) {
-                    if (board.getBoard()[p][j] != null || board.isChecked(new Move(position, new Position(p, j)), colour)) {
+                    if (board.getBoard()[p][j] != null || board.checkForCheck(new Move(position, new Position(p, j)), colour)) {
                         castle = false;
                     }
                 }
