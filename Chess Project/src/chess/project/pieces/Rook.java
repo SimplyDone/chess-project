@@ -1,65 +1,42 @@
 package chess.project.pieces;
-/*
- TODO
- - OPTIMIZE
- - combine the horizontal and vertical search
- */
 
 import chess.project.movement.*;
 import chess.project.*;
 
 /**
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class Rook extends Piece {
 
     private boolean castlable = true;
     
+    /**A piece defined as a Rook
+     * 
+     * @param col a colour to distinguish which team it is on
+     * @param pos a position on the board
+     */
     public Rook(ChessColour col, Position pos) {
         super(col, pos);
     }
 
+    /**determines all valid moves of this Rook and saves them in the 
+     * validMoves List
+     * 
+     * @param board the board the piece that is being evaluated on
+     */
     @Override
     public void updateValidMoves(Board board) {
-        validMoves.clear();
-
-        int i, j;
-
-        for (int next = -1; next <= 1; next+=2) {
-            i = this.position.getX();
-            j = this.position.getY();
-            i += next;
-            while (inBounds(i) && (null == board.getBoard()[i][j])) {
-                addMove(board, i, j);
-
-                i += next;
-            }
-            
-            if (inBounds(i) && board.getBoard()[i][j].getColour() != colour) {
-                addMove(board, i, j);
-            }
-        }
-        //////////////////////////same as above fory axis///////////////////////
-        for (int next = -1; next <= 1; next+=2) {
-            i = this.position.getX();
-            j = this.position.getY();
-            j += next;
-            while (inBounds(j) && null == board.getBoard()[i][j]) {
-                addMove(board, i, j);
-
-                j += next;
-            }
-            if (inBounds(j) && board.getBoard()[i][j].getColour() != colour) {
-                addMove(board, i, j);
-            }
-        }
         
+        validMoves.clear();
+        
+        horizontalMovement(board);
+        verticalMovement(board);
     }
 
-    /** This method returns True if the Rook can be used for castling.
+    /** This method returns if the rook may castle or if it has been flagged
      * 
-     * @return True if this Rook is valid for castling.
+     * @return boolean if this Rook is valid for castling.
      */
     public boolean isCastlable() {
         return castlable;
@@ -72,6 +49,10 @@ public class Rook extends Piece {
         castlable = b;
     }
  
+    /**retrieves a string that may represent the type of piece
+     * 
+     * @return a string "R" to represent this piece is a Rook
+     */
     @Override
     public String toString() {
         return "R";

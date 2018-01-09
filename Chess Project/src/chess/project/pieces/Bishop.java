@@ -9,37 +9,31 @@ import chess.project.movement.*;
  */
 public class Bishop extends Piece {
 
+    /**A piece defined as a Bishop
+     * 
+     * @param col a colour to distinguish which team it is on
+     * @param pos a position on the board
+     */
     public Bishop(ChessColour col, Position pos) {
         super(col, pos);
     }
     
-
+    /**determines all valid moves of this Bishop and saves them in the 
+     * validMoves List
+     * 
+     * @param board the board the piece that is being evaluated on
+     */
     @Override
     public void updateValidMoves(Board board) {
         validMoves.clear();
-
-        int i, j;
-
-        for (int iNext = -1; iNext <= 1; iNext+=2) {
-            for (int jNext = -1; jNext <= 1; jNext+=2) {
-
-                i = this.position.getX() + iNext;
-                j = this.position.getY() + jNext;
-
-                while (inBounds(i) && inBounds(j) && (null == board.getBoard()[i][j])) {
-
-                    addMove(board, i, j);
-                    i += iNext;
-                    j += jNext;
-                }
-
-                if (inBounds(i) && inBounds(j) && board.getBoard()[i][j].getColour() != colour) {
-                    addMove(board, i, j);
-                }
-            }
-        }
+        
+        diagonalMovement(board);
     }
 
+    /**retrieves a string that may represent the type of piece
+     * 
+     * @return a string "B" to represent this piece is a Bishop
+     */
     @Override
     public String toString() {
         return "B";

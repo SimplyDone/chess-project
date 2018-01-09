@@ -7,9 +7,7 @@ import chess.project.*;
 import java.util.*;
 import java.io.Serializable;
 
-/**
- * Represents a single piece
- * 
+/**Represents a single piece
  *
  * @author Alex Zurad, Robbie McDonnell
  */
@@ -89,5 +87,97 @@ public abstract class Piece implements Serializable {
     protected boolean inBounds(int p){
         return (0 <= p && p <= 7);
     }
+    
+    /**Evaluates all positions on the board that are diagonal to this piece.
+     * If the position in question is within the bounds of the  board, not an
+     *allied piece and will not put the allied King in check, the move 
+     * will be added to a list of valid moves
+     * 
+     * @param board the board the piece will be evaluated on
+     */
+    protected void diagonalMovement(Board board){
+        int i, j;
 
+        // which direction the peice is moving in 
+        for (int iNext = -1; iNext <= 1; iNext+=2) {
+            for (int jNext = -1; jNext <= 1; jNext+=2) {
+
+                i = this.position.getX() + iNext;
+                j = this.position.getY() + jNext;
+
+                // adds a valid move to the list when the move is in bounds and
+                // on an empty space
+                while (inBounds(i) && inBounds(j) && (null == board.getBoard()[i][j])) {
+
+                    addMove(board, i, j);
+                    i += iNext;
+                    j += jNext;
+                }
+                // evaluates the final position if it was on an enemy peice
+                if (inBounds(i) && inBounds(j) && board.getBoard()[i][j].getColour() != colour) {
+                    addMove(board, i, j);
+                }
+            }
+        }
+    }
+    
+    /**Evaluates all positions on the board that are directly above and below 
+     * this piece. If the position in question is within the bounds of the 
+     * board, not an allied piece and will not put the allied King in check, the
+     * move will be added to a list of valid moves
+     * 
+     * @param board the board the piece will be evaluated on
+     */
+    protected void verticalMovement(Board board){
+        int i,j;
+        i = this.position.getX(); // x component is constant
+        
+       //next is the change that will take place in the position being evaluated
+        for (int next = -1; next <= 1; next += 2) {
+            j = this.position.getY() + next;
+            
+            // adds a valid move to the list when the move is in bounds and
+            // on an empty space
+            while (inBounds(j) && (null == board.getBoard()[i][j])) {
+                addMove(board, i, j);
+
+                j += next;
+            }
+            // evaluates the final position if it was on an enemy peice
+            if (inBounds(j) && board.getBoard()[i][j].getColour() != colour) {
+                addMove(board, i, j);
+            }
+        }
+    }
+    
+    /**Evaluates all positions on the board that are adjacent to this piece 
+     * If the position in question is within the bounds of the board, not
+     * an allied piece and will not put the allied King in check, the
+     * move will be added to a list of valid moves
+     * 
+     * 
+     * @param board the board the piece will be evaluated on
+     */
+    protected void horizontalMovement(Board board){
+        int i,j;
+        j = this.position.getY(); // y component is constant
+        
+        //next is the change that will take place in the position being evaluated
+        for (int next = -1; next <= 1; next += 2) {
+            i = this.position.getX()+ next;
+            
+            // adds a valid move to the list when the move is in bounds and
+            // on an empty space
+            while (inBounds(i) && (null == board.getBoard()[i][j])) {
+                addMove(board, i, j);
+
+                i += next;
+            }
+            // evaluates the final position if it was on an enemy peice
+            if (inBounds(i) && board.getBoard()[i][j].getColour() != colour) {
+                addMove(board, i, j);
+            }
+        }
+    }
+    
 }
