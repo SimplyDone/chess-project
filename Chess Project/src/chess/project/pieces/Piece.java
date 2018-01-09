@@ -74,7 +74,7 @@ public abstract class Piece implements Serializable {
      */
     protected void addMove(Board board, int x, int y){
         Move m = new Move(position, new Position(x, y));
-        if (!board.isChecked(m, colour)) { 
+        if (!board.checkForCheck(m, colour)) { 
             validMoves.add(m);
         }
     }
