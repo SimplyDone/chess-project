@@ -139,7 +139,8 @@ public class AIPlayer extends Player {
         }
 
         score += 10 * validMoves[0].size();
-        score -= 10 * validMoves[1].size();
+        score -= 10 * validMoves[1].size();      
+        
         return score;
     }
 

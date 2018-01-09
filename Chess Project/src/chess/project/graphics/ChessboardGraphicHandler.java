@@ -30,7 +30,7 @@ public class ChessboardGraphicHandler extends JFrame {
         boardContents.setLayout(new GridLayout(9, 9));
         boardContents.setPreferredSize(new Dimension(576, 576));
 
-        infoContents = new JTextArea("A wild thing has appeared!");
+        infoContents = new JTextArea("Click on a piece to display all\nvalid moves.");
         infoContents.setPreferredSize(new Dimension(256, 576));
         infoContents.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         

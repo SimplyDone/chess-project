@@ -44,6 +44,15 @@ public class GameHandler {
         } else if (loadBoard == 2) {
             board = new Board();
         } else {
+            System.out.println("Choose a file with format:\n"
+                    + "RNBQKBNR\n"
+                    + "PPPPPPPP\n"
+                    + "XXXXXXXX\n"
+                    + "XXXXXXXX\n"
+                    + "XXXXXXXX\n"
+                    + "XXXXXXXX\n"
+                    + "pppppppp\n"
+                    + "rnbqkbnr");
             String filename = TextInput.getStringChoice(
                     "Enter the filename to load from: ", ".*");
             board = loadBoardFromTextFile(new File(filename));
@@ -92,11 +101,14 @@ public class GameHandler {
 
     private void playGame() {
 
-        ChessboardGraphicHandler cgh = new ChessboardGraphicHandler(board);
+        ChessboardGraphicHandler graphics = new ChessboardGraphicHandler(board);
+        
+        boolean[] gameOver = {false, false, false};
 
-        while (!board.isCheckmate()) {
+        while (!gameOver[0]) {
 
-            board.printBoard();
+            //board.printBoard();
+            
 
             if (board.getTurn() == ChessColour.WHITE) {
                 board.doMove(white.getMove());
@@ -106,13 +118,24 @@ public class GameHandler {
 
             try {
                 Thread.sleep(500);
-            } catch (InterruptedException e) {
-            }
+            } catch (InterruptedException e) { }
 
-            cgh.updateBoard();
+            graphics.updateBoard();
             board.nextTurn();
+            gameOver = board.isGameOver();
             board.saveBoard();
         }
+        
+        if(gameOver[1]){
+            System.out.println("STALEMATE!");
+        } else {
+            if(gameOver[2]){
+                System.out.println("White wins!");
+            } else {
+                System.out.println("Black wins!");
+            }
+        }
+        
     }
 
     private Board loadBoardFromFile() {
@@ -138,14 +161,13 @@ public class GameHandler {
             sc = new Scanner(file);
 
             for (int i = 0; i < 8; i++) {
-                value = sc.next();
+                value = sc.nextLine();
                 if (value.matches("[pPrRnNbBqQkKX]{8}?")) {
 
-                    line = value.split("\\W");
-                    System.out.println(Arrays.toString(line));
+                    line = value.split("");
                     if (line.length == 8) {
                         pieces[i] = line;
-                        
+
                     }
                 } else {
                     System.out.println("Invalid file format. Starting new game.");
@@ -155,7 +177,7 @@ public class GameHandler {
             }
 
         } catch (IOException e) {
-            System.out.println("No save file found starting new game.");
+            System.out.println("No file found starting new game.");
             return new Board();
         }
 
