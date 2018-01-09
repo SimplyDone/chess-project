@@ -10,7 +10,7 @@ import java.util.Scanner;
  * Handles the main operations of the game. Handles player moves, ai moves,
  * running
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class GameHandler {
 

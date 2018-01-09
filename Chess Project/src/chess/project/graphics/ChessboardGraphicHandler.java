@@ -9,6 +9,11 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+/**
+ *
+ * @author Alex Zurad, Robbie McDonnell
+ */
+
 public class ChessboardGraphicHandler extends JFrame {
 
     private final Container allContents;

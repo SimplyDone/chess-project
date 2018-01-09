@@ -33,6 +33,7 @@ public class King extends Piece {
         int i = this.position.getX();
         int j = this.position.getY();
 
+        
         // checks all adjacent spaces to the king if they are a valid move
         for (int iNext = -1; iNext <= 1; iNext++) {
             for (int jNext = -1; jNext <= 1; jNext++) {
@@ -46,13 +47,15 @@ public class King extends Piece {
                 }
             }
         }
+        
+        //movement(board);
 
 //                              Castling
 // checks if the king is able to casle by its boolean variable and position on the board
         int y = (ChessColour.WHITE == colour) ? 7 : 0;
         
         if (this.isCastlable() && j == y && i == 4 &&
-                !board.isChecked(new Move(position, position), colour)) {
+                !board.isChecked(colour)) {
             
 
             //                LEFT SIDE
@@ -72,7 +75,7 @@ public class King extends Piece {
                     for (int k = 2; k <= 3; k++) {
 
                         if (board.getBoard()[k][j] != null || 
-                                board.isChecked(new Move(position, new Position(k, j)), colour)) {
+                                board.checkForCheck(new Move(position, new Position(k, j)), colour)) {
                             
 
                             castle = false;
@@ -103,7 +106,7 @@ public class King extends Piece {
                 for (int p = 5; p <= 6; p++) {
 
                     if (board.getBoard()[p][j] != null || 
-                            board.isChecked(new Move(position, new Position(p, j)), colour)) {
+                            board.checkForCheck(new Move(position, new Position(p, j)), colour)) {
                         
                         castle = false;
                     }

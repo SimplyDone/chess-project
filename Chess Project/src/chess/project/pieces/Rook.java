@@ -30,6 +30,8 @@ public class Rook extends Piece {
         
         validMoves.clear();
         
+        //movement(board);
+        
         horizontalMovement(board);
         verticalMovement(board);
     }

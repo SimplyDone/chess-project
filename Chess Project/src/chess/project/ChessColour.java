@@ -2,7 +2,7 @@ package chess.project;
 
 /** This represents the colour of a piece or player. 
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public enum ChessColour {
 

@@ -6,7 +6,7 @@ import chess.project.movement.*;
 
 /**
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class HumanPlayer extends Player {
 
