@@ -31,25 +31,22 @@ public class AIPlayer extends Player {
 
     private int[] miniMax(int depth, Board b, int alpha, int beta, boolean isMaxPlayer) {
 
-        ChessColour c = b.getTurn();
-        int score;
+        ChessColour c = b.getTurn(); //gets the current player's colour
         Move bestMove = new Move(new Position(-5, -5), new Position(-5, -5));
 
-        List<Move>[] validMoves = getValidMoves(b.getBoard(), c);
-        List<Move> myMoves;
+        int score;
 
-        if (c == colour) {
-            myMoves = validMoves[0];
-        } else {
-            myMoves = validMoves[1];
-        }
+        List<Move>[] validMoves = getValidMoves(b.getBoard(), c); //gets all valid moves for a colour
+        List<Move> myMoves = validMoves[0];
+        List<Move> theirMoves = validMoves[1];
 
         if (myMoves.isEmpty() || depth == 0) {
-            score = evaluateBoard(b, validMoves);
+            
+                score = evaluateBoard(b, myMoves, theirMoves);    
             return new int[]{score, -10, -10, -10, -10};
         } else {
 
-            Collections.shuffle(myMoves);
+            Collections.shuffle(myMoves); // does a random move when multiple moves have the same value
             Board tempBoard;
 
             for (Move m : myMoves) {
@@ -57,6 +54,7 @@ public class AIPlayer extends Player {
 
                 tempBoard.doMove(m);
                 tempBoard.nextTurn();
+                
                 if (isMaxPlayer) {
                     score = miniMax(depth - 1, tempBoard, alpha, beta, !isMaxPlayer)[0];
                     if (score > alpha) {
@@ -70,11 +68,12 @@ public class AIPlayer extends Player {
                         bestMove = m;
                     }
                 }
+                
+
 
                 if (alpha >= beta) {
                     break;
                 }
-                //b.undo();
             }
         }
 
@@ -103,10 +102,13 @@ public class AIPlayer extends Player {
         return new List[]{validMoves, badGuyMoves};
     }
 
-    public int evaluateBoard(Board b, List<Move>[] validMoves) {
+    /** Evaluates the board relative to the current player
+     * 
+     */
+    private int evaluateBoard(Board b, List<Move> myMoves, List<Move> theirMoves) {
 
         int score = 0;
-        int modifier;
+        int modifier = 1;
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -129,6 +131,13 @@ public class AIPlayer extends Player {
                     } else if (p instanceof Bishop || p instanceof Knight) {
                         score += 300 * modifier;
                     } else if (p instanceof Pawn) {
+                        
+//                        if(c == ChessColour.WHITE){
+//                            score += 1 * Math.abs(p.getPosition().getY() - 7) * modifier;
+//                        } else {
+//                            score += 1 * p.getPosition().getY() * modifier;
+//                        }
+                        
                         score += 100 * modifier;
 
                         // score -= 0.5 * doubled, blocked, isolated
@@ -138,8 +147,17 @@ public class AIPlayer extends Player {
             }
         }
 
-        score += 10 * validMoves[0].size();
-        score -= 10 * validMoves[1].size();      
+        score += 1 * myMoves.size();
+        score -= 1 * theirMoves.size();
+        
+        if(myMoves.isEmpty()){
+            score += 10000 * modifier;
+        }
+
+        if (b.isChecked(ChessColour.opposite(colour)) ) {
+            score += 30 * modifier;
+        }
+        
         
         return score;
     }

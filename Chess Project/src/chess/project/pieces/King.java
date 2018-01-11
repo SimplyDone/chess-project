@@ -52,7 +52,7 @@ public class King extends Piece {
         int y = (ChessColour.WHITE == colour) ? 7 : 0;
         
         if (this.isCastlable() && j == y && i == 4 &&
-                !board.isChecked(new Move(position, position), colour)) {
+                !board.checkForCheck(new Move(position, position), colour)) {
             
 
             //                LEFT SIDE
@@ -72,7 +72,7 @@ public class King extends Piece {
                     for (int k = 2; k <= 3; k++) {
 
                         if (board.getBoard()[k][j] != null || 
-                                board.isChecked(new Move(position, new Position(k, j)), colour)) {
+                                board.checkForCheck(new Move(position, new Position(k, j)), colour)) {
                             
 
                             castle = false;
@@ -103,7 +103,7 @@ public class King extends Piece {
                 for (int p = 5; p <= 6; p++) {
 
                     if (board.getBoard()[p][j] != null || 
-                            board.isChecked(new Move(position, new Position(p, j)), colour)) {
+                            board.checkForCheck(new Move(position, new Position(p, j)), colour)) {
                         
                         castle = false;
                     }

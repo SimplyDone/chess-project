@@ -17,5 +17,9 @@ public enum ChessColour {
     public String toString() {
         return colour;
     }
+    
+    public static ChessColour opposite(ChessColour c){
+        return c == WHITE ? BLACK : WHITE;
+    }
 
 }
