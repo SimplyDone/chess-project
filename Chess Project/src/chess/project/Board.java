@@ -173,6 +173,14 @@ public final class Board implements Serializable {
 
     }
 
+    public void setWhiteHuman(boolean isHuman) {
+        isWhiteHuman = isHuman;
+    }
+
+    public void setBlackHuman(boolean isHuman) {
+        isBlackHuman = isHuman;
+    }
+
     /**
      * prints the current board state
      *
@@ -290,6 +298,7 @@ public final class Board implements Serializable {
         if (p != null) {
 
             if (p instanceof Pawn) {
+                undoFlagStack.add(false);
 
                 //en-passant condition - pawn moved two spaces
                 if (Math.abs(oldPos.getY() - newPos.getY()) == 2) {
@@ -323,24 +332,17 @@ public final class Board implements Serializable {
                 //castling condition
                 if (newPos.getX() - oldPos.getX() == 2) { // right side
                     Rook r = (Rook) board[7][oldPos.getY()];
-                    //System.out.println(r);
 
                     undoPieceStack.add(null);
                     completeMove(r, r.getPosition(), new Position(5, oldPos.getY()));
                 } else if (newPos.getX() - oldPos.getX() == -2) { // left side
                     Rook r = (Rook) board[0][oldPos.getY()];
 
-//                    System.out.println();
-//                    for (int i = 0; i < 8; i++) {
-//                        for (int j = 0; j < 8; j++) {
-//                            System.out.print(board[j][i] + " ");
-//                        }
-//                        System.out.println();
-//                    }
-//
                     undoPieceStack.add(null);
                     completeMove(r, r.getPosition(), new Position(3, oldPos.getY()));
                 }
+            } else {
+                undoFlagStack.add(false);
             }
 
             undoPieceStack.add(board[newPos.getX()][newPos.getY()]);
@@ -370,6 +372,11 @@ public final class Board implements Serializable {
         whiteMoveCount = 0;
         blackMoveCount = 0;
         updateValidMoves();
+        if (isWhiteTurn) {
+            isWhiteChecked = isChecked(ChessColour.WHITE);
+        } else {
+            isBlackChecked = isChecked(ChessColour.BLACK);
+        }
     }
 
     private void updateValidMoves() {
@@ -377,19 +384,17 @@ public final class Board implements Serializable {
             for (int j = 0; j < 8; j++) {
 
                 if (board[i][j] != null) {
-                    board[i][j].updateValidMoves(this);
                     if (board[i][j].getColour() == ChessColour.WHITE) {
-                        isWhiteChecked = isChecked(ChessColour.WHITE);
+                        board[i][j].updateValidMoves(this);
                         whiteMoveCount += board[i][j].getValidMoves().size();
                     } else {
-                        isBlackChecked = isChecked(ChessColour.BLACK);
+                        board[i][j].updateValidMoves(this);
                         blackMoveCount += board[i][j].getValidMoves().size();
                     }
 
                 }
             }
         }
-
     }
 
     /**
@@ -445,7 +450,8 @@ public final class Board implements Serializable {
 
     public void undo() {
 
-        printBoard();
+        //System.out.println("-------------------------------------------------");
+        //printBoard();
 
         Move lastMove = undoMoveStack.pop();
         Piece lastTaken = undoPieceStack.pop();
@@ -483,7 +489,8 @@ public final class Board implements Serializable {
         completeMove(lastMoved, to, from);
         board[to.getX()][to.getY()] = lastTaken;
 
-        printBoard();
+        //printBoard();
+        //System.out.println("-------------------------------------------------");
 
     }
 
@@ -514,10 +521,19 @@ public final class Board implements Serializable {
     public boolean checkForCheck(Move m, ChessColour colour) {
 
         Board tempBoard = this.clone();
-        tempBoard.doMove(m /*ai*/);
+        tempBoard.doMove(m);
 
         return colour == ChessColour.WHITE
                 ? tempBoard.whiteKing.isChecked(tempBoard) : tempBoard.blackKing.isChecked(tempBoard);
 
+        
+//        boolean result;
+//        doMove(m);
+//        
+//        result = (colour == ChessColour.WHITE)
+//                ? whiteKing.isChecked(this) : blackKing.isChecked(this);
+//        
+//        undo();
+//        return result;
     }
 }
