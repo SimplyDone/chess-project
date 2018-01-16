@@ -11,7 +11,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Represents a chessboard
@@ -19,10 +18,6 @@ import java.util.Stack;
  * @author Alex Zurad, Robbie McDonnell
  */
 public final class Board implements Serializable {
-
-    private Stack<Boolean> undoFlagStack;
-    private Stack<Piece> undoPieceStack;
-    private Stack<Move> undoMoveStack;
 
     private final Piece board[][];
     private King whiteKing;
@@ -32,13 +27,11 @@ public final class Board implements Serializable {
 
     private boolean isWhiteHuman;
     private boolean isBlackHuman;
-
     private boolean isWhiteTurn;
-    private int turnNumber;
-
     private boolean isWhiteChecked = false;
     private boolean isBlackChecked = false;
 
+    private int turnNumber;
     private int whiteMoveCount = 0;
     private int blackMoveCount = 0;
 
@@ -83,6 +76,23 @@ public final class Board implements Serializable {
 
         initializeSettings();
         updateValidMoves();
+    }
+
+    private Board(Piece[][] board, King[] kings, boolean[] gameFlags, int[] gameData) {
+        this.board = board;
+
+        this.whiteKing = kings[0];
+        this.blackKing = kings[1];
+
+        this.isWhiteHuman = gameFlags[0];
+        this.isBlackHuman = gameFlags[1];
+        this.isWhiteTurn = gameFlags[2];
+        this.isWhiteChecked = gameFlags[3];
+        this.isBlackChecked = gameFlags[4];
+
+        this.turnNumber = gameData[0];
+        this.whiteMoveCount = gameData[1];
+        this.blackMoveCount = gameData[2];
     }
 
     private Piece getPiece(String p, Position pos) {
@@ -166,11 +176,6 @@ public final class Board implements Serializable {
         whiteMoveCount = 0;
         blackMoveCount = 0;
 
-        //undo stacks
-        undoFlagStack = new Stack();
-        undoPieceStack = new Stack();
-        undoMoveStack = new Stack();
-
     }
 
     public void setWhiteHuman(boolean isHuman) {
@@ -229,10 +234,6 @@ public final class Board implements Serializable {
         return new boolean[]{false, false, false};
     }
 
-    public boolean isChecked(ChessColour c) {
-        return c == ChessColour.WHITE ? whiteKing.isChecked(this) : blackKing.isChecked(this);
-    }
-
     public String checkPosition(Position pos) {
         Piece p = board[pos.getX()][pos.getY()];
         String msg = "";
@@ -289,8 +290,6 @@ public final class Board implements Serializable {
 
     public void doMove(Move move) {
 
-        //System.out.println("testing for " + getTurn() + " " + move);
-        undoMoveStack.add(move);
         Position oldPos = move.getOldPosition();
         Position newPos = move.getNewPosition();
 
@@ -298,7 +297,6 @@ public final class Board implements Serializable {
         if (p != null) {
 
             if (p instanceof Pawn) {
-                undoFlagStack.add(false);
 
                 //en-passant condition - pawn moved two spaces
                 if (Math.abs(oldPos.getY() - newPos.getY()) == 2) {
@@ -311,43 +309,48 @@ public final class Board implements Serializable {
                     board[newPos.getX()][oldPos.getY()] = null;
                 }
 
-                //TODO fix promotion bug
-                //promotion condition for human player
-                if (newPos.getY() == 0 || newPos.getY() == 7) {
-                    p = getHumanSelection(p);
+                //promotion condition for human and ai
+                switch (newPos.getY()) {
 
-                    //promotion conditions for ai 
-                } else if (newPos.getY() == -1 || newPos.getY() == 8) {
+                    //ai queen promotion
+                    case -1:
+                    case 8:
+                        p = new Queen(p.getColour(), p.getPosition());
+                        break;
 
+                    //ai knight promotion
+                    case -2:
+                    case 9:
+                        p = new Knight(p.getColour(), p.getPosition());
+                        break;
+
+                    //human promotion
+                    case 0:
+                    case 7:
+                        //p = getHumanSelection(p);
+                        p = new Queen(p.getColour(), p.getPosition());
+                        break;
                 }
 
             } else if (p instanceof Rook) {
                 ((Rook) p).setCastle(false);
-                undoFlagStack.add(true);
 
             } else if (p instanceof King) {
                 ((King) p).setCastle(false);
-                undoFlagStack.add(true);
 
                 //castling condition
                 if (newPos.getX() - oldPos.getX() == 2) { // right side
                     Rook r = (Rook) board[7][oldPos.getY()];
 
-                    undoPieceStack.add(null);
                     completeMove(r, r.getPosition(), new Position(5, oldPos.getY()));
                 } else if (newPos.getX() - oldPos.getX() == -2) { // left side
                     Rook r = (Rook) board[0][oldPos.getY()];
 
-                    undoPieceStack.add(null);
                     completeMove(r, r.getPosition(), new Position(3, oldPos.getY()));
                 }
-            } else {
-                undoFlagStack.add(false);
             }
 
-            undoPieceStack.add(board[newPos.getX()][newPos.getY()]);
             completeMove(p, oldPos, newPos);
-
         }
     }
 
@@ -371,11 +374,13 @@ public final class Board implements Serializable {
         turnNumber++;
         whiteMoveCount = 0;
         blackMoveCount = 0;
+
         updateValidMoves();
+
         if (isWhiteTurn) {
-            isWhiteChecked = isChecked(ChessColour.WHITE);
+            isWhiteChecked = whiteKing.isChecked(this);
         } else {
-            isBlackChecked = isChecked(ChessColour.BLACK);
+            isBlackChecked = blackKing.isChecked(this);
         }
     }
 
@@ -419,79 +424,38 @@ public final class Board implements Serializable {
         return turnNumber;
     }
 
+    /**
+     * This method obtains input from a human player to determine what piece
+     * they will obtain when promoting a pawn.
+     *
+     * @param p The piece to operate on
+     * @return The new piece that n will become
+     */
     private Piece getHumanSelection(Piece p) {
 
-//        String selection = TextInput.getStringChoice(
-//                "What piece would you like (R,k,B,Q): ",
-//                "[[Rr][kK][Bb][Qq]]");
-//
-//        Piece n;
-//
-//        switch (selection.toLowerCase()) {
-//            case "r":
-//                n = new Rook(p.getColour(), p.getPosition());
-//                break;
-//            case "k":
-//                n = new Knight(p.getColour(), p.getPosition());
-//                break;
-//            case "b":
-//                n = new Bishop(p.getColour(), p.getPosition());
-//                break;
-//            case "q":
-//                n = new Queen(p.getColour(), p.getPosition());
-//                break;
-//            default:
-//                throw new IllegalStateException(selection + " was a valid choice for a piece");
-//        }
-//        return n;
-        return new Queen(p.getColour(), p.getPosition());
+        String selection = TextInput.getStringChoice(
+                "What piece would you like (R,k,B,Q): ",
+                "[[Rr][kK][Bb][Qq]]");
 
-    }
+        Piece n;
 
-    public void undo() {
-
-        //System.out.println("-------------------------------------------------");
-        //printBoard();
-
-        Move lastMove = undoMoveStack.pop();
-        Piece lastTaken = undoPieceStack.pop();
-        boolean lastFlag = undoFlagStack.pop();
-
-        Position to = lastMove.getNewPosition();
-        Position from = lastMove.getOldPosition();
-
-        Piece lastMoved = board[to.getX()][to.getY()];
-
-        if (lastMoved instanceof King) {
-
-            if (lastFlag) {
-                ((King) lastMoved).setCastle(true);
-            }
-
-            if (from.getX() - to.getX() == 2) { // right side
-
-                Rook r = (Rook) board[5][from.getY()];
-                completeMove(r, r.getPosition(), new Position(7, from.getY()));
-            } else if (from.getX() - to.getX() == -2) { // left side
-
-                Rook r = (Rook) board[2][from.getY()];
-                completeMove(r, r.getPosition(), new Position(0, from.getY()));
-            }
-
-        } else if (lastMoved instanceof Rook) {
-            if (lastFlag) {
-                ((Rook) lastMoved).setCastle(true);
-            }
-        } else if (lastMoved instanceof Pawn) {
-
+        switch (selection.toLowerCase()) {
+            case "r":
+                n = new Rook(p.getColour(), p.getPosition());
+                break;
+            case "k":
+                n = new Knight(p.getColour(), p.getPosition());
+                break;
+            case "b":
+                n = new Bishop(p.getColour(), p.getPosition());
+                break;
+            case "q":
+                n = new Queen(p.getColour(), p.getPosition());
+                break;
+            default:
+                throw new IllegalStateException(selection + " was a valid choice for a piece");
         }
-
-        completeMove(lastMoved, to, from);
-        board[to.getX()][to.getY()] = lastTaken;
-
-        //printBoard();
-        //System.out.println("-------------------------------------------------");
-
+        return n;
     }
 
     @Override
@@ -518,22 +482,35 @@ public final class Board implements Serializable {
         return tempBoard;
     }
 
+    public Board fastClone() {
+
+        Piece[][] tempPieces = new Piece[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[j][i] != null) {
+                    tempPieces[j][i] = (Piece) board[j][i].clone();
+                } else {
+                    tempPieces[j][i] = null;
+                }
+            }
+        }
+        King[] kings = new King[]{whiteKing, blackKing};
+        boolean[] gameFlags = new boolean[]{isWhiteHuman, isBlackHuman, isWhiteTurn, isWhiteChecked, isBlackChecked};
+        int[] gameData = new int[]{turnNumber, whiteMoveCount, blackMoveCount};
+
+        return new Board(tempPieces, kings, gameFlags, gameData);
+    }
+
     public boolean checkForCheck(Move m, ChessColour colour) {
 
-        Board tempBoard = this.clone();
+        Board tempBoard = this.fastClone();
         tempBoard.doMove(m);
 
         return colour == ChessColour.WHITE
                 ? tempBoard.whiteKing.isChecked(tempBoard) : tempBoard.blackKing.isChecked(tempBoard);
+    }
 
-        
-//        boolean result;
-//        doMove(m);
-//        
-//        result = (colour == ChessColour.WHITE)
-//                ? whiteKing.isChecked(this) : blackKing.isChecked(this);
-//        
-//        undo();
-//        return result;
+    public boolean isChecked(ChessColour c) {
+        return c == ChessColour.WHITE ? isWhiteChecked : isBlackChecked;
     }
 }

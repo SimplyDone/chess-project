@@ -11,18 +11,18 @@ import java.util.*;
  */
 public class AIPlayer extends Player {
 
-    private final int difficulty;
+    private final int searchDepth;
 
     public AIPlayer(ChessColour colour, Board board, int difficulty) {
         super(colour, board);
-        this.difficulty = difficulty;
+        this.searchDepth = difficulty;
     }
 
     @Override
     public Move getMove() {
 
         System.out.println(colour);
-        int[] v = miniMax(difficulty, board.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        int[] v = miniMax(searchDepth, board.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         Move m = new Move(new Position(v[1], v[2]), new Position(v[3], v[4]));
         System.out.println(m + " " + v[0]);
         return m;
@@ -41,20 +41,20 @@ public class AIPlayer extends Player {
         List<Move> theirMoves = validMoves[1];
 
         if (myMoves.isEmpty() || depth == 0) {
-            
-                score = evaluateBoard(b, myMoves, theirMoves);    
+
+            score = evaluateBoard(b, myMoves, theirMoves);
             return new int[]{score, -10, -10, -10, -10};
         } else {
 
-            Collections.shuffle(myMoves); // does a random move when multiple moves have the same value
+            //Collections.shuffle(myMoves); // does a random move when multiple moves have the same value
             Board tempBoard;
 
             for (Move m : myMoves) {
-                tempBoard = b.clone();//reset board 
+                tempBoard = b.fastClone();//reset board 
 
                 tempBoard.doMove(m);
                 tempBoard.nextTurn();
-                
+
                 if (isMaxPlayer) {
                     score = miniMax(depth - 1, tempBoard, alpha, beta, !isMaxPlayer)[0];
                     if (score > alpha) {
@@ -68,8 +68,6 @@ public class AIPlayer extends Player {
                         bestMove = m;
                     }
                 }
-                
-
 
                 if (alpha >= beta) {
                     break;
@@ -102,8 +100,9 @@ public class AIPlayer extends Player {
         return new List[]{validMoves, badGuyMoves};
     }
 
-    /** Evaluates the board relative to the current player
-     * 
+    /**
+     * Evaluates the board relative to the current player
+     *
      */
     private int evaluateBoard(Board b, List<Move> myMoves, List<Move> theirMoves) {
 
@@ -131,16 +130,7 @@ public class AIPlayer extends Player {
                     } else if (p instanceof Bishop || p instanceof Knight) {
                         score += 300 * modifier;
                     } else if (p instanceof Pawn) {
-                        
-//                        if(c == ChessColour.WHITE){
-//                            score += 1 * Math.abs(p.getPosition().getY() - 7) * modifier;
-//                        } else {
-//                            score += 1 * p.getPosition().getY() * modifier;
-//                        }
-                        
                         score += 100 * modifier;
-
-                        // score -= 0.5 * doubled, blocked, isolated
                     }
 
                 }
@@ -149,16 +139,15 @@ public class AIPlayer extends Player {
 
         score += 1 * myMoves.size();
         score -= 1 * theirMoves.size();
-        
-        if(myMoves.isEmpty()){
+
+        if (myMoves.isEmpty()) {
             score += 10000 * modifier;
         }
 
-        if (b.isChecked(ChessColour.opposite(colour)) ) {
-            score += 30 * modifier;
-        }
-        
-        
+//        if (b.updateChecked(ChessColour.opposite(colour))) {
+//            score += 30 * modifier;
+//        }
+
         return score;
     }
 

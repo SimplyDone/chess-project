@@ -14,7 +14,7 @@ import java.io.Serializable;
 public abstract class Piece implements Serializable {
 
     protected final ChessColour colour;
-    protected final List<Move> validMoves;
+    protected List<Move> validMoves;
     
     protected Position position;
     
@@ -28,6 +28,7 @@ public abstract class Piece implements Serializable {
         position = pos;
         validMoves = new LinkedList<>();
     }
+    
 
     /**updates the current position of a piece
      * 
@@ -225,5 +226,8 @@ public abstract class Piece implements Serializable {
             }
         }
     }
+    
+    @Override
+    public abstract Piece clone();
     
 }
