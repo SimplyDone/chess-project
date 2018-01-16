@@ -27,6 +27,7 @@ public class Queen extends Piece {
     public void updateValidMoves(Board board) {
         validMoves.clear();
 
+//        movement(board);
         diagonalMovement(board);
         horizontalMovement(board);
         verticalMovement(board);

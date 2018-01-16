@@ -28,6 +28,7 @@ public class Bishop extends Piece {
         validMoves.clear();
         
         diagonalMovement(board);
+        //movement(board);
     }
 
     /**retrieves a string that may represent the type of piece

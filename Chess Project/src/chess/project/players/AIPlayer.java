@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class AIPlayer extends Player {
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class MoveNode {
     

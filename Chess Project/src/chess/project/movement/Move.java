@@ -5,7 +5,7 @@ import java.util.Objects;
 
 /** This class represents a move between two positions.
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class Move implements Serializable {
     

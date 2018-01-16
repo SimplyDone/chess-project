@@ -115,12 +115,57 @@ public abstract class Piece implements Serializable {
                     j += jNext;
                 }
                 // evaluates the final position if it was on an enemy peice
-                if (inBounds(i) && inBounds(j) && board.getBoard()[i][j].getColour() != colour) {
+                if (inBounds(i) && inBounds(j) && 
+                        board.getBoard()[i][j].getColour() != colour) {
                     addMove(board, i, j);
                 }
             }
         }
     }
+    
+    /*
+    protected void movement(Board board){
+        
+        int i, j;
+        int c = 1; //
+        boolean isKing = false;
+        if(this instanceof Rook){
+            verticalMovement(board);
+            horizontalMovement(board);
+            
+        }else{
+            
+            if(this instanceof Bishop){
+                c = 2;
+            }else if(this instanceof King){
+                isKing = true;
+            }
+            // which direction the peice is moving in 
+            for (int iNext = -1; iNext <= 1; iNext+=c) {
+                for (int jNext = -1; jNext <= 1; jNext+=c) {
+
+                    i = this.position.getX() + iNext;
+                    j = this.position.getY() + jNext;
+
+                    // adds a valid move to the list when the move is in bounds and
+                    // on an empty space
+                    while (!isKing && inBounds(i) && inBounds(j) && 
+                            (null == board.getBoard()[i][j])) {
+
+                        addMove(board, i, j);
+                        i += iNext;
+                        j += jNext;
+                    }
+                    // evaluates the final position if it was on an enemy peice
+                    if (inBounds(i) && inBounds(j) && null != board.getBoard()[i][j]
+                            && board.getBoard()[i][j].getColour() != colour) {
+                        addMove(board, i, j);
+                    }
+                }
+            }
+        }
+    }
+    */
     
     /**Evaluates all positions on the board that are directly above and below 
      * this piece. If the position in question is within the bounds of the 

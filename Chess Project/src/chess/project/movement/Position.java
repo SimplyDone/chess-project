@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Represents a position of a piece. X -> (a-h) Y -> (1-8)
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class Position implements Serializable {
 

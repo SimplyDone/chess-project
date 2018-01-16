@@ -12,7 +12,7 @@ import javax.swing.border.LineBorder;
 
 /**
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class TileButton extends JButton {
 

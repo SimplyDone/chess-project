@@ -4,7 +4,7 @@ package chess.project;
 
 /**
  *
- * @author Alex
+ * @author Alex Zurad, Robbie McDonnell
  */
 public class ChessProject {
 

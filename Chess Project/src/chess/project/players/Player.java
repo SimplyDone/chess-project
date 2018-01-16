@@ -6,7 +6,7 @@ import chess.project.*;
 /**
  * This class represents a player in chess. It can be AI controlled or human.
  *
- * @author Alex Zurad
+ * @author Alex Zurad, Robbie McDonnell
  */
 public abstract class Player {
 
