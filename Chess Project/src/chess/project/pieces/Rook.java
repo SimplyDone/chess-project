@@ -76,4 +76,11 @@ public class Rook extends Piece {
         return new Rook(colour, position, validMoves, castlable);
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 83 * hash + (this.castlable ? 1 : 0);
+        return hash;
+    }    
+
 }

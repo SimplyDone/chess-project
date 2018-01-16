@@ -230,4 +230,6 @@ public abstract class Piece implements Serializable {
     @Override
     public abstract Piece clone();
     
+    
+    
 }

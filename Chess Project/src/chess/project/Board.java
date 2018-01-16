@@ -93,6 +93,7 @@ public final class Board implements Serializable {
         this.turnNumber = gameData[0];
         this.whiteMoveCount = gameData[1];
         this.blackMoveCount = gameData[2];
+        
     }
 
     private Piece getPiece(String p, Position pos) {
@@ -485,16 +486,27 @@ public final class Board implements Serializable {
     public Board fastClone() {
 
         Piece[][] tempPieces = new Piece[8][8];
+        King tempWhiteKing = null;
+        King tempBlackKing = null;
+        
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (board[j][i] != null) {
-                    tempPieces[j][i] = (Piece) board[j][i].clone();
+                if (board[i][j] != null) {
+                    tempPieces[i][j] = (Piece) board[i][j].clone();
+                    
+                    if(board[i][j] instanceof King && board[i][j].getColour() == ChessColour.WHITE){
+                        tempWhiteKing = (King) tempPieces[i][j];
+                    } else if (board[i][j] instanceof King && board[i][j].getColour() == ChessColour.BLACK){
+                        tempBlackKing = (King) tempPieces[i][j];
+                    }
                 } else {
-                    tempPieces[j][i] = null;
+                    tempPieces[i][j] = null;
                 }
             }
         }
-        King[] kings = new King[]{whiteKing, blackKing};
+        
+        
+        King[] kings = new King[]{tempWhiteKing, tempBlackKing};
         boolean[] gameFlags = new boolean[]{isWhiteHuman, isBlackHuman, isWhiteTurn, isWhiteChecked, isBlackChecked};
         int[] gameData = new int[]{turnNumber, whiteMoveCount, blackMoveCount};
 
@@ -513,4 +525,6 @@ public final class Board implements Serializable {
     public boolean isChecked(ChessColour c) {
         return c == ChessColour.WHITE ? isWhiteChecked : isBlackChecked;
     }
+    
+    
 }
