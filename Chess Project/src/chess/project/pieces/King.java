@@ -55,7 +55,8 @@ public class King extends Piece {
         int y = (ChessColour.WHITE == colour) ? 7 : 0;
         
         if (this.isCastlable() && j == y && i == 4 &&
-                !board.isChecked(colour)) {
+
+                !board.checkForCheck(new Move(position, position), colour)) {
             
 
             //                LEFT SIDE

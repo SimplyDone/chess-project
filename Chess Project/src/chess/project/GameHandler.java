@@ -84,15 +84,19 @@ public class GameHandler {
 
                 if (colourChoice) {
                     white = new HumanPlayer(ChessColour.WHITE, board);
+                    board.setWhiteHuman(true);
                     black = new AIPlayer(ChessColour.BLACK, board, aiDifficulty);
                 } else {
                     white = new AIPlayer(ChessColour.WHITE, board, aiDifficulty);
                     black = new HumanPlayer(ChessColour.BLACK, board);
+                    board.setBlackHuman(true);
                 }
                 break;
             case 2:
                 white = new HumanPlayer(ChessColour.WHITE, board);
+                board.setWhiteHuman(true);
                 black = new HumanPlayer(ChessColour.BLACK, board);
+                board.setBlackHuman(true);
                 break;
 
         }
@@ -106,9 +110,6 @@ public class GameHandler {
         boolean[] gameOver = {false, false, false};
 
         while (!gameOver[0]) {
-
-            //board.printBoard();
-            
 
             if (board.getTurn() == ChessColour.WHITE) {
                 board.doMove(white.getMove());
@@ -160,7 +161,8 @@ public class GameHandler {
         try {
             sc = new Scanner(file);
 
-            for (int i = 0; i < 8; i++) {
+            int i = 0;
+            while (sc.hasNext() && i<8) {
                 value = sc.nextLine();
                 if (value.matches("[pPrRnNbBqQkKX]{8}?")) {
 
@@ -173,7 +175,7 @@ public class GameHandler {
                     System.out.println("Invalid file format. Starting new game.");
                     return new Board();
                 }
-
+                i++;
             }
 
         } catch (IOException e) {
