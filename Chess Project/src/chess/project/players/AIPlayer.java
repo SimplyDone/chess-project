@@ -11,78 +11,77 @@ import java.util.*;
  */
 public class AIPlayer extends Player {
 
-    private final int difficulty;
+    private final int searchDepth;
 
     public AIPlayer(ChessColour colour, Board board, int difficulty) {
         super(colour, board);
-        this.difficulty = difficulty;
+        this.searchDepth = difficulty;
     }
 
     @Override
     public Move getMove() {
 
         System.out.println(colour);
-        int[] v = miniMax(difficulty, board.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        //int[] v = miniMax(searchDepth, board.clone(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        //int[] v = miniMax_2(searchDepth, board, colour);
+        int[] v = alphaBeta_2(searchDepth, board, colour, Integer.MIN_VALUE,Integer.MAX_VALUE);
         Move m = new Move(new Position(v[1], v[2]), new Position(v[3], v[4]));
         System.out.println(m + " " + v[0]);
         return m;
 
     }
 
-    private int[] miniMax(int depth, Board b, int alpha, int beta, boolean isMaxPlayer) {
-
-        ChessColour c = b.getTurn(); //gets the current player's colour
-        Move bestMove = new Move(new Position(-5, -5), new Position(-5, -5));
-
-        int score;
-
-        List<Move>[] validMoves = getValidMoves(b.getBoard(), c); //gets all valid moves for a colour
-        List<Move> myMoves = validMoves[0];
-        List<Move> theirMoves = validMoves[1];
-
-        if (myMoves.isEmpty() || depth == 0) {
-            
-                score = evaluateBoard(b, myMoves, theirMoves);    
-            return new int[]{score, -10, -10, -10, -10};
-        } else {
-
-            Collections.shuffle(myMoves); // does a random move when multiple moves have the same value
-            Board tempBoard;
-
-            for (Move m : myMoves) {
-                tempBoard = b.clone();//reset board 
-
-                tempBoard.doMove(m);
-                tempBoard.nextTurn();
-                
-                if (isMaxPlayer) {
-                    score = miniMax(depth - 1, tempBoard, alpha, beta, !isMaxPlayer)[0];
-                    if (score > alpha) {
-                        alpha = score;
-                        bestMove = m;
-                    }
-                } else { //not max player
-                    score = miniMax(depth - 1, tempBoard, alpha, beta, !isMaxPlayer)[0];
-                    if (score < beta) {
-                        beta = score;
-                        bestMove = m;
-                    }
-                }
-                
-
-
-                if (alpha >= beta) {
-                    break;
-                }
-            }
-        }
-
-        Position o = bestMove.getOldPosition();
-        Position n = bestMove.getNewPosition();
-
-        return new int[]{isMaxPlayer ? alpha : beta, o.getX(), o.getY(), n.getX(), n.getY()};
-    }
-
+//    private int[] miniMax(int depth, Board b, int alpha, int beta, boolean isMaxPlayer) {
+//
+//        ChessColour c = b.getTurn(); //gets the current player's colour
+//        Move bestMove = new Move(new Position(-5, -5), new Position(-5, -5));
+//
+//        int score;
+//
+//        List<Move>[] validMoves = getValidMoves(b.getBoard(), c); //gets all valid moves for a colour
+//        List<Move> myMoves = validMoves[0];
+//        List<Move> theirMoves = validMoves[1];
+//
+//        if (myMoves.isEmpty() || depth == 0) {
+//
+//            score = evaluateBoard(b, myMoves, theirMoves, c);
+//            return new int[]{score, -10, -10, -10, -10};
+//        } else {
+//
+//            Collections.shuffle(myMoves); // does a random move when multiple moves have the same value
+//            Board tempBoard;
+//
+//            for (Move m : myMoves) {
+//                tempBoard = b.fastClone();//reset board 
+//
+//                tempBoard.doMove(m);
+//                tempBoard.nextTurn();
+//
+//                if (isMaxPlayer) {
+//                    score = miniMax(depth - 1, tempBoard, alpha, beta, !isMaxPlayer)[0];
+//                    if (score > alpha) {
+//                        alpha = score;
+//                        bestMove = m;
+//                    }
+//                } else { //not max player
+//                    score = miniMax(depth - 1, tempBoard, alpha, beta, !isMaxPlayer)[0];
+//                    if (score < beta) {
+//                        beta = score;
+//                        bestMove = m;
+//                    }
+//                }
+//
+//                if (alpha >= beta) {
+//                    break;
+//                }
+//            }
+//        }
+//
+//        Position o = bestMove.getOldPosition();
+//        Position n = bestMove.getNewPosition();
+//
+//        return new int[]{isMaxPlayer ? alpha : beta, o.getX(), o.getY(), n.getX(), n.getY()};
+//    }
     private List<Move>[] getValidMoves(Piece[][] tempBoard, ChessColour c) {
 
         List<Move> validMoves = new LinkedList<>();
@@ -102,8 +101,9 @@ public class AIPlayer extends Player {
         return new List[]{validMoves, badGuyMoves};
     }
 
-    /** Evaluates the board relative to the current player
-     * 
+    /**
+     * Evaluates the board relative to the current player
+     *
      */
     private int evaluateBoard(Board b, List<Move> myMoves, List<Move> theirMoves) {
 
@@ -116,6 +116,7 @@ public class AIPlayer extends Player {
                 Piece p = b.getBoard()[i][j];
                 if (p != null) {
 
+                    //if the piece is my colour the modifier is positive
                     if (p.getColour() == colour) {
                         modifier = 1;
                     } else {
@@ -131,35 +132,126 @@ public class AIPlayer extends Player {
                     } else if (p instanceof Bishop || p instanceof Knight) {
                         score += 300 * modifier;
                     } else if (p instanceof Pawn) {
-                        
-//                        if(c == ChessColour.WHITE){
-//                            score += 1 * Math.abs(p.getPosition().getY() - 7) * modifier;
-//                        } else {
-//                            score += 1 * p.getPosition().getY() * modifier;
-//                        }
-                        
                         score += 100 * modifier;
-
-                        // score -= 0.5 * doubled, blocked, isolated
                     }
 
                 }
             }
         }
 
-        score += 1 * myMoves.size();
-        score -= 1 * theirMoves.size();
-        
-        if(myMoves.isEmpty()){
-            score += 10000 * modifier;
+//        //score += myMoves.size() - theirMoves.size() * 0.1;
+//        if (myMoves.isEmpty() && b.isChecked(c)) {
+//            score -= 100000;
+//        } else if (myMoves.isEmpty()) {
+//            score += 10000;
+//        }
+//
+//        if (theirMoves.isEmpty() && b.isChecked(ChessColour.opposite(c))) {
+//            score += 100000;
+//        } else if (theirMoves.isEmpty()) {
+//            score -= 10000;
+//        }
+//        if (b.updateChecked(ChessColour.opposite(colour))) {
+//            score += 30 * modifier;
+//        }
+        return score;
+    }
+
+    private int[] miniMax_2(int depth, Board b, ChessColour c) {
+
+        Move bestMove = new Move(new Position(-5, -5), new Position(-5, -5));
+        List<Move>[] validMoves = getValidMoves(b.getBoard(), c); //gets all valid moves for a colour
+        List<Move> myMoves = validMoves[0];
+        List<Move> theirMoves = validMoves[1];
+
+        int bestScore = (c == colour) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        int currScore;
+
+        if (myMoves.isEmpty() || depth == 0) {
+            currScore = evaluateBoard(b, myMoves, theirMoves);
+            return new int[]{currScore, -10, -10, -10, -10};
+        } else {
+
+            Collections.shuffle(myMoves); // does a random move when multiple moves have the same value
+            Board tempBoard;
+
+            for (Move m : myMoves) {
+                tempBoard = b.fastClone();//reset board 
+
+                tempBoard.doMove(m);
+                tempBoard.nextTurn();
+
+                if (c == colour) { // if the colour is mine (max player)
+                    currScore = miniMax_2(depth - 1, tempBoard, ChessColour.opposite(c))[0];
+                    if (currScore > bestScore) {
+                        bestScore = currScore;
+                        bestMove = m;
+                    }
+                } else { //colour is not mine (not max player)
+                    currScore = miniMax_2(depth - 1, tempBoard, ChessColour.opposite(c))[0];
+                    if (currScore < bestScore) {
+                        bestScore = currScore;
+                        bestMove = m;
+                    }
+                }
+            }
         }
 
-        if (b.isChecked(ChessColour.opposite(colour)) ) {
-            score += 30 * modifier;
+        Position o = bestMove.getOldPosition();
+        Position n = bestMove.getNewPosition();
+
+        return new int[]{bestScore, o.getX(), o.getY(), n.getX(), n.getY()};
+    }
+
+    private int[] alphaBeta_2(int depth, Board b, ChessColour c, int alpha, int beta) {
+
+        Move bestMove = new Move(new Position(-5, -5), new Position(-5, -5));
+        List<Move>[] validMoves = getValidMoves(b.getBoard(), c); //gets all valid moves for a colour
+        List<Move> myMoves = validMoves[0];
+        List<Move> theirMoves = validMoves[1];
+
+        //int bestScore = (c == colour) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        int currScore;
+
+        if (myMoves.isEmpty() || depth == 0) {
+            currScore = evaluateBoard(b, myMoves, theirMoves);
+            return new int[]{currScore, -10, -10, -10, -10};
+        } else {
+
+            Collections.shuffle(myMoves); // does a random move when multiple moves have the same value
+            Board tempBoard;
+
+            for (Move m : myMoves) {
+                tempBoard = b.fastClone();//reset board 
+
+                tempBoard.doMove(m);
+                tempBoard.nextTurn();
+
+                if (c == colour) { // if the colour is mine (max player)
+                    currScore = alphaBeta_2(depth - 1, tempBoard, ChessColour.opposite(c), alpha, beta)[0];
+                    if (currScore > alpha) {
+                        alpha = currScore;
+                        bestMove = m;
+                    }
+                } else { //colour is not mine (min player)
+                    currScore = alphaBeta_2(depth - 1, tempBoard, ChessColour.opposite(c), alpha, beta)[0];
+                    if (currScore < beta) {
+                        beta = currScore;
+                        bestMove = m;
+                    }
+                }
+
+                //the cycle is interrupted
+                if (alpha >= beta) {
+                    break;
+                }
+            }
         }
-        
-        
-        return score;
+
+        Position o = bestMove.getOldPosition();
+        Position n = bestMove.getNewPosition();
+
+        return new int[]{(c == colour) ? alpha : beta, o.getX(), o.getY(), n.getX(), n.getY()};
     }
 
 }

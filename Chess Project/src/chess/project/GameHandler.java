@@ -107,7 +107,7 @@ public class GameHandler {
 
         ChessboardGraphicHandler graphics = new ChessboardGraphicHandler(board);
         
-        boolean[] gameOver = {false, false, false};
+        boolean[] gameOver = board.isGameOver();
 
         while (!gameOver[0]) {
 
@@ -123,8 +123,8 @@ public class GameHandler {
 
             graphics.updateBoard();
             board.nextTurn();
-            gameOver = board.isGameOver();
             board.saveBoard();
+            gameOver = board.isGameOver();
         }
         
         if(gameOver[1]){
