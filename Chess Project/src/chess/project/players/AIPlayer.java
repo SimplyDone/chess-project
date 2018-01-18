@@ -55,7 +55,7 @@ public class AIPlayer extends Player {
     private int evaluateBoard(Board b, List<Move> myMoves, List<Move> theirMoves) {
 
         int score = 0;
-        int modifier = 1;
+        int modifier;
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -85,21 +85,20 @@ public class AIPlayer extends Player {
                 }
             }
         }
+
         
-        if(myMoves.size() > theirMoves.size()){
-            score +=1;
-        } else {
-            score -=1;
+        if(b.isGameOver()[0]){
+            if(!b.isGameOver()[1]){
+                if(colour == ChessColour.WHITE && b.isGameOver()[2]){
+                    score += 100000;
+                } else if (colour == ChessColour.BLACK && !b.isGameOver()[2]){
+                    score += 100000;
+                } else {
+                    score -= 100000;
+                }
+            }
         }
 
-        if (myMoves.isEmpty() && b.isChecked(colour)) { //if I am checkmated
-            score -= 100000;
-
-        }
-
-        if (theirMoves.isEmpty() && b.isChecked(ChessColour.opposite(colour))) {
-            score += 100000;
-        } 
 
         return score;
     }
@@ -111,7 +110,6 @@ public class AIPlayer extends Player {
         List<Move> myMoves = validMoves[0];
         List<Move> theirMoves = validMoves[1];
 
-        //int bestScore = (c == colour) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         int currScore;
 
         if (myMoves.isEmpty() || depth == 0) {
@@ -123,7 +121,7 @@ public class AIPlayer extends Player {
             Board tempBoard;
 
             for (Move m : myMoves) {
-                tempBoard = b.fastClone();//reset board 
+                tempBoard = b.clone();//reset board 
 
                 tempBoard.doMove(m);
                 tempBoard.nextTurn();
