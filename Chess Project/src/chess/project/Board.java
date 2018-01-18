@@ -315,14 +315,22 @@ public final class Board implements Serializable {
 
                     //ai queen promotion
                     case -1:
+                        p = new Queen(
+                                p.getColour(), new Position(newPos.getX(), 0));
+                        break;
                     case 8:
-                        p = new Queen(p.getColour(), p.getPosition());
+                        p = new Queen(
+                                p.getColour(), new Position(newPos.getX(), 7));
                         break;
 
                     //ai knight promotion
                     case -2:
+                        p = new Knight(
+                                p.getColour(), new Position(newPos.getX(), 0));
+                        break;
                     case 9:
-                        p = new Knight(p.getColour(), p.getPosition());
+                        p = new Knight(
+                                p.getColour(), new Position(newPos.getX(), 0));
                         break;
 
                     //human promotion
@@ -413,13 +421,17 @@ public final class Board implements Serializable {
         return isWhiteTurn ? ChessColour.WHITE : ChessColour.BLACK;
     }
 
+    /** This method is called after every turn to automatically
+     * save the board to a file after every turn.
+     * 
+     */
     public void saveBoard() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Chess.save"))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("Chess.save"))) {
             oos.writeObject(this);
         } catch (IOException ex) {
             System.out.println(ex);
         }
-
     }
 
     public int getTurnNumber() {
@@ -460,31 +472,7 @@ public final class Board implements Serializable {
         return n;
     }
 
-    @Override
     public Board clone() {
-
-        Board tempBoard = null;
-
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(this);
-            oos.flush();
-            oos.close();
-            bos.close();
-
-            byte[] byteData = bos.toByteArray();
-            ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
-            tempBoard = (Board) new ObjectInputStream(bais).readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.printf("CRITIAL ERROR");
-            System.exit(1);
-        }
-
-        return tempBoard;
-    }
-
-    public Board fastClone() {
 
         Piece[][] tempPieces = new Piece[8][8];
         King tempWhiteKing = null;
@@ -515,7 +503,7 @@ public final class Board implements Serializable {
 
     public boolean checkForCheck(Move m, ChessColour colour) {
 
-        Board tempBoard = this.fastClone();
+        Board tempBoard = this.clone();
         tempBoard.doMove(m);
 
         return colour == ChessColour.WHITE ?
