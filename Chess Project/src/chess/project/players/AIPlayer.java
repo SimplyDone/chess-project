@@ -123,7 +123,7 @@ public class AIPlayer extends Player {
             for (Move m : myMoves) {
                 tempBoard = b.clone();//reset board 
 
-                tempBoard.doMove(m);
+                tempBoard.doMove(m, true);
                 tempBoard.nextTurn();
 
                 if (c == colour) { // if the colour is mine (max player)

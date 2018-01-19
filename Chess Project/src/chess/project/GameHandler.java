@@ -107,14 +107,15 @@ public class GameHandler {
 
         ChessboardGraphicHandler graphics = new ChessboardGraphicHandler(board);
         
+        board.start();
         boolean[] gameOver = board.isGameOver();
 
         while (!gameOver[0]) {
 
             if (board.getTurn() == ChessColour.WHITE) {
-                board.doMove(white.getMove());
+                board.doMove(white.getMove(), false);
             } else {
-                board.doMove(black.getMove());
+                board.doMove(black.getMove(), false);
             }
 
             try {
