@@ -36,7 +36,8 @@ public class GameHandler {
         int numHumans;
 
         loadBoard = TextInput.getIntChoice(
-                "Would you like to load the last save? (1-Yes 2-No 3-Load from test file): ",
+                "Would you like to load the last save?"
+                        + " (1-Yes 2-No 3-Load from test file): ",
                 "[1-3]");
 
         if (loadBoard == 1) {
@@ -85,9 +86,11 @@ public class GameHandler {
                 if (colourChoice) {
                     white = new HumanPlayer(ChessColour.WHITE, board);
                     board.setWhiteHuman(true);
-                    black = new AIPlayer(ChessColour.BLACK, board, aiDifficulty);
+                    black = new AIPlayer(
+                            ChessColour.BLACK, board, aiDifficulty);
                 } else {
-                    white = new AIPlayer(ChessColour.WHITE, board, aiDifficulty);
+                    white = new AIPlayer(
+                            ChessColour.WHITE, board, aiDifficulty);
                     black = new HumanPlayer(ChessColour.BLACK, board);
                     board.setBlackHuman(true);
                 }
@@ -122,8 +125,8 @@ public class GameHandler {
                 Thread.sleep(500);
             } catch (InterruptedException e) { }
 
-            graphics.updateBoard();
             board.nextTurn();
+            graphics.updateBoard();
             board.saveBoard();
             gameOver = board.isGameOver();
         }
@@ -173,7 +176,8 @@ public class GameHandler {
 
                     }
                 } else {
-                    System.out.println("Invalid file format. Starting new game.");
+                    System.out.println(
+                            "Invalid file format. Starting new game.");
                     return new Board();
                 }
                 i++;

@@ -31,7 +31,7 @@ public class HumanPlayer extends Player {
         
         String move = TextInput.getStringChoice(
                 "Enter your move " + colour + " (a-h)(1-8)(a-h)(1-8): ",
-                "[a-hA-h][1-8][a-hA-H][1-8]");
+                "[a-hA-H][1-8][a-hA-H][1-8]");
         
         String[] split = move.split("");
         

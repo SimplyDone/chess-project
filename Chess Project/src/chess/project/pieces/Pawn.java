@@ -23,7 +23,8 @@ public class Pawn extends Piece {
         super(col, pos);
     }
 
-    private Pawn(ChessColour col, Position pos, List<Move> validMoves, int enPassantTurn) {
+    private Pawn(ChessColour col, Position pos,
+            List<Move> validMoves, int enPassantTurn) {
         super(col, pos);
         this.validMoves = validMoves;
         this.enPassantTurn = enPassantTurn;
@@ -34,66 +35,70 @@ public class Pawn extends Piece {
      * List
      *
      * @param board the board the piece that is being evaluated on
-     * @param isHuman a boolean that tells the method if this is a  human player
-     *              or an AI player to determine which moves are valid
+     * @param isHuman a boolean that tells the method if this is a human player
+     * or an AI player to determine which moves are valid
      */
     @Override
     public void updateValidMoves(Board board, boolean isHuman) {
-        if(isHuman)
+        if (isHuman) {
             humanValidMoves(board);
-        else
+        } else {
             AIValidMoves(board);
+        }
     }
-    /**This provides a list of valid moves that this pawn may make with AI 
+
+    /**
+     * This provides a list of valid moves that this pawn may make with AI
      * specific moves regarding the event of promotion
-     * 
+     *
      * @param board the board the piece that is being evaluated on
      */
     public void AIValidMoves(Board board) {
         validMoves.clear();
-        int jumpPos, promoPos; 
-        
-        if (this.colour == ChessColour.WHITE){
+        int jumpPos, promoPos;
+
+        if (this.colour == ChessColour.WHITE) {
             jumpPos = 6;
             promoPos = 1;
-        }else{
+        } else {
             jumpPos = 1;
             promoPos = 6;
         }
-        
+
         int forward = getForward();
         int i = this.position.getX();
         int j = this.position.getY();
-        
-        if(j == jumpPos){
+
+        if (j == jumpPos) {
             moveForward(board, i, j, forward, 2);
-            
-        }else if(j == promoPos){
-            if(board.getBoard()[i][j+forward] == null){
-                addMove(board, i, j + forward*2);
-                addMove(board, i, j + forward*3);
+
+        } else if (j == promoPos) {
+            if (board.getBoard()[i][j + forward] == null) {
+                addMove(board, i, j + forward * 2);
+                addMove(board, i, j + forward * 3);
             }
             for (int iNext = -1; iNext <= 1; iNext += 2) {
                 if (inBounds(i + iNext)) {
-                    addMove(board, i+iNext, j + forward*2);
-                    addMove(board, i+iNext, j + forward*3);
+                    addMove(board, i + iNext, j + forward * 2);
+                    addMove(board, i + iNext, j + forward * 3);
                 }
             }
-            
+
             moveForward(board, i, j, forward, 1);
             takePiece(board, i, j, forward);
         }
-        
+
     }
-    
-    /**This provides a list of valid moves that this pawn may make for a human 
+
+    /**
+     * This provides a list of valid moves that this pawn may make for a human
      * player
-     * 
+     *
      * @param board the board the piece that is being evaluated on
      */
     public void humanValidMoves(Board board) {
         validMoves.clear();
-        
+
         int forward = getForward();
         int i = this.position.getX();
         int j = this.position.getY();
@@ -106,14 +111,15 @@ public class Pawn extends Piece {
         if (j == 6 || j == 1) {
             dist = 2;
         }
-        
-        moveForward(board,i,j,forward,dist);
-        takePiece(board,i,j,forward);
-        
+
+        moveForward(board, i, j, forward, dist);
+        takePiece(board, i, j, forward);
+
     }
-    
-    /**evaluates a pawn movement forward 'd' number of spaces
-     * 
+
+    /**
+     * evaluates a pawn movement forward 'd' number of spaces
+     *
      * @param board
      * @param dist
      * @param i
@@ -121,50 +127,54 @@ public class Pawn extends Piece {
      * @param forward
      * @param dist
      */
-    private void moveForward(Board board,int i, int j, int forward, int dist){
-        
+    private void moveForward(Board board, int i, int j, int forward, int dist) {
+
         j += forward;
-        
+
         int moved = 1;
-        
+
         // checks to see if the new position in question is 
         // out of bounds && if it is empty
-       
-        while (moved <= dist &&
-                inBounds(j) && 
-                board.getBoard()[i][j] == null) {
+        while (moved <= dist
+                && inBounds(j)
+                && board.getBoard()[i][j] == null) {
             addMove(board, i, j);
             j += forward;
             moved++;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param board
      * @param i
      * @param j
-     * @param forward 
+     * @param forward
      */
-    private void takePiece(Board board,int i, int j, int forward){
+    private void takePiece(Board board, int i, int j, int forward) {
 
         for (int iNext = -1; iNext <= 1; iNext += 2) {
-            if (inBounds(i + iNext)) { // vertical component is not checked since pawns will change into another peice in the final row (promotion)
+            // vertical component is not checked since pawns 
+            // will change into another peice in the final row (promotion)
+            if (inBounds(i + iNext)) {
                 // checks if the position contains an enemy piece
-                
+
                 if (null != board.getBoard()[i + iNext][j + forward]
-                        && colour != board.getBoard()[i + iNext][j + forward].getColour()) {
+                        && colour != board.getBoard()[i + iNext][j + forward]
+                        .getColour()) {
                     addMove(board, i + iNext, j + forward);
-                
-                // enpassent
-                // compares a turn counter and which turn a pawn moved 
-                // forward two spaces
-                }else if (null != board.getBoard()[i + iNext][j]
-                        && colour != board.getBoard()[i + iNext][j].getColour()) {
+
+                    // enpassent
+                    // compares a turn counter and which turn a pawn moved 
+                    // forward two spaces
+                } else if (null != board.getBoard()[i + iNext][j]
+                        && colour != board.getBoard()[i + iNext][j]
+                        .getColour()) {
                     Piece p = board.getBoard()[i + iNext][j];
 
                     if (p instanceof Pawn) {
-                        if ((board.getTurnNumber() - ((Pawn) p).getEnPassantTurn()) == 1) {
+                        if ((board.getTurnNumber()
+                                - ((Pawn) p).getEnPassantTurn()) == 1) {
                             addMove(board, i + iNext, j + forward);
                         }
                     }

@@ -23,7 +23,8 @@ public class King extends Piece {
         super(col, pos);
     }
 
-    private King(ChessColour col, Position pos, List<Move> validMoves, boolean castlable) {
+    private King(ChessColour col, Position pos,
+            List<Move> validMoves, boolean castlable) {
         super(col, pos);
         this.castlable = castlable;
         this.validMoves = validMoves;
@@ -49,7 +50,8 @@ public class King extends Piece {
 
                 if (inBounds(i + iNext) && inBounds(j + jNext)) {
                     if (null == board.getBoard()[i + iNext][j + jNext]
-                            || colour != board.getBoard()[i + iNext][j + jNext].getColour()) {
+                            || colour != board.getBoard()
+                                    [i + iNext][j + jNext].getColour()) {
 
                         addMove(board, i + iNext, j + jNext);
                     }
@@ -57,9 +59,9 @@ public class King extends Piece {
             }
         }
 
-        //movement(board);
-//                              Castling
-// checks if the king is able to casle by its boolean variable and position on the board
+        //                              Castling
+        // checks if the king is able to casle by its boolean
+        // variable and position on the board
         int y = (ChessColour.WHITE == colour) ? 7 : 0;
 
         if (this.isCastlable() && j == y && i == 4
@@ -82,7 +84,9 @@ public class King extends Piece {
                     for (int k = 2; k <= 3; k++) {
 
                         if (board.getBoard()[k][j] != null
-                                || board.checkForCheck(new Move(position, new Position(k, j)), colour)) {
+                                || board.checkForCheck(
+                                        new Move(position, new Position(k, j)),
+                                        colour)) {
 
                             castle = false;
                         }
@@ -112,7 +116,9 @@ public class King extends Piece {
                 for (int p = 5; p <= 6; p++) {
 
                     if (board.getBoard()[p][j] != null
-                            || board.checkForCheck(new Move(position, new Position(p, j)), colour)) {
+                            || board.checkForCheck(
+                                    new Move(position, new Position(p, j)),
+                                    colour)) {
 
                         castle = false;
                     }
@@ -155,7 +161,8 @@ public class King extends Piece {
                 i += iNext;
                 j += jNext;
 
-                while (inBounds(i) && inBounds(j) && b.getBoard()[i][j] == null) {
+                while (inBounds(i) && inBounds(j) 
+                        && b.getBoard()[i][j] == null) {
                     i += iNext;
                     j += jNext;
                 }
@@ -251,8 +258,8 @@ public class King extends Piece {
 
     /**
      * executes a unique check if the king is found in the isChecked method
-     * kings may only move one space so this method method checks if the move in
-     * question is within one space of the enemy king
+     * kings may only move one space so this method method checks if the move 
+     * in question is within one space of the enemy king
      *
      * @param b the board that the move in question will be evaluated on
      * @param i an integer representing the x value of the move in question

@@ -25,6 +25,7 @@ public final class Board implements Serializable {
     private boolean isBlackChecked = false;
 
     private int turnNumber;
+    private int takenTurn;
     private int whiteMoveCount = 0;
     private int blackMoveCount = 0;
 
@@ -62,7 +63,8 @@ public final class Board implements Serializable {
         }
 
         if (bKingCount != 1 || wKingCount != 1) {
-            System.out.println("Invalid number of kings. Default settings used.");
+            System.out.println(
+                    "Invalid number of kings. Default settings used.");
             initializePieces();
         }
 
@@ -74,7 +76,8 @@ public final class Board implements Serializable {
 
     }
 
-    private Board(Piece[][] board, King[] kings, boolean[] gameFlags, int[] gameData) {
+    private Board(Piece[][] board, King[] kings,
+            boolean[] gameFlags, int[] gameData) {
         this.board = board;
 
         this.whiteKing = kings[0];
@@ -89,6 +92,7 @@ public final class Board implements Serializable {
         this.turnNumber = gameData[0];
         this.whiteMoveCount = gameData[1];
         this.blackMoveCount = gameData[2];
+        this.takenTurn = gameData[3];
 
     }
 
@@ -170,6 +174,7 @@ public final class Board implements Serializable {
 
         isWhiteTurn = true;
         turnNumber = 0;
+        takenTurn = 0;
         whiteMoveCount = 0;
         blackMoveCount = 0;
 
@@ -218,14 +223,14 @@ public final class Board implements Serializable {
             if (isWhiteChecked && whiteMoveCount <= 0) {
                 return new boolean[]{true, false, false};
 
-            } else if (whiteMoveCount <= 0) {
-                return new boolean[]{true, true, false};
+            } else if (whiteMoveCount <= 0 || turnNumber - takenTurn >= 50) {
+                return new boolean[]{true, true, true};
             }
         } else {
             if (isBlackChecked && blackMoveCount <= 0) {
                 return new boolean[]{true, false, true};
-            } else if (blackMoveCount <= 0) {
-                return new boolean[]{true, true, true};
+            } else if (blackMoveCount <= 0 || turnNumber - takenTurn >= 50) {
+                return new boolean[]{true, true, false};
             }
         }
         return new boolean[]{false, false, false};
@@ -271,7 +276,8 @@ public final class Board implements Serializable {
             } else {
                 System.out.println("-----------------------------------------");
                 System.out.println("[INVALID MOVE]");
-                System.out.println("Valid moves for " + p.getClass().getSimpleName() + ":");
+                System.out.println("Valid moves for "
+                        + p.getClass().getSimpleName() + ":");
                 possibleMoves.stream().forEach((m) -> {
                     System.out.println(m);
                 });
@@ -304,6 +310,7 @@ public final class Board implements Serializable {
                 if (oldPos.getX() != newPos.getX()
                         && board[newPos.getX()][newPos.getY()] == null) {
                     board[newPos.getX()][oldPos.getY()] = null;
+                    takenTurn = turnNumber;
                 }
 
                 //promotion condition for human and ai
@@ -350,11 +357,13 @@ public final class Board implements Serializable {
                 if (newPos.getX() - oldPos.getX() == 2) { // right side
                     Rook r = (Rook) board[7][oldPos.getY()];
 
-                    completeMove(r, r.getPosition(), new Position(5, oldPos.getY()));
+                    completeMove(r, r.getPosition(),
+                            new Position(5, oldPos.getY()));
                 } else if (newPos.getX() - oldPos.getX() == -2) { // left side
                     Rook r = (Rook) board[0][oldPos.getY()];
 
-                    completeMove(r, r.getPosition(), new Position(3, oldPos.getY()));
+                    completeMove(r, r.getPosition(),
+                            new Position(3, oldPos.getY()));
                 }
             }
 
@@ -366,6 +375,10 @@ public final class Board implements Serializable {
 
         p.move(newPos);
         board[oldPos.getX()][oldPos.getY()] = null;
+        if (board[newPos.getX()][newPos.getY()] != null) {
+            takenTurn = turnNumber;
+        }
+
         board[newPos.getX()][newPos.getY()] = p;
     }
 
@@ -439,6 +452,10 @@ public final class Board implements Serializable {
     public int getTurnNumber() {
         return turnNumber;
     }
+    
+    public int getTurnTakenNumber(){
+        return 50 - (turnNumber - takenTurn);
+    }
 
     /**
      * This method obtains input from a human player to determine what piece
@@ -469,7 +486,8 @@ public final class Board implements Serializable {
                 n = new Queen(p.getColour(), p.getPosition());
                 break;
             default:
-                throw new IllegalStateException(selection + " was a valid choice for a piece");
+                throw new IllegalStateException(selection
+                        + " was a valid choice for a piece");
         }
         return n;
     }
@@ -499,8 +517,10 @@ public final class Board implements Serializable {
         }
 
         King[] kings = new King[]{tempWhiteKing, tempBlackKing};
-        boolean[] gameFlags = new boolean[]{isWhiteHuman, isBlackHuman, isWhiteTurn, isWhiteChecked, isBlackChecked};
-        int[] gameData = new int[]{turnNumber, whiteMoveCount, blackMoveCount};
+        boolean[] gameFlags = new boolean[]{isWhiteHuman,
+            isBlackHuman, isWhiteTurn, isWhiteChecked, isBlackChecked};
+        int[] gameData = new int[]{turnNumber, whiteMoveCount,
+            blackMoveCount, takenTurn};
 
         return new Board(tempPieces, kings, gameFlags, gameData);
     }
