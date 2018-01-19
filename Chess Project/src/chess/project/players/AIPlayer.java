@@ -101,9 +101,16 @@ public class AIPlayer extends Player {
                 } else {
                     score -= 100000;
                 }
+            } else {
+                if(colour == ChessColour.WHITE && !b.isGameOver()[2]){
+                    score -= 10000;
+                } else if (colour == ChessColour.BLACK && b.isGameOver()[2]){
+                    score -= 10000;
+                } else {
+                    score += 10000;
+                }
             }
         }
-
 
         return score;
     }

@@ -108,7 +108,8 @@ public class ChessboardGraphicHandler extends JFrame {
     public final void updateBoard() {
         
         infoContents.setText("Current Turn: " + board.getTurn() +
-                "\nTurn Number: " + board.getTurnNumber());
+                "\nTurn Number: " + board.getTurnNumber() +
+                "\nAuto Stalement in: " + board.getTurnTakenNumber());
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {

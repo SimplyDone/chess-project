@@ -19,7 +19,7 @@ public class LetterTextField extends JTextField {
         super(name);
         setFont(new Font("Arial", Font.PLAIN, 40));
         setHorizontalAlignment(JTextField.CENTER);
-        setBackground(Color.ORANGE);
+        setBackground(Color.YELLOW);
         setBorder(new LineBorder(Color.DARK_GRAY));
         setHighlighter(null);
         setEditable(false);
