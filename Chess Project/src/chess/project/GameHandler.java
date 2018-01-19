@@ -122,8 +122,8 @@ public class GameHandler {
                 Thread.sleep(500);
             } catch (InterruptedException e) { }
 
-            graphics.updateBoard();
             board.nextTurn();
+            graphics.updateBoard();
             board.saveBoard();
             gameOver = board.isGameOver();
         }
