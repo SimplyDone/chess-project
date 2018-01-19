@@ -53,9 +53,8 @@ public abstract class Piece implements Serializable {
      * abstract method that updates the list of valid moves based on the board
      *
      * @param board board may contain either the current board or a temp board
-     * @param isHuman True if the piece is controlled by a human player
      */
-    public abstract void updateValidMoves(Board board, boolean isHuman);
+    public abstract void updateValidMoves(Board board);
 
     /**
      * retrieves the colour of the piece

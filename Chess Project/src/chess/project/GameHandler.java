@@ -116,9 +116,9 @@ public class GameHandler {
         while (!gameOver[0]) {
 
             if (board.getTurn() == ChessColour.WHITE) {
-                board.doMove(white.getMove(), false);
+                board.doMove(white.getMove(), white instanceof AIPlayer);
             } else {
-                board.doMove(black.getMove(), false);
+                board.doMove(black.getMove(), black instanceof AIPlayer);
             }
 
             try {

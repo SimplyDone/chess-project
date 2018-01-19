@@ -35,10 +35,9 @@ public class King extends Piece {
      * List
      *
      * @param board the board the piece that is being evaluated on
-     * @param isHuman differentiates between a human player and an AI player
      */
     @Override
-    public void updateValidMoves(Board board, boolean isHuman) {
+    public void updateValidMoves(Board board) {
         validMoves.clear();
 
         int i = this.position.getX();

@@ -22,7 +22,8 @@ public class Rook extends Piece {
         super(col, pos);
     }
 
-    private Rook(ChessColour col, Position pos, List<Move> validMoves, boolean castlable) {
+    private Rook(ChessColour col, Position pos, 
+            List<Move> validMoves, boolean castlable) {
         super(col, pos);
         this.castlable = castlable;
         this.validMoves = validMoves;
@@ -33,10 +34,9 @@ public class Rook extends Piece {
      * List
      *
      * @param board the board the piece that is being evaluated on
-     * @param isHuman differentiates between a human player and an AI player
      */
     @Override
-    public void updateValidMoves(Board board, boolean isHuman) {
+    public void updateValidMoves(Board board) {
 
         validMoves.clear();
 

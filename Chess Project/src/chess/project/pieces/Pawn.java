@@ -35,68 +35,9 @@ public class Pawn extends Piece {
      * List
      *
      * @param board the board the piece that is being evaluated on
-     * @param isHuman a boolean that tells the method if this is a human player
-     * or an AI player to determine which moves are valid
      */
     @Override
-    public void updateValidMoves(Board board, boolean isHuman) {
-        if (isHuman) {
-            humanValidMoves(board);
-        } else {
-            AIValidMoves(board);
-        }
-    }
-
-    /**
-     * This provides a list of valid moves that this pawn may make with AI
-     * specific moves regarding the event of promotion
-     *
-     * @param board the board the piece that is being evaluated on
-     */
-    public void AIValidMoves(Board board) {
-        validMoves.clear();
-        int jumpPos, promoPos;
-
-        if (this.colour == ChessColour.WHITE) {
-            jumpPos = 6;
-            promoPos = 1;
-        } else {
-            jumpPos = 1;
-            promoPos = 6;
-        }
-
-        int forward = getForward();
-        int i = this.position.getX();
-        int j = this.position.getY();
-
-        if (j == jumpPos) {
-            moveForward(board, i, j, forward, 2);
-
-        } else if (j == promoPos) {
-            if (board.getBoard()[i][j + forward] == null) {
-                addMove(board, i, j + forward * 2);
-                addMove(board, i, j + forward * 3);
-            }
-            for (int iNext = -1; iNext <= 1; iNext += 2) {
-                if (inBounds(i + iNext)) {
-                    addMove(board, i + iNext, j + forward * 2);
-                    addMove(board, i + iNext, j + forward * 3);
-                }
-            }
-
-            moveForward(board, i, j, forward, 1);
-            takePiece(board, i, j, forward);
-        }
-
-    }
-
-    /**
-     * This provides a list of valid moves that this pawn may make for a human
-     * player
-     *
-     * @param board the board the piece that is being evaluated on
-     */
-    public void humanValidMoves(Board board) {
+    public void updateValidMoves(Board board) {
         validMoves.clear();
 
         int forward = getForward();
@@ -114,8 +55,8 @@ public class Pawn extends Piece {
 
         moveForward(board, i, j, forward, dist);
         takePiece(board, i, j, forward);
-
     }
+
 
     /**
      * evaluates a pawn movement forward 'd' number of spaces
