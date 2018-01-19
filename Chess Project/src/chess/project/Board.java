@@ -399,10 +399,12 @@ public final class Board implements Serializable {
 
                 if (board[i][j] != null) {
                     if (board[i][j].getColour() == ChessColour.WHITE) {
+
                         board[i][j].updateValidMoves(this, isWhiteHuman);
                         whiteMoveCount += board[i][j].getValidMoves().size();
                     } else {
                         board[i][j].updateValidMoves(this, isBlackHuman);
+
                         blackMoveCount += board[i][j].getValidMoves().size();
                     }
 
