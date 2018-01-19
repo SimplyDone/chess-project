@@ -326,17 +326,17 @@ public final class Board implements Serializable {
                         break;
                     case 9:
                         p = new Knight(
-                                p.getColour(), new Position(newPos.getX(), 0));
+                                p.getColour(), new Position(newPos.getX(), 7));
                         break;
 
                     //human promotion
                     case 0:
                     case 7:
-                        //p = getHumanSelection(p);
                         if (forceQueen) {
                             p = new Queen(p.getColour(), p.getPosition());
+                        } else {
+                            p = getHumanSelection(p);
                         }
-                        p = new Queen(p.getColour(), p.getPosition());
                         break;
                 }
 

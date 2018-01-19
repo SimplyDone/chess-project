@@ -50,7 +50,7 @@ public class Pawn extends Piece {
      * @param board the board the piece that is being evaluated on
      */
     public void AIValidMoves(Board board) {
-        
+        validMoves.clear();
         int jumpPos, promoPos; 
         
         if (this.colour == ChessColour.WHITE){
@@ -65,20 +65,23 @@ public class Pawn extends Piece {
         int i = this.position.getX();
         int j = this.position.getY();
         
-
-        
         if(j == jumpPos){
-            moveForward(board, forward,i,j, 2);
+            moveForward(board, i, j, forward, 2);
             
         }else if(j == promoPos){
             if(board.getBoard()[i][j+forward] == null){
-                // This is where the promotion algorithm goes
+                addMove(board, i, j + forward*2);
+                addMove(board, i, j + forward*3);
+            }
+            for (int iNext = -1; iNext <= 1; iNext += 2) {
+                if (inBounds(i + iNext)) {
+                    addMove(board, i+iNext, j + forward*2);
+                    addMove(board, i+iNext, j + forward*3);
+                }
             }
             
-            
-        }else{
-            moveForward(board, forward,i,j,1);
-            takePiece(board, forward, i,j);
+            moveForward(board, i, j, forward, 1);
+            takePiece(board, i, j, forward);
         }
         
     }
@@ -108,6 +111,7 @@ public class Pawn extends Piece {
         takePiece(board,i,j,forward);
         
     }
+    
     /**evaluates a pawn movement forward 'd' number of spaces
      * 
      * @param board
@@ -117,7 +121,6 @@ public class Pawn extends Piece {
      * @param forward
      * @param dist
      */
-    
     private void moveForward(Board board,int i, int j, int forward, int dist){
         
         j += forward;
@@ -126,12 +129,16 @@ public class Pawn extends Piece {
         
         // checks to see if the new position in question is 
         // out of bounds && if it is empty
-        while (moved <= dist && inBounds(j) && board.getBoard()[i][j] == null) {
+       
+        while (moved <= dist &&
+                inBounds(j) && 
+                board.getBoard()[i][j] == null) {
             addMove(board, i, j);
             j += forward;
             moved++;
         }
     }
+    
     /**
      * 
      * @param board
@@ -140,13 +147,11 @@ public class Pawn extends Piece {
      * @param forward 
      */
     private void takePiece(Board board,int i, int j, int forward){
-        // varifying diagonal moves including EnPassant
-        i = this.position.getX();
-        j = this.position.getY();
-        for (int iNext = -1; iNext <= 1; iNext += 2) {
 
+        for (int iNext = -1; iNext <= 1; iNext += 2) {
             if (inBounds(i + iNext)) { // vertical component is not checked since pawns will change into another peice in the final row (promotion)
                 // checks if the position contains an enemy piece
+                
                 if (null != board.getBoard()[i + iNext][j + forward]
                         && colour != board.getBoard()[i + iNext][j + forward].getColour()) {
                     addMove(board, i + iNext, j + forward);
