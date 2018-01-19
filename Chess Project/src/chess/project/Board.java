@@ -62,7 +62,8 @@ public final class Board implements Serializable {
         }
 
         if (bKingCount != 1 || wKingCount != 1) {
-            System.out.println("Invalid number of kings. Default settings used.");
+            System.out.println(
+                    "Invalid number of kings. Default settings used.");
             initializePieces();
         }
 
@@ -74,7 +75,8 @@ public final class Board implements Serializable {
 
     }
 
-    private Board(Piece[][] board, King[] kings, boolean[] gameFlags, int[] gameData) {
+    private Board(Piece[][] board, King[] kings,
+            boolean[] gameFlags, int[] gameData) {
         this.board = board;
 
         this.whiteKing = kings[0];
@@ -271,7 +273,8 @@ public final class Board implements Serializable {
             } else {
                 System.out.println("-----------------------------------------");
                 System.out.println("[INVALID MOVE]");
-                System.out.println("Valid moves for " + p.getClass().getSimpleName() + ":");
+                System.out.println("Valid moves for " 
+                        + p.getClass().getSimpleName() + ":");
                 possibleMoves.stream().forEach((m) -> {
                     System.out.println(m);
                 });
@@ -350,11 +353,13 @@ public final class Board implements Serializable {
                 if (newPos.getX() - oldPos.getX() == 2) { // right side
                     Rook r = (Rook) board[7][oldPos.getY()];
 
-                    completeMove(r, r.getPosition(), new Position(5, oldPos.getY()));
+                    completeMove(r, r.getPosition(), 
+                            new Position(5, oldPos.getY()));
                 } else if (newPos.getX() - oldPos.getX() == -2) { // left side
                     Rook r = (Rook) board[0][oldPos.getY()];
 
-                    completeMove(r, r.getPosition(), new Position(3, oldPos.getY()));
+                    completeMove(r, r.getPosition(), 
+                            new Position(3, oldPos.getY()));
                 }
             }
 
@@ -423,8 +428,8 @@ public final class Board implements Serializable {
     }
 
     /**
-     * This method is called after every turn to automatically save the board to
-     * a file after every turn.
+     * This method is called after every turn to automatically save the board 
+     * to a file after every turn.
      *
      */
     public void saveBoard() {
@@ -469,7 +474,8 @@ public final class Board implements Serializable {
                 n = new Queen(p.getColour(), p.getPosition());
                 break;
             default:
-                throw new IllegalStateException(selection + " was a valid choice for a piece");
+                throw new IllegalStateException(selection +
+                        " was a valid choice for a piece");
         }
         return n;
     }
@@ -499,7 +505,8 @@ public final class Board implements Serializable {
         }
 
         King[] kings = new King[]{tempWhiteKing, tempBlackKing};
-        boolean[] gameFlags = new boolean[]{isWhiteHuman, isBlackHuman, isWhiteTurn, isWhiteChecked, isBlackChecked};
+        boolean[] gameFlags = new boolean[]{isWhiteHuman,
+            isBlackHuman, isWhiteTurn, isWhiteChecked, isBlackChecked};
         int[] gameData = new int[]{turnNumber, whiteMoveCount, blackMoveCount};
 
         return new Board(tempPieces, kings, gameFlags, gameData);

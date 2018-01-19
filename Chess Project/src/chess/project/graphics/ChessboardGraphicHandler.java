@@ -38,7 +38,8 @@ public class ChessboardGraphicHandler extends JFrame {
         sideContents.setLayout(new BorderLayout(0,0));
         sideContents.setPreferredSize(new Dimension(256, 576));
 
-        moveContents = new JTextArea("Click on a piece to display all\nvalid moves.");
+        moveContents = new JTextArea("Click on a piece to display all"
+                + "\nvalid moves.");
         moveContents.setPreferredSize(new Dimension(256, 432));
         moveContents.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         
@@ -56,17 +57,22 @@ public class ChessboardGraphicHandler extends JFrame {
 
                 } else if (j == 8) {
                     
-                    JTextField letter = new LetterTextField(Character.toString((char) ((new Position(i-1, j)).getX() + 97)));
+                    JTextField letter = new LetterTextField(
+                            Character.toString((char) ((
+                                    new Position(i-1, j)).getX() + 97)));
                     boardContents.add(letter);
 
                 } else if (i == 0) {
 
-                     JTextField letter = new LetterTextField(String.valueOf(Math.abs((new Position(i-1, j)).getY() - 8)));
+                     JTextField letter = new LetterTextField(
+                             String.valueOf(Math.abs((
+                                     new Position(i-1, j)).getY() - 8)));
                      boardContents.add(letter);
 
                 } else {
 
-                    squares[i - 1][j] = new TileButton(new Position(i - 1, j), board);
+                    squares[i - 1][j] = new TileButton(
+                            new Position(i - 1, j), board);
 
                     //squares[i][j].setRolloverEnabled(false);
                     if ((i + j) % 2 != 0) {
