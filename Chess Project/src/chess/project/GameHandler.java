@@ -112,9 +112,9 @@ public class GameHandler {
         while (!gameOver[0]) {
 
             if (board.getTurn() == ChessColour.WHITE) {
-                board.doMove(white.getMove());
+                board.doMove(white.getMove(), false);
             } else {
-                board.doMove(black.getMove());
+                board.doMove(black.getMove(), false);
             }
 
             try {

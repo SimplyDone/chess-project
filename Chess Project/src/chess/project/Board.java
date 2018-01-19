@@ -2,14 +2,7 @@ package chess.project;
 
 import chess.project.movement.*;
 import chess.project.pieces.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
+import java.io.*;
 import java.util.List;
 
 /**
@@ -289,7 +282,7 @@ public final class Board implements Serializable {
         }
     }
 
-    public void doMove(Move move) {
+    public void doMove(Move move, boolean forceQueen) {
 
         Position oldPos = move.getOldPosition();
         Position newPos = move.getNewPosition();
@@ -337,6 +330,9 @@ public final class Board implements Serializable {
                     case 0:
                     case 7:
                         //p = getHumanSelection(p);
+                        if(forceQueen){
+                            p = new Queen(p.getColour(), p.getPosition());
+                        }
                         p = new Queen(p.getColour(), p.getPosition());
                         break;
                 }
@@ -400,10 +396,10 @@ public final class Board implements Serializable {
 
                 if (board[i][j] != null) {
                     if (board[i][j].getColour() == ChessColour.WHITE) {
-                        board[i][j].updateValidMoves(this);
+                        board[i][j].updateValidMoves(this, isWhiteHuman);
                         whiteMoveCount += board[i][j].getValidMoves().size();
                     } else {
-                        board[i][j].updateValidMoves(this);
+                        board[i][j].updateValidMoves(this, isBlackHuman);
                         blackMoveCount += board[i][j].getValidMoves().size();
                     }
 
@@ -482,11 +478,13 @@ public final class Board implements Serializable {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] != null) {
                     tempPieces[i][j] = (Piece) board[i][j].clone();
-
-                    if (board[i][j] instanceof King && board[i][j].getColour() == ChessColour.WHITE) {
-                        tempWhiteKing = (King) tempPieces[i][j];
-                    } else if (board[i][j] instanceof King && board[i][j].getColour() == ChessColour.BLACK) {
-                        tempBlackKing = (King) tempPieces[i][j];
+                    
+                    if(board[i][j] instanceof King){
+                        if(board[i][j].getColour() == ChessColour.WHITE){
+                            tempWhiteKing = (King) tempPieces[i][j];
+                        } else {
+                            tempBlackKing = (King) tempPieces[i][j];
+                        }
                     }
                 } else {
                     tempPieces[i][j] = null;
@@ -504,7 +502,7 @@ public final class Board implements Serializable {
     public boolean checkForCheck(Move m, ChessColour colour) {
 
         Board tempBoard = this.clone();
-        tempBoard.doMove(m);
+        tempBoard.doMove(m, true);
 
         return colour == ChessColour.WHITE ?
                 tempBoard.whiteKing.isChecked(tempBoard) :
