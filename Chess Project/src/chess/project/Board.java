@@ -311,22 +311,26 @@ public final class Board implements Serializable {
 
                     //ai queen promotion
                     case -1:
+                        newPos = new Position(newPos.getX(), 0);
                         p = new Queen(
-                                p.getColour(), new Position(newPos.getX(), 0));
+                                p.getColour(), p.getPosition());
                         break;
                     case 8:
+                        newPos = new Position(newPos.getX(), 7);
                         p = new Queen(
-                                p.getColour(), new Position(newPos.getX(), 7));
+                                p.getColour(), p.getPosition());
                         break;
 
                     //ai knight promotion
                     case -2:
+                        newPos = new Position(newPos.getX(), 0);
                         p = new Knight(
-                                p.getColour(), new Position(newPos.getX(), 0));
+                                p.getColour(), p.getPosition());
                         break;
                     case 9:
+                        newPos = new Position(newPos.getX(), 7);
                         p = new Knight(
-                                p.getColour(), new Position(newPos.getX(), 7));
+                                p.getColour(), p.getPosition());
                         break;
 
                     //human promotion
