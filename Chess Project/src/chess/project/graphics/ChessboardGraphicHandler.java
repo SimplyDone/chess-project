@@ -23,7 +23,7 @@ public class ChessboardGraphicHandler extends JFrame {
     private final Board board;
 
     public ChessboardGraphicHandler(Board board) {
-        super("Chess GUI Test");
+        super("Chess GUI");
 
         this.board = board;
 
