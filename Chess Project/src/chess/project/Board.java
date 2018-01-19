@@ -2,14 +2,7 @@ package chess.project;
 
 import chess.project.movement.*;
 import chess.project.pieces.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
+import java.io.*;
 import java.util.List;
 
 /**
@@ -45,7 +38,6 @@ public final class Board implements Serializable {
         board = new Piece[8][8];
         initializeSettings();
         initializePieces();
-        updateValidMoves();
     }
 
     public Board(String[][] pieces) {
@@ -75,7 +67,11 @@ public final class Board implements Serializable {
         }
 
         initializeSettings();
+    }
+
+    public void start() {
         updateValidMoves();
+
     }
 
     private Board(Piece[][] board, King[] kings, boolean[] gameFlags, int[] gameData) {
@@ -93,7 +89,7 @@ public final class Board implements Serializable {
         this.turnNumber = gameData[0];
         this.whiteMoveCount = gameData[1];
         this.blackMoveCount = gameData[2];
-        
+
     }
 
     private Piece getPiece(String p, Position pos) {
@@ -289,7 +285,7 @@ public final class Board implements Serializable {
         }
     }
 
-    public void doMove(Move move) {
+    public void doMove(Move move, boolean forceQueen) {
 
         Position oldPos = move.getOldPosition();
         Position newPos = move.getNewPosition();
@@ -315,20 +311,31 @@ public final class Board implements Serializable {
 
                     //ai queen promotion
                     case -1:
+                        p = new Queen(
+                                p.getColour(), new Position(newPos.getX(), 0));
+                        break;
                     case 8:
-                        p = new Queen(p.getColour(), p.getPosition());
+                        p = new Queen(
+                                p.getColour(), new Position(newPos.getX(), 7));
                         break;
 
                     //ai knight promotion
                     case -2:
+                        p = new Knight(
+                                p.getColour(), new Position(newPos.getX(), 0));
+                        break;
                     case 9:
-                        p = new Knight(p.getColour(), p.getPosition());
+                        p = new Knight(
+                                p.getColour(), new Position(newPos.getX(), 0));
                         break;
 
                     //human promotion
                     case 0:
                     case 7:
                         //p = getHumanSelection(p);
+                        if (forceQueen) {
+                            p = new Queen(p.getColour(), p.getPosition());
+                        }
                         p = new Queen(p.getColour(), p.getPosition());
                         break;
                 }
@@ -376,13 +383,14 @@ public final class Board implements Serializable {
         whiteMoveCount = 0;
         blackMoveCount = 0;
 
-        updateValidMoves();
-
         if (isWhiteTurn) {
             isWhiteChecked = whiteKing.isChecked(this);
         } else {
             isBlackChecked = blackKing.isChecked(this);
         }
+
+        updateValidMoves();
+
     }
 
     private void updateValidMoves() {
@@ -391,10 +399,12 @@ public final class Board implements Serializable {
 
                 if (board[i][j] != null) {
                     if (board[i][j].getColour() == ChessColour.WHITE) {
-                        board[i][j].updateValidMoves(this,false);
+
+                        board[i][j].updateValidMoves(this, isWhiteHuman);
                         whiteMoveCount += board[i][j].getValidMoves().size();
                     } else {
-                        board[i][j].updateValidMoves(this,false);
+                        board[i][j].updateValidMoves(this, isBlackHuman);
+
                         blackMoveCount += board[i][j].getValidMoves().size();
                     }
 
@@ -412,13 +422,18 @@ public final class Board implements Serializable {
         return isWhiteTurn ? ChessColour.WHITE : ChessColour.BLACK;
     }
 
+    /**
+     * This method is called after every turn to automatically save the board to
+     * a file after every turn.
+     *
+     */
     public void saveBoard() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Chess.save"))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("Chess.save"))) {
             oos.writeObject(this);
         } catch (IOException ex) {
             System.out.println(ex);
         }
-
     }
 
     public int getTurnNumber() {
@@ -459,53 +474,30 @@ public final class Board implements Serializable {
         return n;
     }
 
-    @Override
     public Board clone() {
-
-        Board tempBoard = null;
-
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(this);
-            oos.flush();
-            oos.close();
-            bos.close();
-
-            byte[] byteData = bos.toByteArray();
-            ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
-            tempBoard = (Board) new ObjectInputStream(bais).readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.printf("CRITIAL ERROR");
-            System.exit(1);
-        }
-
-        return tempBoard;
-    }
-
-    public Board fastClone() {
 
         Piece[][] tempPieces = new Piece[8][8];
         King tempWhiteKing = null;
         King tempBlackKing = null;
-        
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] != null) {
                     tempPieces[i][j] = (Piece) board[i][j].clone();
-                    
-                    if(board[i][j] instanceof King && board[i][j].getColour() == ChessColour.WHITE){
-                        tempWhiteKing = (King) tempPieces[i][j];
-                    } else if (board[i][j] instanceof King && board[i][j].getColour() == ChessColour.BLACK){
-                        tempBlackKing = (King) tempPieces[i][j];
+
+                    if (board[i][j] instanceof King) {
+                        if (board[i][j].getColour() == ChessColour.WHITE) {
+                            tempWhiteKing = (King) tempPieces[i][j];
+                        } else {
+                            tempBlackKing = (King) tempPieces[i][j];
+                        }
                     }
                 } else {
                     tempPieces[i][j] = null;
                 }
             }
         }
-        
-        
+
         King[] kings = new King[]{tempWhiteKing, tempBlackKing};
         boolean[] gameFlags = new boolean[]{isWhiteHuman, isBlackHuman, isWhiteTurn, isWhiteChecked, isBlackChecked};
         int[] gameData = new int[]{turnNumber, whiteMoveCount, blackMoveCount};
@@ -515,16 +507,16 @@ public final class Board implements Serializable {
 
     public boolean checkForCheck(Move m, ChessColour colour) {
 
-        Board tempBoard = this.fastClone();
-        tempBoard.doMove(m);
+        Board tempBoard = this.clone();
+        tempBoard.doMove(m, true);
 
         return colour == ChessColour.WHITE
-                ? tempBoard.whiteKing.isChecked(tempBoard) : tempBoard.blackKing.isChecked(tempBoard);
+                ? tempBoard.whiteKing.isChecked(tempBoard)
+                : tempBoard.blackKing.isChecked(tempBoard);
     }
 
     public boolean isChecked(ChessColour c) {
         return c == ChessColour.WHITE ? isWhiteChecked : isBlackChecked;
     }
-    
-    
+
 }

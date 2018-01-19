@@ -8,6 +8,8 @@ import java.util.Scanner;
  * @author Alex Zurad, Robbie McDonnell
  */
 public class TextInput {
+    
+    private final static String INVALID_CHOICE = "[Invalid choice]";
 
     public static String getStringChoice(String msg, String regex) {
         String selection = "";
@@ -18,12 +20,12 @@ public class TextInput {
                 selection = sc.next();
 
                 if (!selection.matches(regex)) {
-                    System.out.println("[Invalid choice]");
+                    System.out.println(INVALID_CHOICE);
                     selection = "";
                 }
 
             } catch (InputMismatchException e) {
-                System.out.println("[Invalid choice]");
+                System.out.println(INVALID_CHOICE);
                 selection = "";
             }
         }
@@ -40,7 +42,7 @@ public class TextInput {
                 selection = Integer.parseInt(sc.next(regex));
 
             } catch (InputMismatchException e) {
-                System.out.println("[Invalid choice]");
+                System.out.println(INVALID_CHOICE);
                 selection = -1;
             }
         }
